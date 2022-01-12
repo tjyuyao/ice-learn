@@ -22,4 +22,4 @@
 
 ## Documentation
 
-Please see the [docs](./docs) subdirectory.
+Please see the [docs](https://github.com/tjyuyao/ice-learn/tree/main/docs) subdirectory.
