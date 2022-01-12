@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "ice-learn"
+version = "0.0.1"
+description = "A high-level Deep Learning framework that extends PyTorch and PyCUDA."
+authors = ["Yuyao Huang <yycv.simon@protonmail.com>"]
+license = "MIT"
+packages = [
+    { include = "ice", from="." },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+torch = "^1.7.*"
+torchvision = "^0.11.2"
+pycuda = "^2021.1"
+multiprocess = "^0.70.12"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+lazydocs = "^0.4.8"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
