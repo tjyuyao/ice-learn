@@ -9,6 +9,7 @@ packages = [
 ]
 readme = 'README.md'
 keywords = ['PyTorch', 'PyCUDA', "Deep Learning framework", "Multi-Task Learning", "multiprocessing"]
+repository = 'https://github.com/tjyuyao/ice-learn'
 
 [tool.poetry.dependencies]
 python = "^3.8"
