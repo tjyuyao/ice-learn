@@ -1,11 +1,11 @@
 {
-    "ice/llutil": "low-level utilities",
+    "ice/llutil": "0 | low-level utilities",
     "ice/llutil/multiprocessing/": "0 | modified torch.multiprocessing",
     "ice/llutil/config.py": "1 | make everything configurable",
-    "ice/llutil/transform.py": "1 | dict inplace modifier",
+    "ice/llutil/modifier.py": "1 | dict inplace modifier",
     "ice/llutil/cuda.py": "1 | pycuda integration",
 
-    "ice/core": "hypergraph interface",
+    "ice/core": "1 | hypergraph interface",
     "ice/core/graph.py": "1 | HyperGraph, Node, SchedulerV1",
     "ice/core/dataset.py": "2 | DatasetNode",
     "ice/core/optim.py": "3 | Optimizer",
@@ -13,7 +13,7 @@
     "ice/core/loss.py": "5 | LossNode, SchedulerV2",
     "ice/core/metric.py": "6 | MetricNode",
 
-    "ice/repro": "reproduction of published works",
+    "ice/repro": "2, 4 | reproduction of published works",
 
-    "ice/apis": "user interface organization"
+    "ice/api": "3 | user interface organization"
 }
