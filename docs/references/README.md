@@ -15,15 +15,16 @@
 - [`llutil`](./llutil.md#module-llutil)
 - [`llutil.config`](./llutil.config.md#module-llutilconfig)
 - [`llutil.cuda`](./llutil.cuda.md#module-llutilcuda)
+- [`llutil.modifier`](./llutil.modifier.md#module-llutilmodifier)
 - [`llutil.multiprocessing`](./llutil.multiprocessing.md#module-llutilmultiprocessing): ice.llutil.multiprocessing is a rewrite of :mod:torch.multiprocessing. It's designed to change
 - [`llutil.multiprocessing.pool`](./llutil.multiprocessing.pool.md#module-llutilmultiprocessingpool)
 - [`llutil.multiprocessing.queue`](./llutil.multiprocessing.queue.md#module-llutilmultiprocessingqueue)
 - [`llutil.multiprocessing.reductions`](./llutil.multiprocessing.reductions.md#module-llutilmultiprocessingreductions)
 - [`llutil.multiprocessing.spawn`](./llutil.multiprocessing.spawn.md#module-llutilmultiprocessingspawn)
-- [`llutil.transform`](./llutil.transform.md#module-llutiltransform)
 
 ## Classes
 
+- [`config.Config`](./llutil.config.md#class-config): Any class converted to ``Config`` instance by ``configurable`` or ``make_configurable`` can store and modify its
 - [`pool.Pool`](./llutil.multiprocessing.pool.md#class-pool): Pool implementation which uses our version of SimpleQueue.
 - [`queue.ConnectionWrapper`](./llutil.multiprocessing.queue.md#class-connectionwrapper): Proxy class for _multiprocess.Connection which uses ForkingPickler to
 - [`queue.Queue`](./llutil.multiprocessing.queue.md#class-queue)
@@ -38,6 +39,9 @@
 
 ## Functions
 
+- [`config.configurable`](./llutil.config.md#function-configurable): This wrapper converts ``cls`` to a ``Config`` class which delays the initialization of the original one.
+- [`config.is_configurable`](./llutil.config.md#function-is_configurable)
+- [`config.make_configurable`](./llutil.config.md#function-make_configurable)
 - [`multiprocessing.get_all_sharing_strategies`](./llutil.multiprocessing.md#function-get_all_sharing_strategies): Returns a set of sharing strategies supported on a current system.
 - [`multiprocessing.get_sharing_strategy`](./llutil.multiprocessing.md#function-get_sharing_strategy): Returns the current strategy for sharing CPU tensors.
 - [`multiprocessing.set_sharing_strategy`](./llutil.multiprocessing.md#function-set_sharing_strategy): Sets the strategy for sharing CPU tensors.
