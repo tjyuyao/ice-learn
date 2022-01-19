@@ -20,7 +20,8 @@ multiprocess = "^0.70.12"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
-lazydocs = "^0.4.8"
+xdoctest = "^0.15.10"
+Pygments = "^2.11.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

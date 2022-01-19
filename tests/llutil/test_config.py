@@ -37,3 +37,26 @@ def test_clone():
     net2 = net.clone().freeze()
 
     assert net2.padding == (2, 2)
+
+def test_decoration():
+    import ice
+
+    @ice.configurable
+    class AClass:
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+    
+    # partial initialization.
+    i = AClass(b=0)
+
+    # alter positional and keyword arguments afterwards.
+    i[0] = 2
+    i['b'] = 1
+
+    # unfrozen configurable can be printed as a legal construction python statement.
+    assert repr(i) == "AClass(a=2, b=1)"
+
+    # real initialization of original object.
+    i.freeze()
+    assert i.a == 2 and i.b == 1

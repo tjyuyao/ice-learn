@@ -7,6 +7,8 @@ ice.llutil.multiprocessing is a rewrite of :mod:torch.multiprocessing. It's desi
 
 Because of the similarity of APIs we do not document most of this package contents, and we recommend referring to very good docs of the original module. 
 
+
+
 **Global Variables**
 ---------------
 - **reductions**
@@ -31,6 +33,8 @@ Sets the strategy for sharing CPU tensors.
  - <b>`the values returned by `</b>: func:`get_all_sharing_strategies()`. 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L60"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -42,6 +46,8 @@ get_sharing_strategy()
 ```
 
 Returns the current strategy for sharing CPU tensors. 
+
+
 
 
 ---
@@ -59,6 +65,3 @@ Returns a set of sharing strategies supported on a current system.
 
 
 
----
-
-_This file was automatically generated via [lazydocs](https://github.com/ml-tooling/lazydocs)._

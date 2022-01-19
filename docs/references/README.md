@@ -24,7 +24,6 @@
 
 ## Classes
 
-- [`config.Config`](./llutil.config.md#class-config): Any class converted to ``Config`` instance by ``configurable`` or ``make_configurable`` can store and modify its
 - [`pool.Pool`](./llutil.multiprocessing.pool.md#class-pool): Pool implementation which uses our version of SimpleQueue.
 - [`queue.ConnectionWrapper`](./llutil.multiprocessing.queue.md#class-connectionwrapper): Proxy class for _multiprocess.Connection which uses ForkingPickler to
 - [`queue.Queue`](./llutil.multiprocessing.queue.md#class-queue)
@@ -39,9 +38,11 @@
 
 ## Functions
 
-- [`config.configurable`](./llutil.config.md#function-configurable): This wrapper converts ``cls`` to a ``Config`` class which delays the initialization of the original one.
-- [`config.is_configurable`](./llutil.config.md#function-is_configurable)
-- [`config.make_configurable`](./llutil.config.md#function-make_configurable)
+- [`config.clone`](./llutil.config.md#function-clone): clone configurables, containers, and ordinary objects recursively.
+- [`config.configurable`](./llutil.config.md#function-configurable): This decorator delays the initialization of ``cls`` until ``freeze()``.
+- [`config.freeze`](./llutil.config.md#function-freeze): freeze configurables recursively.
+- [`config.is_configurable`](./llutil.config.md#function-is_configurable): check if a class or an object is configurable. 
+- [`config.make_configurable`](./llutil.config.md#function-make_configurable): This function converts multiple existing classes to configurables.
 - [`multiprocessing.get_all_sharing_strategies`](./llutil.multiprocessing.md#function-get_all_sharing_strategies): Returns a set of sharing strategies supported on a current system.
 - [`multiprocessing.get_sharing_strategy`](./llutil.multiprocessing.md#function-get_sharing_strategy): Returns the current strategy for sharing CPU tensors.
 - [`multiprocessing.set_sharing_strategy`](./llutil.multiprocessing.md#function-set_sharing_strategy): Sets the strategy for sharing CPU tensors.
@@ -60,8 +61,3 @@
 - [`reductions.storage_from_cache`](./llutil.multiprocessing.reductions.md#function-storage_from_cache)
 - [`spawn.spawn`](./llutil.multiprocessing.spawn.md#function-spawn): Spawns ``nprocs`` processes that run ``fn`` with ``args``.
 - [`spawn.start_processes`](./llutil.multiprocessing.spawn.md#function-start_processes)
-
-
----
-
-_This file was automatically generated via [lazydocs](https://github.com/ml-tooling/lazydocs)._

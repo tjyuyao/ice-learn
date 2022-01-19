@@ -8,6 +8,8 @@
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/pool.py#L7"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -17,6 +19,8 @@
 ```python
 clean_worker(*args, **kwargs)
 ```
+
+
 
 
 
@@ -36,6 +40,3 @@ Pool implementation which uses our version of SimpleQueue. This lets us pass ten
 
 
 
----
-
-_This file was automatically generated via [lazydocs](https://github.com/ml-tooling/lazydocs)._

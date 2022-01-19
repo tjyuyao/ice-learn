@@ -7,6 +7,8 @@
 
 
 
+
+
 **Global Variables**
 ---------------
 - **shared_cache**
@@ -20,6 +22,8 @@
 ```python
 rebuild_event(device, handle)
 ```
+
+
 
 
 
@@ -41,6 +45,8 @@ reduce_event(event)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L89"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -50,6 +56,8 @@ reduce_event(event)
 ```python
 rebuild_tensor(cls, storage, metadata)
 ```
+
+
 
 
 
@@ -86,6 +94,8 @@ rebuild_cuda_tensor(
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L156"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -95,6 +105,8 @@ rebuild_cuda_tensor(
 ```python
 reduce_tensor(tensor)
 ```
+
+
 
 
 
@@ -116,6 +128,8 @@ fd_id(fd)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L313"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -125,6 +139,8 @@ fd_id(fd)
 ```python
 storage_from_cache(cls, key)
 ```
+
+
 
 
 
@@ -146,6 +162,8 @@ rebuild_storage_fd(cls, df, size)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L333"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -155,6 +173,8 @@ rebuild_storage_fd(cls, df, size)
 ```python
 rebuild_storage_filename(cls, manager, handle, size)
 ```
+
+
 
 
 
@@ -176,6 +196,8 @@ rebuild_storage_empty(cls)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L346"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -185,6 +207,8 @@ rebuild_storage_empty(cls)
 ```python
 reduce_storage(storage)
 ```
+
+
 
 
 
@@ -206,6 +230,8 @@ init_reductions()
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L21"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -215,6 +241,8 @@ A weak reference to a Storage.
 
 The cdata member is a Python number containing the integer representation of the Storage pointer. 
 
+
+
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L27"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
@@ -222,6 +250,8 @@ The cdata member is a Python number containing the integer representation of the
 ```python
 __init__(storage)
 ```
+
+
 
 
 
@@ -245,12 +275,16 @@ expired()
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L40"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `SharedCache`
 dictionary from multiprocess handles to StorageWeakRef 
+
+
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L43"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
@@ -259,6 +293,8 @@ dictionary from multiprocess handles to StorageWeakRef
 ```python
 __init__()
 ```
+
+
 
 
 
@@ -281,6 +317,8 @@ free_dead_references()
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L56"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -298,6 +336,3 @@ get(key)
 
 
 
----
-
-_This file was automatically generated via [lazydocs](https://github.com/ml-tooling/lazydocs)._

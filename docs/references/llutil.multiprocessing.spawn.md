@@ -8,6 +8,8 @@
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L172"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -24,6 +26,8 @@ start_processes(
     start_method='spawn'
 )
 ```
+
+
 
 
 
@@ -66,11 +70,15 @@ If one of the processes exits with a non-zero exit status, the remaining process
  - <b>`:class`</b>: `~ProcessContext` if ``join`` is ``False`` 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L11"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessException`
+
+
 
 
 
@@ -91,12 +99,16 @@ __init__(msg: str, error_index: int, pid: int)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L20"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessRaisedException`
 Exception is thrown when the process failed due to exception raised by the code. 
+
+
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L26"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
@@ -114,12 +126,16 @@ __init__(msg: str, error_index: int, error_pid: int)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L35"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessExitedException`
 Exception is thrown when the process failed due to signal or exited with a specific code. 
+
+
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L43"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
@@ -143,11 +159,15 @@ __init__(
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L75"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessContext`
+
+
 
 
 
@@ -167,6 +187,8 @@ __init__(processes, error_queues)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -187,6 +209,8 @@ Returns ``True`` if all processes have been joined successfully, ``False`` if th
  
  - <b>`timeout`</b> (float):  Wait this long before giving up on waiting. 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -202,11 +226,15 @@ pids()
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L156"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `SpawnContext`
+
+
 
 
 
@@ -226,6 +254,8 @@ __init__(processes, error_queues)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -246,6 +276,8 @@ Returns ``True`` if all processes have been joined successfully, ``False`` if th
  
  - <b>`timeout`</b> (float):  Wait this long before giving up on waiting. 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -263,6 +295,3 @@ pids()
 
 
 
----
-
-_This file was automatically generated via [lazydocs](https://github.com/ml-tooling/lazydocs)._

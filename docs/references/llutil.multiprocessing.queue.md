@@ -9,12 +9,16 @@
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/queue.py#L7"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ConnectionWrapper`
 Proxy class for _multiprocess.Connection which uses ForkingPickler to serialize objects 
+
+
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/queue.py#L11"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
@@ -23,6 +27,8 @@ Proxy class for _multiprocess.Connection which uses ForkingPickler to serialize 
 ```python
 __init__(conn)
 ```
+
+
 
 
 
@@ -45,6 +51,8 @@ recv()
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/queue.py#L14"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
@@ -60,11 +68,15 @@ send(obj)
 
 
 
+
+
 ---
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/queue.py#L31"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Queue`
+
+
 
 
 
@@ -76,6 +88,8 @@ send(obj)
 ```python
 __init__(*args, **kwargs)
 ```
+
+
 
 
 
@@ -100,6 +114,3 @@ __init__(*args, **kwargs)
 
 
 
----
-
-_This file was automatically generated via [lazydocs](https://github.com/ml-tooling/lazydocs)._
