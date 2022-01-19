@@ -3,6 +3,19 @@ import copy
 from functools import wraps
 
 
+def _inplace_surrogate(cls, funcname):
+    backupname = "__backup" + funcname
+    setattr(cls, backupname, getattr(cls, funcname, None))
+    def newfunc(self, *a, **k):
+        cfg = object.__getattribute__(self, "_config")
+        if cfg._frozen:
+            value = getattr(cls, backupname)(self, *a, **k)
+        else:
+            value = getattr(cfg, funcname)(*a, **k)
+        return value
+    setattr(cls, funcname, newfunc)
+
+
 def configurable(cls):
     """This decorator delays the initialization of ``cls`` until ``freeze()``.
     
@@ -56,48 +69,13 @@ def configurable(cls):
         object.__setattr__(self, "_config", _Config(cls, self, argnames, *args, **kwds))
     cls.__init__ = make_config
 
-    # surrogate the original __getattribute__ function.
-    def get_attribute(self, name:str):
-        cfg = object.__getattribute__(self, "_config")
-        if cfg._frozen:
-            value = object.__getattribute__(self, name)
-        else:
-            value = getattr(cfg, name)
-        return value
-    cls.__getattribute__ = get_attribute
+    # surrogate other functions
+    _inplace_surrogate(cls, "__getattribute__")
+    _inplace_surrogate(cls, "__getattr__")
+    _inplace_surrogate(cls, "__repr__")
+    _inplace_surrogate(cls, "__getitem__")
+    _inplace_surrogate(cls, "__setitem__")
 
-    # surrogate the original __repr__ function.
-    cls.orig__repr__ = getattr(cls, "__repr__", None)
-    def repr_func(self):
-        cfg = object.__getattribute__(self, "_config")
-        if cfg._frozen:
-            value = cls.orig__repr__(self)
-        else:
-            value = repr(cfg)
-        return value
-    cls.__repr__ = repr_func
-
-    # surrogate the original __getitem__ function.
-    cls.orig__getitem__ = getattr(cls, "__getitem__", None)
-    def get_item(self, key):
-        cfg = object.__getattribute__(self, "_config")
-        if cfg._frozen:
-            value = cls.orig__getitem__(self, key)
-        else:
-            value = cfg[key]
-        return value
-    cls.__getitem__ = get_item
-
-    # surrogate the original __setitem__ function.
-    cls.orig__setitem__ = getattr(cls, "__setitem__", None)
-    def set_item(self, key, value):
-        cfg = object.__getattribute__(self, "_config")
-        if cfg._frozen:
-            cls.orig__setitem__(self, key, value)
-        else:
-            cfg[key] = value
-    cls.__setitem__ = set_item
-    
     # return the modified cls
     return cls
 
@@ -250,6 +228,11 @@ class _Config:
     def __contains__(self, key):
         return key in self._kwds
 
+    def __getattr__(self, attrname):
+        reprstr = repr(self)
+        if len(reprstr) > 60: reprstr = reprstr[:60] + " ... "
+        raise AttributeError(f"Configurable \"{reprstr}\" is not frozen before being used.")
+
     def update(self, explicit={}, **implicit):
         explicit.update(implicit)
         for k, v in explicit.items():
@@ -266,5 +249,5 @@ class _Config:
         return self._obj
 
     def __repr__(self):
-        kwds = ', '.join([f"{k}={repr(self._kwds[k])}" for k in self._argnames])
+        kwds = ', '.join([f"{k}={repr(self._kwds[k])}" for k in self._argnames if k in self._kwds])
         return f"{self._cls.__name__}({kwds})"
