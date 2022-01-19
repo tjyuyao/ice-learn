@@ -1,6 +1,6 @@
 """
-ice.llutil.multiprocessing is a rewrite of :mod:torch.multiprocessing. It's designed to change
-``import torch.multiprocessing`` to ``import ice.multiprocessing`` to have all the lambda functions, 
+ice.llutil.multiprocessing is a modified version of ``torch.multiprocessing``. It's designed to change
+``import torch.multiprocessing as mp`` to ``from ice import multiprocessing as mp`` to have all the lambda functions, 
 closures as well as pytorch tensors sent through processes in Data Distributed Parallel paradigm.
 
 Because of the similarity of APIs we do not document most of this package
@@ -68,3 +68,13 @@ def get_all_sharing_strategies():
 
 
 init_reductions()
+
+import inspect
+
+def called_from_main():
+    """Another version of ``if __name__ == "__main__"`` that works everywhere.
+    
+    Returns:
+        bool
+    """
+    return len(inspect.stack()) <= 3

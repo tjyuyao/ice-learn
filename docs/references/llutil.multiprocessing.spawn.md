@@ -12,7 +12,7 @@
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L172"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L180"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `start_processes`
 
@@ -36,7 +36,7 @@ start_processes(
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L198"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L206"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `spawn`
 
@@ -103,14 +103,14 @@ __init__(msg: str, error_index: int, pid: int)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L20"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L23"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessRaisedException`
 Exception is thrown when the process failed due to exception raised by the code. 
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L26"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L29"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -130,14 +130,14 @@ __init__(msg: str, error_index: int, error_pid: int)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L35"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L38"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessExitedException`
 Exception is thrown when the process failed due to signal or exited with a specific code. 
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L43"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L46"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -163,7 +163,7 @@ __init__(
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L75"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessContext`
 
@@ -172,7 +172,7 @@ __init__(
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L76"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L84"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -191,7 +191,7 @@ __init__(processes, error_queues)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L94"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `join`
 
@@ -213,7 +213,7 @@ Returns ``True`` if all processes have been joined successfully, ``False`` if th
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L91"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `pids`
 
@@ -230,7 +230,7 @@ pids()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L156"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L164"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `SpawnContext`
 
@@ -239,7 +239,7 @@ pids()
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L157"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -258,7 +258,7 @@ __init__(processes, error_queues)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L94"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `join`
 
@@ -280,7 +280,7 @@ Returns ``True`` if all processes have been joined successfully, ``False`` if th
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L91"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `pids`
 

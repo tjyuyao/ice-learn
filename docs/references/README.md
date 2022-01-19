@@ -16,7 +16,7 @@
 - [`llutil.config`](./llutil.config.md#module-llutilconfig)
 - [`llutil.cuda`](./llutil.cuda.md#module-llutilcuda)
 - [`llutil.modifier`](./llutil.modifier.md#module-llutilmodifier)
-- [`llutil.multiprocessing`](./llutil.multiprocessing.md#module-llutilmultiprocessing): ice.llutil.multiprocessing is a rewrite of :mod:torch.multiprocessing. It's designed to change
+- [`llutil.multiprocessing`](./llutil.multiprocessing.md#module-llutilmultiprocessing): ice.llutil.multiprocessing is a modified version of ``torch.multiprocessing``. It's designed to change
 - [`llutil.multiprocessing.pool`](./llutil.multiprocessing.pool.md#module-llutilmultiprocessingpool)
 - [`llutil.multiprocessing.queue`](./llutil.multiprocessing.queue.md#module-llutilmultiprocessingqueue)
 - [`llutil.multiprocessing.reductions`](./llutil.multiprocessing.reductions.md#module-llutilmultiprocessingreductions)
@@ -43,6 +43,7 @@
 - [`config.freeze`](./llutil.config.md#function-freeze): freeze configurables recursively.
 - [`config.is_configurable`](./llutil.config.md#function-is_configurable): check if a class or an object is configurable. 
 - [`config.make_configurable`](./llutil.config.md#function-make_configurable): This function converts multiple existing classes to configurables.
+- [`multiprocessing.called_from_main`](./llutil.multiprocessing.md#function-called_from_main): Another version of ``if __name__ == "__main__"`` that works everywhere.
 - [`multiprocessing.get_all_sharing_strategies`](./llutil.multiprocessing.md#function-get_all_sharing_strategies): Returns a set of sharing strategies supported on a current system.
 - [`multiprocessing.get_sharing_strategy`](./llutil.multiprocessing.md#function-get_sharing_strategy): Returns the current strategy for sharing CPU tensors.
 - [`multiprocessing.set_sharing_strategy`](./llutil.multiprocessing.md#function-set_sharing_strategy): Sets the strategy for sharing CPU tensors.
