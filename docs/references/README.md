@@ -15,7 +15,7 @@
 - [`core.module`](./core.module.md#module-coremodule)
 - [`core.optim`](./core.optim.md#module-coreoptim)
 - [`llutil`](./llutil.md#module-llutil)
-- [`llutil.argparser`](./llutil.argparser.md#module-llutilargparser)
+- [`llutil.argparser`](./llutil.argparser.md#module-llutilargparser): This module provides helper functions for commonly used argument processing for functions, 
 - [`llutil.config`](./llutil.config.md#module-llutilconfig)
 - [`llutil.cuda`](./llutil.cuda.md#module-llutilcuda)
 - [`llutil.modifier`](./llutil.modifier.md#module-llutilmodifier)
@@ -43,7 +43,9 @@
 
 ## Functions
 
-- [`argparser.isa`](./llutil.argparser.md#function-isa): alias for python built-in ``isinstance``.
+- [`argparser.as_dict`](./llutil.argparser.md#function-as_dict): Helper function: regularize input into a dict.
+- [`argparser.as_list`](./llutil.argparser.md#function-as_list): Helper function: regularize input into list of element.
+- [`argparser.isa`](./llutil.argparser.md#function-isa): Helper function: alias for python built-in ``isinstance``.
 - [`config.clone`](./llutil.config.md#function-clone): clone configurables, containers, and ordinary objects recursively.
 - [`config.configurable`](./llutil.config.md#function-configurable): This decorator delays the initialization of ``cls`` until ``freeze()``.
 - [`config.freeze`](./llutil.config.md#function-freeze): freeze configurables recursively.

@@ -1,11 +1,79 @@
-from __future__ import unicode_literals
+"""
+This module provides helper functions for commonly used argument processing for functions, 
+and a FlexibleArgParser for command line argument parsing. The default singleton of this
+argument parser is accessable via ``ice.args``.
+"""
+
 import sys
 
 _type = type
 
 def isa(obj, types):
-    """alias for python built-in ``isinstance``."""
+    """Helper function: alias for python built-in ``isinstance``."""
     return isinstance(obj, types)
+
+def as_list(maybe_element):
+    """Helper function: regularize input into list of element.
+
+    No matter what is input, will output a list for your iteration.
+    
+    **Basic Examples:**
+
+    >>> assert as_list("string") == ["string"]
+    >>> assert as_list(["string", "string"]) == ["string", "string"]
+    >>> assert as_list(("string", "string")) == ["string", "string"]
+    >>> assert as_list([["string", "string"]]) == ["string", "string"]
+    
+    **An Application Example:**
+
+    >>> def func(*args):
+    >>>     return as_list(args)
+    >>>
+    >>> assert func("a", "b") == ["a", "b"]
+    >>> assert func(["a", "b"]) == ["a", "b"]
+
+    """
+    if type(maybe_element) == list:
+        maybe_stacked = maybe_element
+        if 1 == len(maybe_stacked) and type(maybe_stacked[0]) == list:
+            mustbe_list = maybe_stacked[0]
+        else:
+            mustbe_list = maybe_stacked
+    elif type(maybe_element) == tuple:
+        maybe_stacked = maybe_element
+        if 1 == len(maybe_stacked) and type(maybe_stacked[0]) == list:
+            mustbe_list = maybe_stacked[0]
+        else:
+            mustbe_list = list(maybe_stacked)
+    else:
+        mustbe_list = [maybe_element]
+    return mustbe_list
+
+
+def as_dict(maybe_element, key):
+    """Helper function: regularize input into a dict.
+
+    if ``maybe_element`` is not a dict, will return a dict with single
+    key as ``{key:maybe_element}``, else will return ``maybe_element``.
+
+    Args:
+        maybe_element: a dict or any object.
+        key : the sole key.
+
+    Returns:
+        dict: ensures to be a dict.
+
+    Example:
+
+    >>> assert as_dict({"k": "v"}, "k") == {"k": "v"}
+    >>> assert as_dict("v", "k") == {"k": "v"}
+    """
+    if isinstance(maybe_element, dict):
+        mustbe_dict = maybe_element
+    else:
+        mustbe_dict = {key:maybe_element}
+    return mustbe_dict
+
 
 def _format_arg(arg):
     farg = str(arg)

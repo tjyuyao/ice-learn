@@ -3,16 +3,14 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `llutil.argparser`
-
-
-
+This module provides helper functions for commonly used argument processing for functions,  and a FlexibleArgParser for command line argument parsing. The default singleton of this argument parser is accessable via ``ice.args``. 
 
 
 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L6"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L11"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `isa`
 
@@ -20,14 +18,87 @@
 isa(obj, types)
 ```
 
-alias for python built-in ``isinstance``. 
+Helper function: alias for python built-in ``isinstance``. 
 
 
 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L19"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L15"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `as_list`
+
+```python
+as_list(maybe_element)
+```
+
+Helper function: regularize input into list of element. 
+
+No matter what is input, will output a list for your iteration. 
+
+**Basic Examples:** 
+
+```python
+assert as_list("string") == ["string"]
+assert as_list(["string", "string"]) == ["string", "string"]
+assert as_list(("string", "string")) == ["string", "string"]
+assert as_list([["string", "string"]]) == ["string", "string"]
+```
+ **An Application Example:** 
+
+```python
+def func(*args):
+    return as_list(args)
+
+assert func("a", "b") == ["a", "b"]
+assert func(["a", "b"]) == ["a", "b"]
+```
+ 
+
+
+---
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `as_dict`
+
+```python
+as_dict(maybe_element, key)
+```
+
+Helper function: regularize input into a dict. 
+
+if ``maybe_element`` is not a dict, will return a dict with single key as ``{key:maybe_element}``, else will return ``maybe_element``. 
+
+
+
+**Args:**
+ 
+ - <b>`maybe_element`</b>:  a dict or any object. 
+ - <b>`key `</b>:  the sole key. 
+
+
+
+**Returns:**
+ 
+ - <b>`dict`</b>:  ensures to be a dict. 
+
+
+
+**Example:**
+ 
+
+```python
+assert as_dict({"k": "v"}, "k") == {"k": "v"}
+assert as_dict("v", "k") == {"k": "v"}
+```
+ 
+
+
+---
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L87"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `FlexibleArgParser`
 A flexible and lightweight argument parser that saves loads of code. 
@@ -92,7 +163,7 @@ assert 0 == ice.args.get("k2", int, 4)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L100"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `get`
 
@@ -120,7 +191,7 @@ get argument as ``type`` with default ``value``.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L78"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L146"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `parse_args`
 
@@ -140,7 +211,7 @@ Manually parse args.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L126"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L194"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `setdefault`
 
@@ -166,7 +237,7 @@ Set argument value under `key` as `value`, only if original entry does not exist
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L157"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L225"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
