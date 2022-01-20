@@ -2,4 +2,5 @@ from ice.llutil.config import configurable, make_configurable, is_configurable, 
 from ice.llutil import multiprocessing
 from ice.llutil.multiprocessing import called_from_main
 from ice.llutil.cuda import CUDAModule
-from ice.llutil.argparser import args, isa
+from ice.llutil.argparser import args, isa, as_list, as_dict
+from ice.llutil.dictprocess import dictprocess

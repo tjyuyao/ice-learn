@@ -16,7 +16,9 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/queue.py#L7"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ConnectionWrapper`
-Proxy class for _multiprocess.Connection which uses ForkingPickler to serialize objects 
+Proxy class for _multiprocess.Connection which uses ForkingPickler to
+serialize objects
+
 
 
 

@@ -3,7 +3,10 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `llutil.argparser`
-This module provides helper functions for commonly used argument processing for functions,  and a FlexibleArgParser for command line argument parsing. The default singleton of this argument parser is accessable via ``ice.args``. 
+This module provides helper functions for commonly used argument processing for functions, 
+and a FlexibleArgParser for command line argument parsing. The default singleton of this
+argument parser is accessable via ``ice.args``.
+
 
 
 
@@ -18,7 +21,8 @@ This module provides helper functions for commonly used argument processing for 
 isa(obj, types)
 ```
 
-Helper function: alias for python built-in ``isinstance``. 
+Helper function: alias for python built-in ``isinstance``.
+
 
 
 
@@ -33,11 +37,14 @@ Helper function: alias for python built-in ``isinstance``.
 as_list(maybe_element)
 ```
 
-Helper function: regularize input into list of element. 
+Helper function: regularize input into list of element.
 
-No matter what is input, will output a list for your iteration. 
 
-**Basic Examples:** 
+No matter what is input, will output a list for your iteration.
+
+
+**Basic Examples:**
+
 
 ```python
 assert as_list("string") == ["string"]
@@ -45,7 +52,9 @@ assert as_list(["string", "string"]) == ["string", "string"]
 assert as_list(("string", "string")) == ["string", "string"]
 assert as_list([["string", "string"]]) == ["string", "string"]
 ```
- **An Application Example:** 
+
+**An Application Example:**
+
 
 ```python
 def func(*args):
@@ -54,7 +63,8 @@ def func(*args):
 assert func("a", "b") == ["a", "b"]
 assert func(["a", "b"]) == ["a", "b"]
 ```
- 
+
+
 
 
 ---
@@ -67,33 +77,43 @@ assert func(["a", "b"]) == ["a", "b"]
 as_dict(maybe_element, key)
 ```
 
-Helper function: regularize input into a dict. 
+Helper function: regularize input into a dict.
 
-if ``maybe_element`` is not a dict, will return a dict with single key as ``{key:maybe_element}``, else will return ``maybe_element``. 
+
+if ``maybe_element`` is not a dict, will return a dict with single
+key as ``{key:maybe_element}``, else will return ``maybe_element``.
+
 
 
 
 **Args:**
- 
- - <b>`maybe_element`</b>:  a dict or any object. 
- - <b>`key `</b>:  the sole key. 
+
+
+ - <b>`maybe_element`</b>:  a dict or any object.
+
+ - <b>`key `</b>:  the sole key.
+
 
 
 
 **Returns:**
- 
- - <b>`dict`</b>:  ensures to be a dict. 
+
+
+ - <b>`dict`</b>:  ensures to be a dict.
+
 
 
 
 **Example:**
- 
+
+
 
 ```python
 assert as_dict({"k": "v"}, "k") == {"k": "v"}
 assert as_dict("v", "k") == {"k": "v"}
 ```
- 
+
+
 
 
 ---
@@ -101,14 +121,20 @@ assert as_dict("v", "k") == {"k": "v"}
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L87"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `FlexibleArgParser`
-A flexible and lightweight argument parser that saves loads of code. 
+A flexible and lightweight argument parser that saves loads of code.
 
-This module works differently compared to python built-in ``argparse`` module. 
-- It accepts two types of command line arguments, i.e. positional and keyword based (options). 
-- The keyword based arguments (options) should be specified as ``key=value`` or ``key="value"``. 
-- The positional arguments can be specified same as ``argparse`` would expect. 
 
-**Example 1:** 
+This module works differently compared to python built-in ``argparse`` module.
+
+- It accepts two types of command line arguments, i.e. positional and keyword based (options).
+
+- The keyword based arguments (options) should be specified as ``key=value`` or ``key="value"``.
+
+- The positional arguments can be specified same as ``argparse`` would expect.
+
+
+**Example 1:**
+
 
 ```python
 import ice
@@ -129,7 +155,9 @@ num_workers = int(ice.args["workers"])
 # Following line also works, but only for keyword arguments, as integer literal is not a legal attribute name.
 num_workers = int(ice.args.workers)
 ```
- **Example 2:** 
+
+**Example 2:**
+
 
 ```python
 ice.args.parse_args(["2", "k1=4"])
@@ -156,7 +184,8 @@ ice.args.update({0: 0})
 assert 0 == ice.args.get(0, int, 4)
 assert 0 == ice.args.get("k2", int, 4)
 ```
- 
+
+
 
 
 
@@ -171,21 +200,28 @@ assert 0 == ice.args.get("k2", int, 4)
 get(key, type=None, value=None)
 ```
 
-get argument as ``type`` with default ``value``. 
+get argument as ``type`` with default ``value``.
+
 
 
 
 **Args:**
- 
- - <b>`key`</b> (int|str):  ``int`` for positional argument and ``str`` for options. 
- - <b>`type`</b> (Type, optional):  If specified, the type of argument stored will be casted to ``type``. Default command line arguments are ``str``s. 
- - <b>`value`</b> (Any, optional):  If key not found, will return ``value``. Defaults to None. 
+
+
+ - <b>`key`</b> (int|str):  ``int`` for positional argument and ``str`` for options.
+
+ - <b>`type`</b> (Type, optional):  If specified, the type of argument stored will be casted to ``type``. Default command line arguments are ``str``s.
+
+ - <b>`value`</b> (Any, optional):  If key not found, will return ``value``. Defaults to None.
+
 
 
 
 **Returns:**
- 
- - <b>`type`</b>:  specific argument value. 
+
+
+ - <b>`type`</b>:  specific argument value.
+
 
 
 
@@ -199,13 +235,16 @@ get argument as ``type`` with default ``value``.
 parse_args(argv)
 ```
 
-Manually parse args. 
+Manually parse args.
+
 
 
 
 **Args:**
- 
- - <b>`argv`</b> (List[str]):  simillar to `sys.argv[1:]`. 
+
+
+ - <b>`argv`</b> (List[str]):  simillar to `sys.argv[1:]`.
+
 
 
 
@@ -219,19 +258,25 @@ Manually parse args.
 setdefault(key, value)
 ```
 
-Set argument value under `key` as `value`, only if original entry does not exists. 
+Set argument value under `key` as `value`, only if original entry does not exists.
+
 
 
 
 **Args:**
- 
- - <b>`key`</b> (int|str):  the keyword. 
- - <b>`value`</b>:  default_value to be set when orginal entry does not exists. 
+
+
+ - <b>`key`</b> (int|str):  the keyword.
+
+ - <b>`value`</b>:  default_value to be set when orginal entry does not exists.
+
 
 
 
 **Returns:**
- original or updated value. 
+
+original or updated value.
+
 
 
 
@@ -245,7 +290,8 @@ Set argument value under `key` as `value`, only if original entry does not exist
 update(*args, **kwargs)
 ```
 
-simillar to dict.update().  
+simillar to dict.update().
+ 
 
 
 

@@ -3,9 +3,14 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `llutil.multiprocessing`
-ice.llutil.multiprocessing is a modified version of ``torch.multiprocessing``. It's designed to change ``import torch.multiprocessing as mp`` to ``from ice import multiprocessing as mp`` to have all the lambda functions,  closures as well as pytorch tensors sent through processes in Data Distributed Parallel paradigm. 
+ice.llutil.multiprocessing is a modified version of ``torch.multiprocessing``. It's designed to change
+``import torch.multiprocessing as mp`` to ``from ice import multiprocessing as mp`` to have all the lambda functions, 
+closures as well as pytorch tensors sent through processes in Data Distributed Parallel paradigm.
 
-Because of the similarity of APIs we do not document most of this package contents, and we recommend referring to very good docs of the original module. 
+
+Because of the similarity of APIs we do not document most of this package
+contents, and we recommend referring to very good docs of the original module.
+
 
 
 
@@ -23,14 +28,18 @@ Because of the similarity of APIs we do not document most of this package conten
 set_sharing_strategy(new_strategy)
 ```
 
-Sets the strategy for sharing CPU tensors. 
+Sets the strategy for sharing CPU tensors.
+
 
 
 
 **Args:**
- 
- - <b>`new_strategy`</b> (str):  Name of the selected strategy. Should be one of 
- - <b>`the values returned by `</b>: func:`get_all_sharing_strategies()`. 
+
+
+ - <b>`new_strategy`</b> (str):  Name of the selected strategy. Should be one of
+
+ - <b>`the values returned by `</b>: func:`get_all_sharing_strategies()`.
+
 
 
 
@@ -45,7 +54,8 @@ Sets the strategy for sharing CPU tensors.
 get_sharing_strategy()
 ```
 
-Returns the current strategy for sharing CPU tensors. 
+Returns the current strategy for sharing CPU tensors.
+
 
 
 
@@ -60,7 +70,8 @@ Returns the current strategy for sharing CPU tensors.
 get_all_sharing_strategies()
 ```
 
-Returns a set of sharing strategies supported on a current system. 
+Returns a set of sharing strategies supported on a current system.
+
 
 
 
@@ -75,12 +86,15 @@ Returns a set of sharing strategies supported on a current system.
 called_from_main()
 ```
 
-Another version of ``if __name__ == "__main__"`` that works everywhere. 
+Another version of ``if __name__ == "__main__"`` that works everywhere.
+
 
 
 
 **Returns:**
-  bool 
+
+ bool
+
 
 
 

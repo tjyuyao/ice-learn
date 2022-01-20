@@ -459,7 +459,7 @@ def _doc2md(obj: Any) -> str:
         elif not line and quote_block:
             out.append("\n>")
         else:
-            out.append(" ")
+            out.append("\n")
 
     return "".join(out)
 

@@ -237,9 +237,12 @@ init_reductions()
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L21"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `StorageWeakRef`
-A weak reference to a Storage. 
+A weak reference to a Storage.
 
-The cdata member is a Python number containing the integer representation of the Storage pointer. 
+
+The cdata member is a Python number containing the integer representation of
+the Storage pointer.
+
 
 
 
@@ -268,7 +271,8 @@ expired()
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L40"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `SharedCache`
-dictionary from multiprocess handles to StorageWeakRef 
+dictionary from multiprocess handles to StorageWeakRef
+
 
 
 
