@@ -9,6 +9,7 @@ import os
 import pkgutil
 import re
 import subprocess
+import traceback
 import types
 from pydoc import locate
 from typing import Any, Callable, Dict, List, Optional
@@ -368,12 +369,11 @@ def _doc2md(obj: Any) -> str:
             line = line.lstrip()
 
         # support for doctest
-        if line.startswith(">>> "):
+        if line.strip().startswith(">>>"):
             line = line.replace(">>> ", "")
+            line = line.replace(">>>", "")
             if not md_code_snippet:
                 line = "```python\n" + line
-        elif line.startswith("... "):
-            line = line.replace("... ", "")
         elif md_code_snippet:
             if line.strip():
                 line = "# "+line
@@ -1000,6 +1000,7 @@ def generate_docs(
                     print(
                         f"Failed to generate docs for module {module_name}: " + repr(ex)
                     )
+                    traceback.print_exc()
         elif os.path.isfile(path):
             if validate and subprocess.call(f"{pydocstyle_cmd} {path}", shell=True) > 0:
                 raise Exception(f"Validation for {path} failed.")
@@ -1080,6 +1081,7 @@ def generate_docs(
                                 f"Failed to generate docs for module {module_name}: "
                                 + repr(ex)
                             )
+                            traceback.print_exc()
                 else:
                     import_md = generator.import2md(obj)
                     if stdout_mode:
