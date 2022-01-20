@@ -23,6 +23,9 @@ pytest = "^6.2.5"
 xdoctest = "^0.15.10"
 Pygments = "^2.11.2"
 
+[tool.poetry.scripts]
+waitfinish = 'ice.api.scripts.waitfinish:_cli'
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

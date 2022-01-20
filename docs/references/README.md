@@ -5,6 +5,8 @@
 ## Modules
 
 - [`api`](./api.md#module-api)
+- [`api.scripts`](./api.scripts.md#module-apiscripts)
+- [`api.scripts.waitfinish`](./api.scripts.waitfinish.md#module-apiscriptswaitfinish): usage: waitfinish [-h] PIDS [PIDS ...]
 - [`core`](./core.md#module-core)
 - [`core.dataset`](./core.dataset.md#module-coredataset)
 - [`core.graph`](./core.graph.md#module-coregraph)
