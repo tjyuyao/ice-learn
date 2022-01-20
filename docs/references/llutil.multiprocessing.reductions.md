@@ -243,20 +243,6 @@ The cdata member is a Python number containing the integer representation of the
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L27"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
-
-### <kbd>method</kbd> `__init__`
-
-```python
-__init__(storage)
-```
-
-
-
-
-
-
-
 
 
 
@@ -283,20 +269,6 @@ expired()
 
 ## <kbd>class</kbd> `SharedCache`
 dictionary from multiprocess handles to StorageWeakRef 
-
-
-
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/reductions.py#L43"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
-
-### <kbd>method</kbd> `__init__`
-
-```python
-__init__()
-```
-
-
-
-
 
 
 

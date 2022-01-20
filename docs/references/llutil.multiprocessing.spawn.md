@@ -83,20 +83,6 @@ If one of the processes exits with a non-zero exit status, the remaining process
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L14"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
-
-### <kbd>method</kbd> `__init__`
-
-```python
-__init__(msg: str, error_index: int, pid: int)
-```
-
-
-
-
-
-
-
 
 
 
@@ -107,20 +93,6 @@ __init__(msg: str, error_index: int, pid: int)
 
 ## <kbd>class</kbd> `ProcessRaisedException`
 Exception is thrown when the process failed due to exception raised by the code. 
-
-
-
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L29"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
-
-### <kbd>method</kbd> `__init__`
-
-```python
-__init__(msg: str, error_index: int, error_pid: int)
-```
-
-
-
-
 
 
 
@@ -137,26 +109,6 @@ Exception is thrown when the process failed due to signal or exited with a speci
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L46"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
-
-### <kbd>method</kbd> `__init__`
-
-```python
-__init__(
-    msg: str,
-    error_index: int,
-    error_pid: int,
-    exit_code: int,
-    signal_name: Optional[str] = None
-)
-```
-
-
-
-
-
-
-
 
 
 
@@ -166,20 +118,6 @@ __init__(
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ProcessContext`
-
-
-
-
-
-
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L84"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
-
-### <kbd>method</kbd> `__init__`
-
-```python
-__init__(processes, error_queues)
-```
-
 
 
 
@@ -233,20 +171,6 @@ pids()
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L164"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `SpawnContext`
-
-
-
-
-
-
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/spawn.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
-
-### <kbd>method</kbd> `__init__`
-
-```python
-__init__(processes, error_queues)
-```
-
 
 
 

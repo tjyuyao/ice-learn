@@ -24,6 +24,7 @@
 
 ## Classes
 
+- [`cuda.CUDAModule`](./llutil.cuda.md#class-cudamodule): Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
 - [`pool.Pool`](./llutil.multiprocessing.pool.md#class-pool): Pool implementation which uses our version of SimpleQueue.
 - [`queue.ConnectionWrapper`](./llutil.multiprocessing.queue.md#class-connectionwrapper): Proxy class for _multiprocess.Connection which uses ForkingPickler to
 - [`queue.Queue`](./llutil.multiprocessing.queue.md#class-queue)
