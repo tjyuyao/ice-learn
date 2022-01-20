@@ -15,6 +15,7 @@
 - [`core.module`](./core.module.md#module-coremodule)
 - [`core.optim`](./core.optim.md#module-coreoptim)
 - [`llutil`](./llutil.md#module-llutil)
+- [`llutil.argparser`](./llutil.argparser.md#module-llutilargparser)
 - [`llutil.config`](./llutil.config.md#module-llutilconfig)
 - [`llutil.cuda`](./llutil.cuda.md#module-llutilcuda)
 - [`llutil.modifier`](./llutil.modifier.md#module-llutilmodifier)
@@ -26,6 +27,7 @@
 
 ## Classes
 
+- [`argparser.FlexibleArgParser`](./llutil.argparser.md#class-flexibleargparser): A flexible and lightweight argument parser that saves loads of code.
 - [`cuda.CUDAModule`](./llutil.cuda.md#class-cudamodule): Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
 - [`pool.Pool`](./llutil.multiprocessing.pool.md#class-pool): Pool implementation which uses our version of SimpleQueue.
 - [`queue.ConnectionWrapper`](./llutil.multiprocessing.queue.md#class-connectionwrapper): Proxy class for _multiprocess.Connection which uses ForkingPickler to
@@ -41,6 +43,7 @@
 
 ## Functions
 
+- [`argparser.isa`](./llutil.argparser.md#function-isa): alias for python built-in ``isinstance``.
 - [`config.clone`](./llutil.config.md#function-clone): clone configurables, containers, and ordinary objects recursively.
 - [`config.configurable`](./llutil.config.md#function-configurable): This decorator delays the initialization of ``cls`` until ``freeze()``.
 - [`config.freeze`](./llutil.config.md#function-freeze): freeze configurables recursively.
