@@ -653,18 +653,19 @@ class MarkdownGenerator(object):
             }
         )
 
-        try:
-            # object module should be the same as the calling module
-            if (
-                hasattr(cls.__init__, "__module__")
-                and cls.__init__.__module__ == modname
-            ):
-                init = self.func2md(cls.__init__, clsname=clsname)
-            else:
-                init = ""
-        except (ValueError, TypeError):
-            # this happens if __init__ is outside the repo
-            init = ""
+        # try:
+        #     # object module should be the same as the calling module
+        #     if (
+        #         hasattr(cls.__init__, "__module__")
+        #         and cls.__init__.__module__ == modname
+        #     ):
+        #         init = self.func2md(cls.__init__, clsname=clsname)
+        #     else:
+        #         init = ""
+        # except (ValueError, TypeError):
+        #     # this happens if __init__ is outside the repo
+        #     init = ""
+        init = ""
 
         variables = []
         for name, obj in inspect.getmembers(
