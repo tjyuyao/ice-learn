@@ -460,7 +460,10 @@ def _doc2md(obj: Any) -> str:
         elif not line and not quote_block:
             out.append("\n\n")
         elif not line and quote_block:
-            out.append("\n>")
+            out.append("\n")
+        elif quote_block:
+            out.append("")
+            quote_block = False
         else:
             out.append("\n")
 
@@ -709,7 +712,13 @@ class MarkdownGenerator(object):
             cls, lambda a: inspect.ismethod(a) or inspect.isfunction(a)
         ):
             if (
-                not name.startswith("_")
+                (
+                    not name.startswith("_")
+                    or (
+                        name in ("__setitem__", "__getitem__")
+                        and obj.__doc__ is not None
+                    )
+                )
                 and hasattr(obj, "__module__")
                 and name not in handlers
                 # object module should be the same as the calling module

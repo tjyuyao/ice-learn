@@ -112,11 +112,11 @@ Setup the parameters for compiling a CUDA source.
 
 **Note:**
 
->
-Direct written `float` and `int` token in the source string will be substituted
-to ensure the default scalar data type matches the tensors. If you do not want
+>Direct written `float` and `int` token in the source string will be substituted
+to ensure the default scalar data type matches the tensors. If you do not want 
 this to happen, use more specific CUDA typename such as `__half`, `double`, `int16_t`, etc.
 
->
+
+
 
 

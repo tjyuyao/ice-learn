@@ -120,11 +120,11 @@ This function converts multiple existing classes to configurables.
 
 **Note:**
 
->
-This have exactly the same effects of decorate each class with `@configurable` when defining the class.
-Each class only need to be decorated once, extra calling of conversion is ignored and has no side effects.
+> This have exactly the same effects of decorate each class with `@configurable` when defining the class.
+ Each class only need to be decorated once, extra calling of conversion is ignored and has no side effects.
 
->
+
+
 
 **Example:**
 
@@ -231,12 +231,12 @@ Frozen version of the original configurable.
 
 **Note:**
 
->
-Freezing happens in-place, ignoring the returned value is safe.
-If a user wants to reuse the configuration feature, he can clone() the
+>Freezing happens in-place, ignoring the returned value is safe.
+If a user wants to reuse the configuration feature, he can clone() the 
 object before or after frozen with the same effect.
 
->
+
+
 
 **Example:**
 
