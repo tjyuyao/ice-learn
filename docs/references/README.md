@@ -9,7 +9,7 @@
 - [`api.scripts.waitfinish`](./api.scripts.waitfinish.md#module-apiscriptswaitfinish): usage: waitfinish [-h] PIDS [PIDS ...]
 - [`core`](./core.md#module-core)
 - [`core.dataset`](./core.dataset.md#module-coredataset)
-- [`core.graph`](./core.graph.md#module-coregraph)
+- [`core.graph`](./core.graph.md#module-coregraph): An executable configuration graph.
 - [`core.loss`](./core.loss.md#module-coreloss)
 - [`core.metric`](./core.metric.md#module-coremetric)
 - [`core.module`](./core.module.md#module-coremodule)
@@ -27,6 +27,16 @@
 
 ## Classes
 
+- [`graph.Counter`](./core.graph.md#class-counter)
+- [`graph.Device`](./core.graph.md#class-device)
+- [`graph.ExecutableGraph`](./core.graph.md#class-executablegraph)
+- [`graph.HyperGraph`](./core.graph.md#class-hypergraph): HyperGraph is the container for all nodes.
+- [`graph.InvalidURIError`](./core.graph.md#class-invalidurierror): An Exception raised when valid node URI is expected.
+- [`graph.Node`](./core.graph.md#class-node)
+- [`graph.NodeOutputCache`](./core.graph.md#class-nodeoutputcache)
+- [`graph.Repeat`](./core.graph.md#class-repeat)
+- [`graph.StopTask`](./core.graph.md#class-stoptask): An Exception raised to exit current task.
+- [`graph.Task`](./core.graph.md#class-task)
 - [`argparser.FlexibleArgParser`](./llutil.argparser.md#class-flexibleargparser): A flexible and lightweight argument parser that saves loads of code.
 - [`cuda.CUDAModule`](./llutil.cuda.md#class-cudamodule): Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
 - [`pool.Pool`](./llutil.multiprocessing.pool.md#class-pool): Pool implementation which uses our version of SimpleQueue.

@@ -6,14 +6,16 @@
     "ice/llutil/cuda.py": "1 | pycuda integration",
 
     "ice/core": "1 | hypergraph interface",
-    "ice/core/graph.py": "1 | HyperGraph, Node, SchedulerV1",
+    "ice/core/graph.py": "1 | HyperGraph, Node",
     "ice/core/dataset.py": "2 | DatasetNode",
     "ice/core/optim.py": "3 | Optimizer",
     "ice/core/module.py": "4 | ModuleNode",
-    "ice/core/loss.py": "5 | LossNode, SchedulerV2",
+    "ice/core/loss.py": "5 | LossNode",
     "ice/core/metric.py": "6 | MetricNode",
 
-    "ice/repro": "2, 4 | reproduction of published works",
+    "ice/extension": "2 | reproduction of published works",
 
-    "ice/api": "3 | user interface organization"
+    "ice/repro": "3 | reproduction of published works",
+
+    "ice/api": "4 | user interface organization"
 }
