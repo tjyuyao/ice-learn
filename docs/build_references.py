@@ -6,6 +6,7 @@ import importlib
 import importlib.util
 import inspect
 import os
+import dill
 import pkgutil
 import re
 import subprocess
@@ -153,7 +154,14 @@ def _get_function_signature(
                 return_type = re.sub(r"([a-zA-Z0-9_]*?\.)", "", return_type)
 
         for parameter in parameters:
+
+            # if callable(argument_split[1]):
+            # argument_split[1] = dill.source.getsource(argument_split[1]).strip()
             argument = str(parameters[parameter])
+            default = parameters[parameter].default
+            if isinstance(default, types.LambdaType):
+                argument = dill.source.getsource(default).strip()
+                # print(ast.parse(argument).body[0])
             if ignore_self and argument == "self":
                 # Ignore self
                 continue
