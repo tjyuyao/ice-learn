@@ -359,6 +359,7 @@ def _doc2md(obj: Any) -> str:
     literal_block = False
     md_code_snippet = False
     quote_block = False
+    doctest_block = False
 
     lines = doc.split("\n")
     lines.append("")
@@ -374,7 +375,8 @@ def _doc2md(obj: Any) -> str:
             line = line.replace(">>>", "")
             if not md_code_snippet:
                 line = "```python\n" + line
-        elif md_code_snippet:
+                doctest_block = True
+        elif doctest_block:
             if line.strip():
                 line = "# "+line
             else:
@@ -407,6 +409,7 @@ def _doc2md(obj: Any) -> str:
             # Code snippet is used
             if md_code_snippet:
                 md_code_snippet = False
+                doctest_block = False
             else:
                 md_code_snippet = True
 
