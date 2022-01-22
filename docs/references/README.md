@@ -63,7 +63,7 @@
 - [`config.make_configurable`](./llutil.config.md#function-make_configurable): This function converts multiple existing classes to configurables.
 - [`dictprocess.Collect`](./llutil.dictprocess.md#function-collect): a predefined DictProcessor that keep only selected entries.
 - [`dictprocess.Compose`](./llutil.dictprocess.md#function-compose): a predefined DictProcessor that composes a list of other DictProcessors together.
-- [`dictprocess.dictprocess`](./llutil.dictprocess.md#function-dictprocess):     
+- [`dictprocess.dictprocess`](./llutil.dictprocess.md#function-dictprocess): ``ice.dictprocess`` is a function decorator that convert any function into a callable DictProcessor class that would take a dict as input and update its content.
 - [`multiprocessing.called_from_main`](./llutil.multiprocessing.md#function-called_from_main): Another version of ``if __name__ == "__main__"`` that works everywhere.
 - [`multiprocessing.get_all_sharing_strategies`](./llutil.multiprocessing.md#function-get_all_sharing_strategies): Returns a set of sharing strategies supported on a current system.
 - [`multiprocessing.get_sharing_strategy`](./llutil.multiprocessing.md#function-get_sharing_strategy): Returns the current strategy for sharing CPU tensors.

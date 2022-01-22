@@ -20,16 +20,14 @@
 dictprocess(f)
 ```
 
- 
-
- ``ice.dictprocess`` is a function decorator that convert any function into a callable DictProcessor class that would take a dict as input and update its content.
- The input arguments and return values of the function are automatically mapped to source and destination the keywords of the state dict being modified.
+``ice.dictprocess`` is a function decorator that convert any function into a callable DictProcessor class that would take a dict as input and update its content.
+The input arguments and return values of the function are automatically mapped to source and destination the keywords of the state dict being modified.
 
 
- The input arguments mapping rule is simpler. A decorated DictProcessor class can specify fixed parameters at instantiation time, and dynamic parameters as state dict content at runtime.
- 
+The input arguments mapping rule is simpler. A decorated DictProcessor class can specify fixed parameters at instantiation time, and dynamic parameters as state dict content at runtime.
 
- The output arguments mapping is controlled by an extra argument at instantiation time called `dst` and the return value of the original function, may vary in different scenarios as shown in the following table:
+
+The output arguments mapping is controlled by an extra argument at instantiation time called `dst` and the return value of the original function, may vary in different scenarios as shown in the following table:
 
 
 | dst \ ret                     | `value`                               | `dict`                                                                                                                                           | `list` / `tuple`                              | `None`                       |
@@ -66,10 +64,6 @@ assert state_dict == {"a": 1, "b": 2, "c": 9}
 ```
 
 The definition of operations minimizes the boilerplate, and the configuration phase is simple and concise. All these features enables best reusability for complex data processing pipelines.
-
-
-
-
 
 
 

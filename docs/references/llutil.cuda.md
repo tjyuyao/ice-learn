@@ -13,7 +13,7 @@
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/cuda.py#L58"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/cuda.py#L65"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `CUDAModule`
 Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
@@ -41,6 +41,8 @@ Just-In-Time compilation of a set of CUDA kernel functions and device functions 
 
 
 ```python
+import ice
+
 M, N, K = 4, 4, 1
 a = torch.rand((M, K), dtype=torch.float32).cuda()
 b = torch.rand((K, N), dtype=torch.float32).cuda()
@@ -72,7 +74,7 @@ assert torch.allclose(c, torch.mm(a, b))
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/cuda.py#L97"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/cuda.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 

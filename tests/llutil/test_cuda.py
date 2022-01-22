@@ -1,6 +1,9 @@
+import pytest
 import ice
 import torch
 
+@pytest.mark.slow
+@pytest.mark.cuda
 def test_pycuda():
     M, N, K = 4, 4, 1
     a = torch.rand((M, K), dtype=torch.float32).cuda()

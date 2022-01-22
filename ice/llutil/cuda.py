@@ -3,6 +3,13 @@ import re
 from functools import wraps
 
 import numpy
+
+# According to [this link](https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated),
+# `np.bool` is a deprecated alias for the builtin `bool`. This deprecation will cause `/site-packages/pycuda/compyte/dtypes.py:122`  with code
+# `reg.get_or_register_dtype("bool", np.bool)` throwing a DeprecationWarning. We choose to use the old behavior.
+numpy.bool = bool
+
+
 import pycuda.driver as cuda
 import torch
 from pycuda.compiler import SourceModule
@@ -10,10 +17,10 @@ from pycuda.compiler import SourceModule
 from .config import configurable
 
 
-_int_regex = re.compile('\\bint\\b')
-_float_regex = re.compile('\\bfloat\\b')
-_extern_c_regex = re.compile('extern[ ]+"C"')
-_kernel_cu_regex = re.compile('kernel.cu\((?P<lineno>[0-9]+)\).*')
+_int_regex = re.compile(r'\\bint\\b')
+_float_regex = re.compile(r'\\bfloat\\b')
+_extern_c_regex = re.compile(r'extern[ ]+"C"')
+_kernel_cu_regex = re.compile(r'kernel.cu\((?P<lineno>[0-9]+)\).*')
 
 
 _MEMCHECK_ENABLER = '#define _ICE_MEMCHECK_ 1 \n'
@@ -69,6 +76,8 @@ class CUDAModule:
 
     Example:
 
+    >>> import ice
+    >>> 
     >>> M, N, K = 4, 4, 1
     >>> a = torch.rand((M, K), dtype=torch.float32).cuda()
     >>> b = torch.rand((K, N), dtype=torch.float32).cuda()
