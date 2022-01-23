@@ -35,21 +35,12 @@ freeze_and_execute(activated_graph)
 ```
 """
 
-import logging
-import os
-import time
-from argparse import Namespace
-from collections import Counter as _Counter
-from copy import deepcopy
-from inspect import signature
-from typing import Any, Callable, Dict, List, overload
 
-import torch.cuda
-import torch.distributed as dist
-from torch.autograd.grad_mode import set_grad_enabled
-from ice.llutil import multiprocessing as mp
-from ice.llutil.argparser import as_list, isa
-from ice.llutil.config import configurable
+from collections import Counter as _Counter
+
+from typing import Any, Callable, Dict, List
+
+from ice.llutil.argparser import as_list
 
 
 class InvalidURIError(Exception):
@@ -64,83 +55,13 @@ class Counter(_Counter):
 
     def __getattr__(self, key):
         try: return super()[key]
-        except KeyError: pass
-        raise AttributeError(key)
+        except KeyError: return 0
 
     def __setattr__(self, __name: str, __value: Any) -> None:
         if hasattr(super()):
             return super().__setattr__(__name, __value)
         else:
             return super().__setitem__(__name, __value)
-
-
-class Device:
-
-    def __init__(self, reprstr:str, world_size:int="") -> None:
-        """initialize Device object from string.
-
-        Attributes:
-        - device_type(str): "cuda", "cpu".
-        - device_id(int): will be 0 if not speficied or ``device_type`` is "cpu".
-        - world_size(int): will be 1 for "cpu", larger than 1 often indicates in a DDP case.
-
-        Examples:
-            The following are examples for input string, the representation string is of format ``{device_type}:{device_id}:{world_size}``.
-
-        >>> Device("cpu")
-        cpu:0:1
-
-        >>> Device("cuda")
-        cuda:0:1
-
-        >>> Device("cuda:1")
-        cuda:1:1
-
-        >>> Device("ddp", world_size=4)
-        cuda:0:4
-
-        >>> Device("ddp:0", world_size=4)
-        cuda:0:4
-
-        >>> Device("ddp:0:4")
-        cuda:0:4
-
-        Note:
-            `world_size` is optional, the maximum number of cuda devices can be detected automatically using ``torch.cuda.device_count()``.
-        """
-        idid = reprstr.find(":")
-        if -1 == idid:
-            self.device_type = reprstr
-            self.device_id = 0
-            self.world_size = int(world_size) if world_size else 1
-        else:
-            self.device_type = reprstr[:idid]
-            self.device_id = reprstr[idid+1:]
-            self.world_size = world_size
-            if self.device_id:
-                idsz = reprstr.find(":")
-                if -1 == idsz:
-                    self.device_id = int(self.device_id)
-                else:
-                    if not self.world_size:
-                        self.world_size = int(self.device_id[idsz+1:])
-                    self.device_id = int(self.device_id[:idsz])
-            else:
-                self.device_id = 0
-            if not self.world_size:
-                if self.device_type == "ddp":
-                    self.device_type = "cuda"
-                    self.world_size = torch.cuda.device_count()
-                else:
-                    self.world_size = 1
-
-        assert self.device_type in ("cuda", "cpu")
-
-    def __repr__(self) -> str:
-        return f"{self.device_type}:{self.device_id}:{self.world_size}"
-
-    def as_torch_device(self) -> str:
-        return f"{self.device_type}:{self.device_id}"
 
 
 class Node:
@@ -177,7 +98,7 @@ class Node:
 
     @property
     def device(self):
-        return self.egraph.task.device.as_torch_device()
+        return self.egraph.task.launcher.assigned_device
 
     @property
     def step_mode(self) -> bool:
@@ -279,241 +200,3 @@ class ExecutableGraph:
         self.apply("clean_up")
 
 
-class _Task:
-
-    def __init__(self, *, steps: int = 0, epochs: int = 0):
-        self.steps = steps
-        self.epochs = epochs
-
-
-@configurable
-class Task(_Task):
-
-    @overload
-    def __init__(self, *, train: bool, steps: int, tags="*"): ...
-
-    @overload
-    def __init__(self, *, train: bool, epochs: int, tags="*"): ...
-
-    def __init__(self, *, train: bool, tags="*", **kwds):
-        super().__init__(**kwds)
-        assert self.epochs == 0 or self.steps == 0
-        self.training = train
-        self.device = Device("cpu")
-        self.tags = tags
-        self.step_mode = self.epochs == 0
-
-    def __repr__(self) -> str:
-        return repr(self._config)
-
-    def __call__(self, hyper_graph: "HyperGraph", device: Device):
-        # maintain running progress.
-        hyper_graph.global_counters.tasks[self._train_str] += 1
-        hyper_graph.global_counters.epochs[self._train_str] += self.epochs
-
-        # prepare states.
-        self.device = device
-        self.egraph: ExecutableGraph = hyper_graph[self.tags]
-        self.egraph.task = self
-
-        if self.egraph is not hyper_graph.last_executed_egraph:
-            hyper_graph.last_executed_egraph.clean_up()
-            self.egraph.prepare()
-            if self.device.device_type == "cuda":
-                torch.cuda.empty_cache() # result in more precise value in `nvidia-smi`.
-        hyper_graph.last_executed_egraph = self.egraph
-
-        # run epochs: assert self.epochs == 0 or self.steps == 0
-        for _ in range(self.epochs):
-            self.egraph.apply("epoch_start")
-            while True:
-                try: self.egraph.iterate(hyper_graph)
-                except StopIteration: break
-                except StopTask: return
-            self.egraph.apply("epoch_end")
-
-        # run steps: assert self.epochs == 0 or self.steps == 0
-        for _ in range(self.steps):
-            try:
-                self.egraph.iterate(hyper_graph)
-            except StopTask: return
-
-    @property
-    def _train_str(self):
-        return "train" if self.training else "eval"
-
-
-@configurable
-class Repeat(_Task):
-
-    def __init__(self, tasks:List[_Task], times:int) -> None:
-        self.tasks = tasks
-        self.repeat = times
-        self.etasks = [deepcopy(t) for _ in range(times) for t in self.tasks]
-        super().__init__(
-            steps=sum(t.steps for t in self.etasks if isa(t, _Task)),
-            epochs=sum(t.steps for t in self.etasks if isa(t, _Task)),
-        )
-
-    def __call__(self, hyper_graph: "HyperGraph", device: Device):
-        hyper_graph._run_impl(self.etasks, device)
-
-    def __repr__(self) -> str:
-        reprstr = ",".join([repr(subtask) for subtask in self.tasks])
-        reprstr = f"[{reprstr}] * {self.repeat}"
-        return reprstr
-
-
-def _randport(start, end):
-    return time.time_ns() % (end - start) + start
-
-
-def _run_impl_ddp_wrapper(rank: int, world_size: int, master_port: str, self: "HyperGraph", tasks, extra_kwds):
-    os.environ["MASTER_ADDR"] = "localhost"
-    os.environ["MASTER_PORT"] = master_port
-    torch.cuda.set_device(rank)  # https://github.com/pytorch/pytorch/issues/21819#issuecomment-553310128
-    dist.init_process_group("nccl", rank=rank, world_size=world_size)
-    self._run_impl(tasks, device=rank, ddp_enabled=True, world_size=world_size, **extra_kwds)
-    dist.destroy_process_group()
-
-
-class HyperGraph:
-    """HyperGraph is the container for all nodes.
-    """
-
-    def __init__(self) -> None:
-        self.groups:Dict[str, ExecutableGraph] = {}
-        self.groups["*/"] = ExecutableGraph()
-        self.shortcuts:Dict[str, ExecutableGraph] = {}
-        self.global_counters = Namespace(
-            tasks = Counter(),
-            steps = Counter(),
-            epochs = Counter(),
-        )
-        self.resumed_counters = self.global_counters
-        self.last_executed_egraph = None
-
-    def add_node(self, name, node, tags="*"):
-        uris = []
-        for tag in tags:
-            as_group_name = tag.rstrip('/') + '/'
-            uris.append(as_group_name + name)
-        self[uris] = node
-
-    def run(self, tasks, device:Device="cpu"):
-        device = Device(device) if isa(device, str) else device
-        if device.device_type == "cuda" and device.world_size > 1:
-            mp_ctx:mp.ProcessContext = mp.start_processes(
-                _run_impl_ddp_wrapper,
-                args=(device.world_size, str(_randport(16894, 17194)), self, tasks),
-                nprocs=device.world_size,
-                join=False,
-                start_method="spawn",
-            )
-            while not mp_ctx.join():
-                pass
-        else:
-            self._run_impl(tasks, device)
-        time.sleep(1.)  # To avoid [Errno 104] ("Connection reset by peer") in case program switch to next call of `run()` too quickly.
-
-    def _run_impl(self, tasks, device):
-        for task in as_list(tasks):
-            if isa(task, _Task):
-                with set_grad_enabled(task.training):
-                    task(self, device)
-            elif isa(task, callable):
-                args = [x for x, _ in zip(
-                    [self, device],
-                    signature(task).parameters
-                )]
-                task(*args)
-            else:
-                logging.getLogger(__name__).warning(f"A custom task `{task}` is not callable, skipping.")
-
-
-    def __setitem__(self, key, value):
-        # assume ``key`` is a (list of) valid uri, and ``value`` is a node.
-        try:
-            for uri in as_list(key):
-                group_name, node_name = self._parse_uri(uri)
-                if not group_name in self.groups:
-                    self.groups[group_name] = ExecutableGraph()
-                self.groups[group_name][node_name] = value
-            return value
-        except InvalidURIError: pass
-
-        # assume ``key`` is group_name and ``value`` is an ExecutableGraph.
-        assert isa(key, str) and isa(value, ExecutableGraph)
-        as_group_name = key.rstrip('/') + '/'
-        self.groups[as_group_name] = value
-
-    def __getitem__(self, key):
-        # assume ``key`` is a valid uri.
-        try:
-            return self._get_node_by_uri(key)
-        except InvalidURIError: pass
-
-        # assume ``key`` is a (list of) group_name.
-        group_names = ['*/'] + [n.rstrip('/') + '/' for n in as_list(key)]
-        shortcut_key = hash(group_names)
-        if shortcut_key in self.shortcuts:
-            egraph = ExecutableGraph()
-            for group_name in group_names:
-                if group_name not in self.groups:
-                    raise KeyError(f"`{group_name}` is not a valid group name or a valid node uri.")
-                group = self.groups[group_name]
-                for node_name, node in group.items():
-                    egraph.add_node(node_name, node, group_name)
-            self.shortcuts[shortcut_key] = egraph
-        else:
-            egraph = self.shortcuts[shortcut_key]
-        return egraph
-
-    def __contains__(self, name):
-        name = name.rstrip("/")
-        as_group_name = name + '/'
-        try:
-            return self._has_node_by_uri(name)
-        except InvalidURIError:
-            pass
-        for group_name in self.groups.keys():
-            if group_name.startswith(as_group_name):
-                return True
-        for group in self.groups.values():
-            if name in group:
-                return True
-        return False
-
-    @staticmethod
-    def _parse_uri(uri):
-        """Parse a uri and return group_name and node_name.
-
-        Args:
-            uri (str): "{group_name}/{node_name}"
-
-        Returns:
-            (str, str): (group_name + "/", node_name)
-        """
-        if not isa(uri, str): raise InvalidURIError(uri)
-        idns = uri.rfind("/") + 1
-        if -1 == idns: raise InvalidURIError(uri)
-        group_name, node_name = uri[:idns], uri[idns:]
-        if 0 == len(node_name): raise InvalidURIError(uri)
-        return group_name, node_name
-
-    def _get_node_by_uri(self, uri):
-        group_name, node_name = self._parse_uri(uri)
-        return self.groups[group_name][node_name]
-
-    def _has_node_by_uri(self, uri):
-        try:
-            self._get_node_by_uri(uri)
-            return True
-        except KeyError:
-            return False
-
-    def _training_steps_resumed(self) -> bool:
-        return self.global_counters.steps["train"] >= self.resumed_counters.steps["train"]
-
-    def _training_tasks_resumed(self) -> bool:
-        return self.global_counters.tasks["train"] >= self.resumed_counters.tasks["train"]
