@@ -84,61 +84,52 @@ def _format_arg(arg):
             break
     return farg
 
+
+class ArgumentMissingError(Exception): """Raised when a required argument is missing from command line."""
+
+class ArgumentTypeError(Exception): """Raised when converting an argument failed."""
+
+
 class FlexibleArgParser:
 
     """A flexible and lightweight argument parser that saves loads of code.
     
     This module works differently compared to python built-in ``argparse`` module.
     - It accepts two types of command line arguments, i.e. positional and keyword based (options).
-    - The keyword based arguments (options) should be specified as ``key=value`` or ``key="value"``.
-    - The positional arguments can be specified same as ``argparse`` would expect.
+    - The keyword based arguments (options) should be specified as ``key=value`` or ``key="value"``. The key is case-invariant.
+    - The positional arguments is indexed directly using an integer, but this feature is not recommended.
 
-    **Example 1:**
+    Example:
 
     >>> import ice
     >>>
-    >>> # same as `python <script>.py 2 workers=4` in shell.
-    >>> ice.args.parse_args(["2", "workers=4"])
-    >>>
-    >>> # get 0-th positional argument, as int, default to 4.
-    >>> batchsize = ice.args.get(0, int, 4)  
-    >>>
-    >>> # get option named "workers", as int, default to 4.
-    >>> num_workers = ice.args.get("workers", int, 4)
-    >>>
-    >>> # Following lines have same effect but when default value is invalid will produce error converting `None` into `int`. You can set default value beforehand use ``ice.args.setdefault()`` to avoid this.
-    >>> batchsize = int(ice.args[0])
-    >>> num_workers = int(ice.args["workers"])
-    >>>
-    >>> # Following line also works, but only for keyword arguments, as integer literal is not a legal attribute name.
-    >>> num_workers = int(ice.args.workers)
-
-    **Example 2:**
-
+    >>> # same as `python <script>.py 2 k1=4` in shell.
     >>> ice.args.parse_args(["2", "k1=4"])
-    >>> assert len(ice.args) == 2
-    >>> assert 2 == ice.args.get(0, int, 4)
-    >>> assert 4 == ice.args.get("k1", int, 8)
-    >>> assert 4 == int(ice.args["k1"])
-    >>> assert 4 == int(ice.args.k1)
+    >>>
+    >>> ice.args.setdefault("k1", 8, int)  # This line is optional for this example; setdefault() generally is optional.
     >>> ice.args.setdefault("k2", 8)
+    >>>
+    >>> assert len(ice.args) == 2
+    >>> assert 2 == int(ice.args[0])  # default type is str.
+    >>> assert 4 == ice.args["k1"]  # as setdefault specified a type, here a conversion is not needed.
+    >>> assert 4 == ice.args.k1  # attribute also works.
+    >>> assert 8 == ice.args.k2  # use default value.
     >>> 
-    >>> assert 8 == int(ice.args.k2)
-    >>> 
-    >>> ice.args.setdefault("k1", 8)
-    >>> assert 4 == int(ice.args.k1)
-    >>> 
-    >>> del ice.args["k1"]
-    >>> assert "k1" not in ice.args
-    >>> ice.args.setdefault("k1", 8)
-    >>> assert "k1" in ice.args
-    >>> assert 8 == int(ice.args.k1)
-    >>> 
+    >>> ice.args["k1"] = 1
+    >>> ice.args.k3 = 1
     >>> ice.args.update(k2=0)
-    >>> ice.args.update({0: 0})
-    >>> assert 0 == ice.args.get(0, int, 4)
-    >>> assert 0 == ice.args.get("k2", int, 4)
+    >>> ice.args.update({0: -1})
+    >>> assert -1 == ice.args[0]
+    >>> assert  1 == ice.args.K1  # case-invariant
+    >>> assert  1 == ice.args["k3"]
+    >>> assert  0 == ice.args.k2
+
+    Note:
+        If you manually call `parse_args()`, call it before `setdefault()`.
+
     """
+
+    REQUIRED = "ICE.FLEXIBLE_ARGS_PARSER.REQUIRED_ARGUMENT"
 
     def __init__(self) -> None:
         self.parse_args(sys.argv[1:])
@@ -160,28 +151,12 @@ class FlexibleArgParser:
                 iarg += 1
     
     def __setitem__(self, key, value):
+        if isa(key, str): key = key.upper()
         self._args[key] = value
 
     def __getitem__(self, key):
+        if isa(key, str): key = key.upper()
         return self._args[key]
-
-    def get(self, key, type=None, value=None):
-        """get argument as ``type`` with default ``value``.
-
-        Args:
-            key (int|str): ``int`` for positional argument and ``str`` for options.
-            type (Type, optional): If specified, the type of argument stored will be casted to ``type``. Default command line arguments are ``str``s.
-            value (Any, optional): If key not found, will return ``value``. Defaults to None.
-
-        Returns:
-            type: specific argument value.
-        """
-        if key in self._args:
-            value = self._args[key]
-            if type is not None and _type(value) != type:
-                value = type(value)
-        
-        return value
 
     def __getattr__(self, attr):
         if attr == "__name__":
@@ -191,7 +166,7 @@ class FlexibleArgParser:
     def __setattr__(self, attr, item):
         return self.__setitem__(attr, item)
 
-    def setdefault(self, key, value):
+    def setdefault(self, key, default, type=None, help=""):
         """Set argument value under `key` as `value`, only if original entry does not exists.
 
         Args:
@@ -201,11 +176,12 @@ class FlexibleArgParser:
         Returns:
             original or updated value.
         """
-        try:
-            return self.__getitem__(key)
-        except KeyError:
-            self._args[key] = value
-            return value
+        if default is REQUIRED:
+            raise ArgumentTypeError(key, help)
+        elif key in self:
+            try: default = type(default)
+            except Exception: raise ArgumentTypeError(key, default, help)
+        self[key] = default
 
     def __repr__(self):
         iargs = {k: _format_arg(v) for k, v in self._args.items() if isa(k, int)}
@@ -217,15 +193,20 @@ class FlexibleArgParser:
         return len(self._args)
 
     def __delitem__(self, key):
+        if isa(key, str): key = key.upper()
         del self._args[key]
 
-    def __contains__(self, k):
-        return k in self._args
+    def __contains__(self, key):
+        if isa(key, str): key = key.upper()
+        return key in self._args
 
-    def update(self, *args, **kwargs):
-        """simillar to dict.update().
-        """
-        return self._args.update(*args, **kwargs)
+    def update(self, __dict, **kwds):
+        """simillar to dict.update()."""
+        __dict.update(kwds)
+        for k, v in __dict.items():
+            self[k] = v
 
 
 args = FlexibleArgParser()
+
+REQUIRED = args.REQUIRED
