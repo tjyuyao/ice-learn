@@ -1,6 +1,7 @@
-from ice.llutil.config import configurable, make_configurable, is_configurable, clone, freeze
-from ice.llutil import multiprocessing
-from ice.llutil.multiprocessing import called_from_main
+from ice.llutil.argparser import args, as_dict, as_list, isa
+from ice.llutil.config import (clone, configurable, freeze, is_configurable,
+                               make_configurable)
 from ice.llutil.cuda import CUDAModule
-from ice.llutil.argparser import args, isa, as_list, as_dict
+from ice.llutil.device import Device
 from ice.llutil.dictprocess import dictprocess
+from ice.llutil.multiprocessing import called_from_main

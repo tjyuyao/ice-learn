@@ -1,9 +1,11 @@
 {
     "ice/llutil": "0 | low-level utilities",
-    "ice/llutil/multiprocessing/": "0 | modified torch.multiprocessing",
-    "ice/llutil/config.py": "1 | make everything configurable",
-    "ice/llutil/dictprocess.py": "1 | dict inplace modifier",
-    "ice/llutil/cuda.py": "1 | pycuda integration",
+    "ice/llutil/device.py": ":",
+    "ice/llutil/config.py": ":",
+    "ice/llutil/argparser.py": ":",
+    "ice/llutil/multiprocessing/run.py": ":args, configurable",
+    "ice/llutil/dictprocess.py": ":args",
+    "ice/llutil/cuda.py": ":configurable",
 
     "ice/core": "1 | hypergraph interface",
     "ice/core/graph.py": "1 | HyperGraph, Node",
