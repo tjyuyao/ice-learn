@@ -3,17 +3,19 @@
 import logging
 import os
 import time
+from typing import List
 import uuid
 import random
 
 import torch
+import torch.distributed as dist
 from torch.distributed.elastic.multiprocessing.errors import record
 from torch.distributed.elastic.multiprocessing import Std
 from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
-from torch.distributed.elastic.utils.logging import get_logger
 from torch.distributed.launcher.api import LaunchConfig, launch_agent
 
 from ice.llutil.config import configurable
+from ice.llutil.logging import get_logger
 
 
 log = get_logger()
@@ -33,35 +35,53 @@ def parse_min_max_nnodes(nnodes: str):
     return min_nodes, max_nodes
 
 
-def determine_local_world_size(nproc_per_node: str):
-    try:
-        logging.info(f"Using nproc_per_node={nproc_per_node}.")
-        return int(nproc_per_node)
-    except ValueError:
-        if nproc_per_node == "cpu":
-            num_proc = os.cpu_count()
-            device_type = "cpu"
-        elif nproc_per_node == "gpu":
-            if not torch.cuda.is_available():
-                raise ValueError("Cuda is not available.")
-            device_type = "gpu"
-            num_proc = torch.cuda.device_count()
-        elif nproc_per_node == "auto":
-            if torch.cuda.is_available():
-                num_proc = torch.cuda.device_count()
-                device_type = "gpu"
-            else:
-                num_proc = os.cpu_count()
-                device_type = "cpu"
-        else:
-            raise ValueError(f"Unsupported nproc_per_node value: {nproc_per_node}")
+def parse_devices(devices: str):
 
-        log.info(
-            f"Using nproc_per_node={nproc_per_node},"
-            f" seting to {num_proc} since the instance "
-            f"has {os.cpu_count()} {device_type}"
-        )
-        return num_proc
+    # determine device type
+    if devices[:3] == "cpu" or (
+        devices[:4] == "auto" and not torch.cuda.is_available()
+    ):
+        device_type = "cpu"
+        ddp_backend = "gloo"
+    elif devices[:4] == "cuda" or (
+        devices[:4] == "auto" and torch.cuda.is_available()
+    ):
+        if not torch.cuda.is_available():
+            raise ValueError("Cuda is not available.")
+        device_type = "cuda"
+        ddp_backend = "nccl"
+    else:
+        raise ValueError(f"Unsupported devices value: {devices}")
+
+    # determine device indices
+    idid = devices.find(":")
+    if -1 == idid:
+        devices = [torch.device(device_type)]
+    else:
+        devices = []
+        for indices in devices[idid+1:].split(","):
+            if -1 == indices.find("-"):
+                s, e = indices.split("-")
+                for i in range(int(s), int(e) + 1):
+                    devices.append(torch.device(device_type, i))
+            elif indices == "*":
+                for i in range(torch.cuda.device_count()):
+                    devices.append(torch.device(device_type, i))
+            else:
+                devices.append(torch.device(device_type, int(indices)))
+        if 0 == len(devices):
+            raise ValueError("Empty devices indices.")
+    return devices, ddp_backend
+
+
+def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
+    dist.init_process_group(
+        backend=launcher.ddp_backend,
+        rank=launcher.rank,
+        world_size=launcher.world_size,
+    )
+    entrypoint(*args)
+    dist.destroy_process_group()
 
 
 @configurable
@@ -85,9 +105,10 @@ class ElasticLauncher():
 
     """
     def __init__(self,
+
         # Worker/node size related arguments.
+        devices="auto",  # devices per node, e.g.: ["auto", "cpu", "cuda", "cuda:0", "cuda:*", "auto:*", "cuda:1,3", "cuda:0-2,7"]
         nnodes="1:1",  # Number of nodes, or the range of nodes in form <minimum_nodes>:<maximum_nodes>.
-        nproc_per_node="1",  # Number of workers per node; supported values: [auto, cpu, gpu, int]
 
         # Rendezvous related arguments
         rdzv_id="none",  # User-defined group id.
@@ -130,12 +151,16 @@ class ElasticLauncher():
         assert 0 < min_nodes <= max_nodes
         assert max_restarts >= 0
 
-        nproc_per_node = determine_local_world_size(nproc_per_node)
+        self._devices, self._ddp_backend = parse_devices(devices)
+
+        nproc_per_node = len(self._devices)
+        logging.info(f"Using nproc_per_node={nproc_per_node}.")
+
         if "OMP_NUM_THREADS" not in os.environ and nproc_per_node > 1:
             log.warning(
                 f"\n***********************************************************************************\n"
                   f"Setting OMP_NUM_THREADS for each process to be {omp_num_threads} in default, to avoid your system \n"
-                  f"being overloaded, this is often not the optimal setting, please consider tuning it.\n"
+                  f"being overloaded, this is often not optimal, please consider tuning it.\n"
                   f"***********************************************************************************"
             )
             # This env variable will be passed down to the subprocesses
@@ -176,4 +201,77 @@ class ElasticLauncher():
 
     @record
     def __call__(self, entrypoint, *args):
-        launch_agent(self.config, entrypoint, list(args))
+        args = [self, entrypoint] + list(args)
+        launch_agent(self.config, _wrap, list(args))
+
+    @property
+    def devices(self) -> List[torch.device]:
+        return self._devices
+
+    @property
+    def ddp_backend(self):
+        return self._ddp_backend
+
+    #
+    # following properties should be called from the subprocesses, you can pass the launcher as argument for custom entrypoint function.
+    #
+
+    @property
+    def assigned_device(self) -> torch.device:
+        pass
+
+    @property
+    def local_rank(self):
+        return int(os.environ["LOCAL_RANK"])
+    
+    @property
+    def rank(self):
+        return int(os.environ["RANK"])
+
+    @property
+    def group_rank(self):
+        return int(os.environ["GROUP_RANK"])
+
+    @property
+    def role_rank(self):
+        return int(os.environ["ROLE_RANK"])
+
+    @property
+    def role_name(self):
+        return os.environ["ROLE_NAME"]
+    
+    @property
+    def local_world_size(self):
+        return os.environ["LOCAL_WORLD_SIZE"]
+
+    @property
+    def world_size(self):
+        return os.environ["WORLD_SIZE"]
+
+    @property
+    def group_world_size(self):
+        return os.environ["GROUP_WORLD_SIZE"]
+
+    @property
+    def role_world_size(self):
+        return os.environ["ROLE_WORLD_SIZE"]
+
+    @property
+    def master_addr(self):
+        return os.environ["MASTER_ADDR"]
+
+    @property
+    def master_port(self):
+        return os.environ["MASTER_PORT"]
+
+    @property
+    def restart_count(self):
+        return os.environ["TORCHELASTIC_RESTART_COUNT"]
+
+    @property
+    def max_restarts(self):
+        return os.environ["TORCHELASTIC_MAX_RESTARTS"]
+
+    @property
+    def rdzv_id(self):
+        return os.environ["TORCHELASTIC_RUN_ID"]
