@@ -13,6 +13,7 @@ from torch.distributed.elastic.multiprocessing.errors import record
 from torch.distributed.elastic.multiprocessing import Std
 from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
 from torch.distributed.launcher.api import LaunchConfig, launch_agent
+from ice.llutil.config import Configurable
 
 from ice.llutil.logging import get_logger
 
@@ -89,7 +90,7 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     dist.destroy_process_group()
 
 
-class ElasticLauncher():
+class ElasticLauncher(Configurable):
     """
     
     **Example:**
@@ -108,7 +109,7 @@ class ElasticLauncher():
     ```
 
     """
-    def __init__(self,
+    def __freeze__(self,
 
         # Worker/node size related arguments.
         devices="auto",  # devices per node, e.g.: ["auto", "cpu", "cuda", "cuda:0", "cuda:*", "auto:*", "cuda:1,3", "cuda:0-2,7"]

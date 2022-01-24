@@ -78,6 +78,6 @@ def worker(aobj_buffer):
 
 @pytest.mark.slow
 def test_multiprocessing():
-    launcher = ElasticLauncher(devices="auto:0,1")
+    launcher = ElasticLauncher(devices="auto:0,1").freeze()
     aobj = AClass(1, 2)
     launcher(worker, dill.dumps(aobj, byref=True))
