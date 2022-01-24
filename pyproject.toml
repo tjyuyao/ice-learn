@@ -17,6 +17,7 @@ torch = "^1.7.*"
 torchvision = "^0.11.2"
 pycuda = "^2021.1"
 multiprocess = "^0.70.12"
+PySocks = "^1.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

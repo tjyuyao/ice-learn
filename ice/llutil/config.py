@@ -7,11 +7,22 @@ def _inplace_surrogate(cls, funcname):
     backupname = "__backup" + funcname
     setattr(cls, backupname, getattr(cls, funcname, None))
     def newfunc(self, *a, **k):
-        cfg = object.__getattribute__(self, "_config")
-        if cfg._frozen:
-            value = getattr(cls, backupname)(self, *a, **k)
-        else:
-            value = getattr(cfg, funcname)(*a, **k)
+        try:
+            cfg = object.__getattribute__(self, "_config")
+            if cfg._frozen:
+                fn = getattr(cls, backupname)  # will get None instead of raise AttributeError if not hasattr(original_class, funcname), so
+                if fn is None: raise AttributeError(funcname) # we raise it manually.
+                value = fn(self, *a, **k)
+            else:
+                value = getattr(cfg, funcname)(*a, **k)
+        except AttributeError:
+            # this will only occur during unpickling, the unpickler tries to retrieve some class meta variables.
+            if funcname == "__getattribute__":
+                value = object.__getattribute__(cls, *a)
+            elif funcname == "__getattr__":
+                raise AttributeError(*a)
+            else:
+                assert False
         return value
     setattr(cls, funcname, newfunc)
 
@@ -248,6 +259,6 @@ class _Config:
         self._cls.orig__init__(self._obj, **freeze(self._kwds, deepcopy=deepcopy))
         return self._obj
 
-    def __repr__(self):
+    def __str__(self):
         kwds = ', '.join([f"{k}={repr(self._kwds[k])}" for k in self._argnames if k in self._kwds])
         return f"{self._cls.__name__}({kwds})"
