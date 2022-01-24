@@ -14,7 +14,6 @@ from torch.distributed.elastic.multiprocessing import Std
 from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
 from torch.distributed.launcher.api import LaunchConfig, launch_agent
 
-from ice.llutil.config import configurable
 from ice.llutil.logging import get_logger
 
 
@@ -56,22 +55,22 @@ def parse_devices(devices: str):
     # determine device indices
     idid = devices.find(":")
     if -1 == idid:
-        devices = [torch.device(device_type)]
+        out = [torch.device(device_type)]
     else:
-        devices = []
+        out = []
         for indices in devices[idid+1:].split(","):
-            if -1 == indices.find("-"):
+            if -1 != indices.find("-"):
                 s, e = indices.split("-")
                 for i in range(int(s), int(e) + 1):
-                    devices.append(torch.device(device_type, i))
+                    out.append(torch.device(device_type, i))
             elif indices == "*":
                 for i in range(torch.cuda.device_count()):
-                    devices.append(torch.device(device_type, i))
+                    out.append(torch.device(device_type, i))
             else:
-                devices.append(torch.device(device_type, int(indices)))
-        if 0 == len(devices):
+                out.append(torch.device(device_type, int(indices)))
+        if 0 == len(out):
             raise ValueError("Empty devices indices.")
-    return devices, ddp_backend
+    return out, ddp_backend
 
 
 def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
@@ -84,7 +83,6 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     dist.destroy_process_group()
 
 
-@configurable
 class ElasticLauncher():
     """
     
@@ -242,19 +240,19 @@ class ElasticLauncher():
     
     @property
     def local_world_size(self):
-        return os.environ["LOCAL_WORLD_SIZE"]
+        return int(os.environ["LOCAL_WORLD_SIZE"])
 
     @property
     def world_size(self):
-        return os.environ["WORLD_SIZE"]
+        return int(os.environ["WORLD_SIZE"])
 
     @property
     def group_world_size(self):
-        return os.environ["GROUP_WORLD_SIZE"]
+        return int(os.environ["GROUP_WORLD_SIZE"])
 
     @property
     def role_world_size(self):
-        return os.environ["ROLE_WORLD_SIZE"]
+        return int(os.environ["ROLE_WORLD_SIZE"])
 
     @property
     def master_addr(self):
@@ -266,11 +264,11 @@ class ElasticLauncher():
 
     @property
     def restart_count(self):
-        return os.environ["TORCHELASTIC_RESTART_COUNT"]
+        return int(os.environ["TORCHELASTIC_RESTART_COUNT"])
 
     @property
     def max_restarts(self):
-        return os.environ["TORCHELASTIC_MAX_RESTARTS"]
+        return int(os.environ["TORCHELASTIC_MAX_RESTARTS"])
 
     @property
     def rdzv_id(self):

@@ -59,14 +59,23 @@
 import os
 from ice.llutil.multiprocessing.launcher import ElasticLauncher
 
+from ice.llutil.config import configurable
+import dill
 
-def run(args):
-    local_rank = int(os.environ["LOCAL_RANK"])
-    print(local_rank, args)
+@configurable
+class AClass:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
 
+
+def run(aobjbuf):
+    aobj = dill.loads(aobjbuf)
+    aobj.freeze()
+    print(aobj.a)
+    
 
 if __name__ == "__main__":
-    launch = ElasticLauncher()
-    launch['nproc_per_node'] = 2
-    launch.freeze()
-    launch(run, lambda: 1)
+    launch = ElasticLauncher(devices="cpu:0,1")
+    aobj = AClass(1, 2)
+    launch(run, dill.dumps(aobj, byref=True))

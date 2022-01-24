@@ -1,5 +1,8 @@
+import dill
+import pytest
 import torch.nn as nn
-from ice.llutil.config import make_configurable
+from ice.llutil.config import configurable, make_configurable
+from ice.llutil.multiprocessing.launcher import ElasticLauncher
 
 make_configurable(nn.Conv2d)
 make_configurable(nn.Conv2d)
@@ -38,14 +41,13 @@ def test_clone():
 
     assert net2.padding == (2, 2)
 
-def test_decoration():
-    import ice
+@configurable
+class AClass:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
 
-    @ice.configurable
-    class AClass:
-        def __init__(self, a, b):
-            self.a = a
-            self.b = b
+def test_decoration():
     
     # partial initialization.
     i = AClass(b=0)
@@ -60,3 +62,22 @@ def test_decoration():
     # real initialization of original object.
     i.freeze()
     assert i.a == 2 and i.b == 1
+
+
+def test_pickable():
+    i = AClass(1, 2)
+    i.__reduce__()
+    buf = dill.dumps(i)
+    _ = dill.loads(buf)
+
+
+def worker(aobj_buffer):
+    aobj = dill.loads(aobj_buffer).freeze()
+    assert aobj.a == 1 and aobj.b == 2
+
+
+@pytest.mark.slow
+def test_multiprocessing():
+    launcher = ElasticLauncher(devices="auto:0,1")
+    aobj = AClass(1, 2)
+    launcher(worker, dill.dumps(aobj, byref=True))

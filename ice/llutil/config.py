@@ -210,6 +210,10 @@ def freeze(obj, deepcopy=True):
     return obj
 
 
+def objattr(obj, attrname):
+    return object.__getattribute__(obj, attrname)
+
+
 class _Config:
     """This class stores the arguments and meta informations that is needed by ``configurable`` decorator.
 
@@ -240,7 +244,7 @@ class _Config:
         return key in self._kwds
 
     def __getattr__(self, attrname):
-        reprstr = repr(self)
+        reprstr = str(self)
         if len(reprstr) > 60: reprstr = reprstr[:60] + " ... "
         raise AttributeError(f"Configurable \"{reprstr}\" is not frozen before being used.")
 
@@ -260,5 +264,5 @@ class _Config:
         return self._obj
 
     def __str__(self):
-        kwds = ', '.join([f"{k}={repr(self._kwds[k])}" for k in self._argnames if k in self._kwds])
-        return f"{self._cls.__name__}({kwds})"
+        kwds = ', '.join([f"{k}={str(objattr(self, '_kwds')[k])}" for k in objattr(self, '_argnames') if k in objattr(self, '_kwds')])
+        return f"{objattr(self, '_cls').__name__}({kwds})"
