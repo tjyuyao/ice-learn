@@ -15,16 +15,15 @@ def test_cmdline():
 def test_setget():
     ice.args.parse_args(["2", "k1=4"])
     assert len(ice.args) == 2
-    assert 2 == ice.args.get(0, int, 4)
-    assert 4 == ice.args.get("k1", int, 8)
+    assert 2 == int(ice.args[0])
     assert 4 == int(ice.args["k1"])
     assert 4 == int(ice.args.k1)
     ice.args.setdefault("k2", 8)
     
     assert 8 == int(ice.args.k2)
 
-    ice.args.setdefault("k1", 8)
-    assert 4 == int(ice.args.k1)
+    ice.args.setdefault("k1", 8, type=int)
+    assert 4 == ice.args.k1
 
     del ice.args["k1"]
     assert "k1" not in ice.args
@@ -34,8 +33,8 @@ def test_setget():
 
     ice.args.update(k2=0)
     ice.args.update({0: 0})
-    assert 0 == ice.args.get(0, int, 4)
-    assert 0 == ice.args.get("k2", int, 4)
+    assert 0 == ice.args[0]
+    assert 0 == ice.args.k2
     
 
 if __name__ == "__main__":

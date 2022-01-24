@@ -96,7 +96,7 @@ class FlexibleArgParser:
     
     This module works differently compared to python built-in ``argparse`` module.
     - It accepts two types of command line arguments, i.e. positional and keyword based (options).
-    - The keyword based arguments (options) should be specified as ``key=value`` or ``key="value"``. The key is case-invariant.
+    - The keyword based arguments (options) should be specified as ``key=value`` or ``key="value"``.
     - The positional arguments is indexed directly using an integer, but this feature is not recommended.
 
     Example:
@@ -109,7 +109,7 @@ class FlexibleArgParser:
     >>> ice.args.setdefault("k1", 8, int)  # This line is optional for this example; setdefault() generally is optional.
     >>> ice.args.setdefault("k2", 8)
     >>>
-    >>> assert len(ice.args) == 2
+    >>> assert len(ice.args) == 3
     >>> assert 2 == int(ice.args[0])  # default type is str.
     >>> assert 4 == ice.args["k1"]  # as setdefault specified a type, here a conversion is not needed.
     >>> assert 4 == ice.args.k1  # attribute also works.
@@ -120,7 +120,6 @@ class FlexibleArgParser:
     >>> ice.args.update(k2=0)
     >>> ice.args.update({0: -1})
     >>> assert -1 == ice.args[0]
-    >>> assert  1 == ice.args.K1  # case-invariant
     >>> assert  1 == ice.args["k3"]
     >>> assert  0 == ice.args.k2
 
@@ -151,11 +150,9 @@ class FlexibleArgParser:
                 iarg += 1
     
     def __setitem__(self, key, value):
-        if isa(key, str): key = key.upper()
         self._args[key] = value
 
     def __getitem__(self, key):
-        if isa(key, str): key = key.upper()
         return self._args[key]
 
     def __getattr__(self, attr):
@@ -179,9 +176,10 @@ class FlexibleArgParser:
         if default is REQUIRED:
             raise ArgumentTypeError(key, help)
         elif key in self:
-            try: default = type(default)
+            try: self[key] = type(self[key])
             except Exception: raise ArgumentTypeError(key, default, help)
-        self[key] = default
+        else:
+            self[key] = default
 
     def __repr__(self):
         iargs = {k: _format_arg(v) for k, v in self._args.items() if isa(k, int)}
@@ -193,14 +191,12 @@ class FlexibleArgParser:
         return len(self._args)
 
     def __delitem__(self, key):
-        if isa(key, str): key = key.upper()
         del self._args[key]
 
     def __contains__(self, key):
-        if isa(key, str): key = key.upper()
         return key in self._args
 
-    def update(self, __dict, **kwds):
+    def update(self, __dict={}, **kwds):
         """simillar to dict.update()."""
         __dict.update(kwds)
         for k, v in __dict.items():
