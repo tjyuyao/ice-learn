@@ -13,11 +13,12 @@ repository = 'https://github.com/tjyuyao/ice-learn'
 
 [tool.poetry.dependencies]
 python = "^3.8"
-torch = "^1.7.*"
-torchvision = "^0.11.2"
-pycuda = "^2021.1"
 multiprocess = "^0.70.12"
 PySocks = "^1.7.1"
+pycuda = {version = "^2021.1", optional = true}
+
+[tool.poetry.extras]
+pycuda = ["pycuda"]
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
