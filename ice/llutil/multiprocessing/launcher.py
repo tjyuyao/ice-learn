@@ -64,7 +64,13 @@ def parse_devices(devices: str):
                 for i in range(int(s), int(e) + 1):
                     out.append(torch.device(device_type, i))
             elif indices == "*":
-                for i in range(torch.cuda.device_count()):
+                if device_type == "cuda":
+                    device_count = torch.cuda.device_count()
+                elif device_type == "cpu":
+                    device_count = os.cpu_count()
+                else:
+                    assert False
+                for i in range(device_count):
                     out.append(torch.device(device_type, i))
             else:
                 out.append(torch.device(device_type, int(indices)))
@@ -163,7 +169,7 @@ class ElasticLauncher():
             )
             # This env variable will be passed down to the subprocesses
             os.environ["OMP_NUM_THREADS"] = str(omp_num_threads)
-        else:
+        elif "OMP_NUM_THREADS" in os.environ:
             omp_num_threads = os.environ["OMP_NUM_THREADS"]
 
         rdzv_configs = _parse_rendezvous_config(rdzv_configs)
@@ -216,7 +222,7 @@ class ElasticLauncher():
 
     @property
     def assigned_device(self) -> torch.device:
-        pass
+        return self.devices[self.local_rank]
 
     @property
     def local_rank(self):
