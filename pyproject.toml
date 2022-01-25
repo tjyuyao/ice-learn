@@ -26,6 +26,8 @@ xdoctest = "^0.15.10"
 Pygments = "^2.11.2"
 yapf = "^0.32.0"
 poethepoet = "^0.12.2"
+mkdocs = "^1.2.3"
+mkdocs-awesome-pages-plugin = "^2.6.1"
 
 [tool.poetry.scripts]
 waitfinish = 'ice.api.scripts.waitfinish:_cli'
