@@ -35,21 +35,23 @@ def parse_min_max_nnodes(nnodes: str):
     return min_nodes, max_nodes
 
 
-def parse_devices(devices: str):
+def parse_devices_and_backend(devices: str, dist_backend: str):
 
     # determine device type
     if devices[:3] == "cpu" or (
         devices[:4] == "auto" and not torch.cuda.is_available()
     ):
         device_type = "cpu"
-        ddp_backend = "gloo"
+        if dist_backend == "auto":
+            dist_backend = "gloo"
     elif devices[:4] == "cuda" or (
         devices[:4] == "auto" and torch.cuda.is_available()
     ):
         if not torch.cuda.is_available():
             raise ValueError("Cuda is not available.")
         device_type = "cuda"
-        ddp_backend = "nccl"
+        if dist_backend == "auto":
+            dist_backend = "nccl"
     else:
         raise ValueError(f"Unsupported devices value: {devices}")
 
@@ -77,12 +79,14 @@ def parse_devices(devices: str):
                 out.append(torch.device(device_type, int(indices)))
         if 0 == len(out):
             raise ValueError("Empty devices indices.")
-    return out, ddp_backend
+        if dist_backend == "nccl" and len(set(out)) != len(out):
+            dist_backend = "gloo"
+    return out, dist_backend
 
 
 def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     dist.init_process_group(
-        backend=launcher.ddp_backend,
+        backend=launcher.dist_backend,
         rank=launcher.rank,
         world_size=launcher.world_size,
     )
@@ -114,6 +118,7 @@ class ElasticLauncher(Configurable):
         # Worker/node size related arguments.
         devices="auto",  # devices per node, e.g.: ["auto", "cpu", "cuda", "cuda:0", "cuda:*", "auto:*", "cuda:1,3", "cuda:0-2,7"]
         nnodes="1:1",  # Number of nodes, or the range of nodes in form <minimum_nodes>:<maximum_nodes>.
+        dist_backend="auto",  # supports: ["nccl", "gloo", "mpi", "auto"]. If given "auto", will use "nccl" for "cuda" and "gloo" for "cpu" in general.
 
         # Rendezvous related arguments
         rdzv_id="none",  # User-defined group id.
@@ -156,7 +161,7 @@ class ElasticLauncher(Configurable):
         assert 0 < min_nodes <= max_nodes
         assert max_restarts >= 0
 
-        self._devices, self._ddp_backend = parse_devices(devices)
+        self._devices, self._dist_backend = parse_devices_and_backend(devices, dist_backend)
 
         nproc_per_node = len(self._devices)
         logging.info(f"Using nproc_per_node={nproc_per_node}.")
@@ -214,8 +219,8 @@ class ElasticLauncher(Configurable):
         return self._devices
 
     @property
-    def ddp_backend(self):
-        return self._ddp_backend
+    def dist_backend(self):
+        return self._dist_backend
 
     #
     # following properties should be called from the subprocesses, you can pass the launcher as argument for custom entrypoint function.

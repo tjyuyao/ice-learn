@@ -2,7 +2,7 @@ import dill
 import pytest
 import torch.nn as nn
 from ice.llutil.config import configurable, make_configurable
-from ice.llutil.multiprocessing.launcher import ElasticLauncher
+from ice.llutil.launcher import ElasticLauncher
 
 make_configurable(nn.Conv2d)
 make_configurable(nn.Conv2d)
