@@ -3,7 +3,7 @@
     "ice/llutil/config.py": "1 | configurable",
     "ice/llutil/argparser.py": "2 | args",
     "ice/llutil/dictprocess.py": "3 | dict inplace processor",
-    "ice/llutil/cuda.py": "4 | PyCUDA support",
+    "ice/llutil/pycuda.py": "4 | PyCUDA support",
     "ice/llutil/multiprocessing": "5 | modified torch.multiprocessing",
     "ice/llutil/launcher.py": "5 | ElasticLauncher",
 

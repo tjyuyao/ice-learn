@@ -2,6 +2,7 @@ import pytest
 import torch
 import torch.distributed as dist
 from ice.llutil.launcher import ElasticLauncher
+import ice
 
 
 def sum_rank(launcher: ElasticLauncher):
@@ -17,13 +18,13 @@ def test_sum_rank():
     launcher(sum_rank, launcher)
 
 
-@pytest.mark.cuda
-def test_sum_rank_cuda():
+@ice.test.requires_n_gpus(2)
+def test_multi_gpu():
     launcher = ElasticLauncher(devices="cuda:0,1").freeze()
     launcher(sum_rank, launcher)
 
 
-@pytest.mark.cuda
-def test_same_gpu():
+@ice.test.requires_cuda
+def test_single_gpu():
     launcher = ElasticLauncher(devices="cuda:0,0").freeze()
     launcher(sum_rank, launcher)

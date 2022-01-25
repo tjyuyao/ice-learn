@@ -1,0 +1,6 @@
+import torch
+import pytest
+
+requires_cuda = pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda not available")
+
+requires_n_gpus = lambda n: pytest.mark.skipif(torch.cuda.device_count() < n, reason=f"need {n} gpus")
