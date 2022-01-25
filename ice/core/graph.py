@@ -36,11 +36,10 @@ freeze_and_execute(activated_graph)
 """
 
 
-from collections import Counter as _Counter
-
 from typing import Any, Callable, Dict, List
 
 from ice.llutil.argparser import as_list
+from ice.llutil.config import Configurable
 
 
 class InvalidURIError(Exception):
@@ -51,17 +50,7 @@ class StopTask(Exception):
     """An Exception raised to exit current task."""
 
 
-class Counter(_Counter):
 
-    def __getattr__(self, key):
-        try: return super()[key]
-        except KeyError: return 0
-
-    def __setattr__(self, __name: str, __value: Any) -> None:
-        if hasattr(super()):
-            return super().__setattr__(__name, __value)
-        else:
-            return super().__setitem__(__name, __value)
 
 
 class Node:

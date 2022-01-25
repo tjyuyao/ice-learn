@@ -4,12 +4,13 @@ from inspect import signature
 from typing import Dict, List, overload
 
 import torch.cuda
-from ice.core.graph import Counter, ExecutableGraph, InvalidURIError, StopTask
+from ice.core.graph import ExecutableGraph, InvalidURIError, StopTask
 from ice.llutil.argparser import as_list, isa
+from ice.llutil.collections import Counter
 from ice.llutil.config import configurable
+from ice.llutil.launcher import ElasticLauncher
 from ice.llutil.logging import get_logger
 from ice.llutil.multiprocessing import called_from_main
-from ice.llutil.launcher import ElasticLauncher
 from torch.autograd.grad_mode import set_grad_enabled
 
 
