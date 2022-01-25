@@ -1,0 +1,13 @@
+site_name: ice-learn
+site_url: https://example.com/
+repo_url: https://github.com/tjyuyao/ice-learn/
+site_description: This site is the documentation for ice-learn, yet another high-level deep learning library based on pytorch and pycuda.
+site_author: Yuyao Huang
+copyright: Copyright (c) 2022 Yuyao Huang
+
+plugins:
+    - search
+    - awesome-pages
+
+theme:
+  name: material

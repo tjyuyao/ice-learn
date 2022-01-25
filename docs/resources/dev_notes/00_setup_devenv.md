@@ -1,4 +1,4 @@
-# Setup environment for developing ice
+# Setup Environment
 
 We use `poetry` as the virtualenv as well as project manager (e.g. dependencies, packaging, publishing, etc.).
 

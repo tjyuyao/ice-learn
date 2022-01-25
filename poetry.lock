@@ -199,6 +199,30 @@ mkdocs = ">=1"
 wcmatch = ">=7"
 
 [[package]]
+name = "mkdocs-material"
+version = "8.1.8"
+description = "A Material Design theme for MkDocs"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+jinja2 = ">=2.11.1"
+markdown = ">=3.2"
+mkdocs = ">=1.2.3"
+mkdocs-material-extensions = ">=1.0"
+pygments = ">=2.10"
+pymdown-extensions = ">=9.0"
+
+[[package]]
+name = "mkdocs-material-extensions"
+version = "1.0.3"
+description = "Extension pack for Python Markdown."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "multiprocess"
 version = "0.70.12.2"
 description = "better multiprocessing and multithreading in python"
@@ -291,6 +315,17 @@ description = "Pygments is a syntax highlighting package written in Python."
 category = "dev"
 optional = false
 python-versions = ">=3.5"
+
+[[package]]
+name = "pymdown-extensions"
+version = "9.1"
+description = "Extension pack for Python Markdown."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Markdown = ">=3.2"
 
 [[package]]
 name = "pyparsing"
@@ -464,7 +499,7 @@ pycuda = ["pycuda"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "d18403ff4957591a1a6fd7f0f7d19bf766f8c59ad6c0626eafb1064cc35cf365"
+content-hash = "dee5d9610814a4d4a74203d99020a38b722e7493ea07c870d6776118b02415dc"
 
 [metadata.files]
 appdirs = [
@@ -602,6 +637,14 @@ mkdocs-awesome-pages-plugin = [
     {file = "mkdocs-awesome-pages-plugin-2.6.1.tar.gz", hash = "sha256:8f2f803a3d4a2cd2e290644b1b8c54cf2ae942db9ce91021c2ba858a991a3a8a"},
     {file = "mkdocs_awesome_pages_plugin-2.6.1-py3-none-any.whl", hash = "sha256:43994aedadca881088e5d6bb420140a73ce517ca3e070972715f93b086c9c497"},
 ]
+mkdocs-material = [
+    {file = "mkdocs-material-8.1.8.tar.gz", hash = "sha256:7698b59e09640fb0ae47f4ec426f327f7cbe729386b1cdbbb65ac77bc2a95b45"},
+    {file = "mkdocs_material-8.1.8-py2.py3-none-any.whl", hash = "sha256:e8adc408c620e5fa23286e7fbfde3ccd37187fbda907a64594c36dbcd119a9ce"},
+]
+mkdocs-material-extensions = [
+    {file = "mkdocs-material-extensions-1.0.3.tar.gz", hash = "sha256:bfd24dfdef7b41c312ede42648f9eb83476ea168ec163b613f9abd12bbfddba2"},
+    {file = "mkdocs_material_extensions-1.0.3-py3-none-any.whl", hash = "sha256:a82b70e533ce060b2a5d9eb2bc2e1be201cf61f901f93704b4acf6e3d5983a44"},
+]
 multiprocess = [
     {file = "multiprocess-0.70.12.2-cp27-cp27m-macosx_10_12_x86_64.whl", hash = "sha256:35d41e410ca2a32977a483ae1f40f86b193b45cecf85567c2fae402fb8bf172e"},
     {file = "multiprocess-0.70.12.2-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:9a02237eae21975155c816883479f72e239d16823a6bc063173d59acec9bcf41"},
@@ -667,6 +710,10 @@ pycuda = [
 pygments = [
     {file = "Pygments-2.11.2-py3-none-any.whl", hash = "sha256:44238f1b60a76d78fc8ca0528ee429702aae011c265fe6a8dd8b63049ae41c65"},
     {file = "Pygments-2.11.2.tar.gz", hash = "sha256:4e426f72023d88d03b2fa258de560726ce890ff3b630f88c21cbb8b2503b8c6a"},
+]
+pymdown-extensions = [
+    {file = "pymdown-extensions-9.1.tar.gz", hash = "sha256:74247f2c80f1d9e3c7242abe1c16317da36c6f26c7ad4b8a7f457f0ec20f0365"},
+    {file = "pymdown_extensions-9.1-py3-none-any.whl", hash = "sha256:b03e66f91f33af4a6e7a0e20c740313522995f69a03d86316b1449766c473d0e"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.7-py3-none-any.whl", hash = "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"},

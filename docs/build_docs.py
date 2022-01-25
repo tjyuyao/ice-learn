@@ -1124,17 +1124,11 @@ def generate_docs(
             watermark=watermark,
         )
 
-        # Write mkdocs pages file
-        print("Writing mkdocs .pages file.")
-        # TODO: generate navigation items to fix problem with naming
-        with open(os.path.join(output_path, ".pages"), "w") as f:
-            f.write(_MKDOCS_PAGES_TEMPLATE.format(overview_file=overview_file))
-
 
 if __name__ == "__main__":
     generate_docs(
         paths=["ice"],
-        output_path="./docs/references/",
+        output_path="./docs/documents/",
         src_base_url="https://github.com/tjyuyao/ice-learn/blob/main/",
         remove_package_prefix=True,
         ignored_modules=[],

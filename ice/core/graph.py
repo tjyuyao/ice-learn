@@ -50,9 +50,6 @@ class StopTask(Exception):
     """An Exception raised to exit current task."""
 
 
-
-
-
 class Node:
 
     def __init__(self,

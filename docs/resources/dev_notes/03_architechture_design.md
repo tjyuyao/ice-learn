@@ -1,9 +1,9 @@
-# Overall Architecture Design Notes
+# The Folder Structure
 
 - `llutil` for Low-Level Utilities that supports the most fundamental mechanisms.
-  - `multiprocessing` enables cross-processes communication for tensors, lambdas and closures.
-  - `config` converts every class into a `configurable`.
-  - `modifier` defines a tool for pipeline operation, useful in dataset transform and learning rate update, etc.
+    - `multiprocessing` enables cross-processes communication for tensors, lambdas and closures.
+    - `config` converts every class into a `configurable`.
+    - `modifier` defines a tool for pipeline operation, useful in dataset transform and learning rate update, etc.
 
 - `core` implements the kernel hyper-graph architecture for scheduling multitasks and experiments.
 
