@@ -28,4 +28,4 @@ def test_pycuda():
     kernels.matmul(a, b, c, M, N, K, grid=(N // 32 + 1, M // 32 + 1), block=(32, 32, 1))
 
     torch.cuda.synchronize()
-    assert torch.allclose(c, torch.mm(a, b))
+    assert torch.allclose(c, torch.mm(a, b), atol=1e-3)
