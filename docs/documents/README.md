@@ -4,7 +4,7 @@
 
 ## Modules
 
-- [`api.scripts.waitfinish`](./api.scripts.waitfinish.md#module-apiscriptswaitfinish): usage: waitfinish [-h] PIDS [PIDS ...]
+- [`api.scripts.wait_process`](./api.scripts.wait_process.md#module-apiscriptswait_process): wait for a process to finish.
 - [`core.graph`](./core.graph.md#module-coregraph)
 - [`core.hypergraph`](./core.hypergraph.md#module-corehypergraph)
 - [`llutil.argparser`](./llutil.argparser.md#module-llutilargparser): This module provides helper functions for commonly used argument processing for functions, 

@@ -1,5 +1,6 @@
-"""
-usage: waitfinish [-h] PIDS [PIDS ...]
+"""wait for a process to finish.
+
+usage: wait_process [-h] PIDS [PIDS ...]
 
 This command just blocks until all processes specified in PIDS exits.
 

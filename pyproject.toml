@@ -32,7 +32,7 @@ mkdocs-material = "^8.1.8"
 python-markdown-math = "^0.8"
 
 [tool.poetry.scripts]
-waitfinish = 'ice.api.scripts.waitfinish:_cli'
+wait_process = 'ice.api.scripts.wait_process:_cli'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
