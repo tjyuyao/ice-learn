@@ -109,7 +109,7 @@ An Exception raised to exit current task.
 
 #### <kbd>property</kbd> name
 
-Returns the node name in the current activated ``ExecutableGraph``.
+Returns the node name in the current activated [`ExecutableGraph`](./core.graph.md#class-executablegraph).
 
 
 
@@ -146,7 +146,7 @@ Returns the node name in the current activated ``ExecutableGraph``.
 
 #### <kbd>property</kbd> uris
 
-Returns the node URIs in the current ``HyperGraph``.
+Returns the node URIs in the current [`HyperGraph`](./core.hypergraph.md#class-hypergraph).
 
 
 
@@ -329,7 +329,7 @@ update()
 __getitem__(name)
 ```
 
-Execute node with name ``name`` if not executed, return the last executed cache else.
+Execute node with name `name` if not executed, return the last executed cache else.
 
 
 
@@ -344,7 +344,7 @@ Execute node with name ``name`` if not executed, return the last executed cache 
 clear()
 ```
 
-Clear the cache, next calls to ``__getitem__`` will recalculate.
+Clear the cache, next calls to `__getitem__` will recalculate.
 
 
 

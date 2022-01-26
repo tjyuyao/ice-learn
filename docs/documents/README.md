@@ -65,9 +65,9 @@
 
 - [`argparser.as_dict`](./llutil.argparser.md#function-as_dict): Helper function: regularize input into a dict.
 - [`argparser.as_list`](./llutil.argparser.md#function-as_list): Helper function: regularize input into list of element.
-- [`argparser.isa`](./llutil.argparser.md#function-isa): Helper function: alias for python built-in ``isinstance``.
+- [`argparser.isa`](./llutil.argparser.md#function-isa): Helper function: alias for python built-in `isinstance`.
 - [`config.clone`](./llutil.config.md#function-clone): clone configurables, containers, and ordinary objects recursively.
-- [`config.configurable`](./llutil.config.md#function-configurable): This decorator delays the initialization of ``cls`` until ``freeze()``.
+- [`config.configurable`](./llutil.config.md#function-configurable): This decorator delays the initialization of `cls` until ``freeze()``.
 - [`config.freeze`](./llutil.config.md#function-freeze): freeze configurables recursively.
 - [`config.has_builder`](./llutil.config.md#function-has_builder)
 - [`config.is_configurable`](./llutil.config.md#function-is_configurable): check if a class or an object is configurable.
@@ -92,6 +92,6 @@
 - [`reductions.reduce_storage`](./llutil.multiprocessing.reductions.md#function-reduce_storage)
 - [`reductions.reduce_tensor`](./llutil.multiprocessing.reductions.md#function-reduce_tensor)
 - [`reductions.storage_from_cache`](./llutil.multiprocessing.reductions.md#function-storage_from_cache)
-- [`spawn.spawn`](./llutil.multiprocessing.spawn.md#function-spawn): Spawns ``nprocs`` processes that run ``fn`` with ``args``.
+- [`spawn.spawn`](./llutil.multiprocessing.spawn.md#function-spawn): Spawns `nprocs` processes that run `fn` with `args`.
 - [`spawn.start_processes`](./llutil.multiprocessing.spawn.md#function-start_processes)
 - [`test.requires_n_gpus`](./llutil.test.md#function-requires_n_gpus)

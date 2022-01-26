@@ -19,7 +19,7 @@
 Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
 
 
-``ice.CUDAModule`` works differently compared to pycuda's ``SourceModule`` in following ways:
+``ice.CUDAModule`` works differently compared to pycuda's `SourceModule` in following ways:
 
 
 

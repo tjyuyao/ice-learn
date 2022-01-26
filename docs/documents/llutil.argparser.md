@@ -24,7 +24,7 @@ argument parser is accessable via ``ice.args``.
 isa(obj, types)
 ```
 
-Helper function: alias for python built-in ``isinstance``.
+Helper function: alias for python built-in `isinstance`.
 
 
 
@@ -83,8 +83,8 @@ as_dict(maybe_element, key)
 Helper function: regularize input into a dict.
 
 
-if ``maybe_element`` is not a dict, will return a dict with single
-key as ``{key:maybe_element}``, else will return ``maybe_element``.
+if `maybe_element` is not a dict, will return a dict with single
+key as ``{key:maybe_element}``, else will return `maybe_element`.
 
 
 
@@ -155,7 +155,7 @@ Raised when converting an argument failed.
 A flexible and lightweight argument parser that saves loads of code.
 
 
-This module works differently compared to python built-in ``argparse`` module.
+This module works differently compared to python built-in `argparse` module.
 
 - It accepts two types of command line arguments, i.e. positional and keyword based (options).
 

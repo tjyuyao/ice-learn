@@ -44,7 +44,7 @@ start_processes(
 spawn(fn, args=(), nprocs=1, join=True, daemon=False, start_method='spawn')
 ```
 
-Spawns ``nprocs`` processes that run ``fn`` with ``args``.
+Spawns `nprocs` processes that run `fn` with `args`.
 
 
 If one of the processes exits with a non-zero exit status, the
@@ -65,13 +65,13 @@ the exception raised in the parent process.
  is a requirement imposed by multiprocess.
 
 
- The function is called as ``fn(i, *args)``, where ``i`` is
- the process index and ``args`` is the passed through tuple
+ The function is called as ``fn(i, *args)``, where `i` is
+ the process index and `args` is the passed through tuple
  of arguments.
 
 
 
- - <b>`args`</b> (tuple):  Arguments passed to ``fn``.
+ - <b>`args`</b> (tuple):  Arguments passed to `fn`.
 
  - <b>`nprocs`</b> (int):  Number of processes to spawn.
 
@@ -80,7 +80,7 @@ the exception raised in the parent process.
  - <b>`daemon`</b> (bool):  The spawned processes' daemon flag. If set to True,
  daemonic processes will be created.
 
- - <b>`start_method`</b> (string):  (deprecated) this method will always use ``spawn``
+ - <b>`start_method`</b> (string):  (deprecated) this method will always use [`spawn`](./llutil.multiprocessing.spawn.md#function-spawn)
  as the start method. To use a different start method
  use ``start_processes()``.
 
@@ -89,9 +89,9 @@ the exception raised in the parent process.
 
 **Returns:**
 
-None if ``join`` is ``True``,
+None if `join` is `True`,
 
- - <b>`:class`</b>: `~ProcessContext` if ``join`` is ``False``
+ - <b>`:class`</b>: `~ProcessContext` if `join` is `False`
 
 
 
@@ -172,8 +172,8 @@ kills the remaining processes and raises an exception with the cause
 of the first process exiting.
 
 
-Returns ``True`` if all processes have been joined successfully,
-``False`` if there are more processes that need to be joined.
+Returns `True` if all processes have been joined successfully,
+`False` if there are more processes that need to be joined.
 
 
 
@@ -233,8 +233,8 @@ kills the remaining processes and raises an exception with the cause
 of the first process exiting.
 
 
-Returns ``True`` if all processes have been joined successfully,
-``False`` if there are more processes that need to be joined.
+Returns `True` if all processes have been joined successfully,
+`False` if there are more processes that need to be joined.
 
 
 

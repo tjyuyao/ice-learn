@@ -20,7 +20,7 @@
 configurable(cls)
 ```
 
-This decorator delays the initialization of ``cls`` until ``freeze()``.
+This decorator delays the initialization of `cls` until ``freeze()``.
 
 
 
@@ -222,8 +222,8 @@ freeze configurables recursively.
 
 
 **Freezing** is the process of building the configuration into real objects.
-Original `__init__()` functions of configurable classes declared by ``configurable``
-or ``make_configurable`` now will be called recursively to initialize the real instance,
+Original `__init__()` functions of configurable classes declared by [`configurable`](./llutil.config.md#function-configurable)
+or [`make_configurable`](./llutil.config.md#function-make_configurable) now will be called recursively to initialize the real instance,
 also known as the frozen version of a configurable.
 
 
@@ -257,7 +257,7 @@ object before or after frozen with the same effect.
 
 **Example:**
 
-See examples for ``configurable`` and ``clone``.
+See examples for [`configurable`](./llutil.config.md#function-configurable) and [`clone`](./llutil.config.md#function-clone).
 
 
 

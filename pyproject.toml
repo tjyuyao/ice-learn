@@ -29,6 +29,7 @@ poethepoet = "^0.12.2"
 mkdocs = "^1.2.3"
 mkdocs-awesome-pages-plugin = "^2.6.1"
 mkdocs-material = "^8.1.8"
+python-markdown-math = "^0.8"
 
 [tool.poetry.scripts]
 waitfinish = 'ice.api.scripts.waitfinish:_cli'

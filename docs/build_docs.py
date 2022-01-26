@@ -29,6 +29,9 @@ _RE_ARGSTART = re.compile(r"(.{1,}?):(.{2,})", re.IGNORECASE)
 
 _IGNORE_GENERATION_INSTRUCTION = "lazydocs: ignore"
 
+_RE_CROSSREF = re.compile(r"``([a-zA-Z_][a-zA-Z0-9_]*)``")
+
+
 # String templates
 
 _SOURCE_BADGE_TEMPLATE = """
@@ -202,43 +205,6 @@ def _order_by_line_nos(objs: Any, line_nos: List[int]) -> List[str]:
     """Orders the set of `objs` by `line_nos`."""
     ordering = sorted(range(len(line_nos)), key=line_nos.__getitem__)
     return [objs[i] for i in ordering]
-
-
-def to_md_file(
-    markdown_str: str,
-    filename: str,
-    out_path: str = ".",
-    watermark: bool = True,
-    disable_markdownlint: bool = True,
-) -> None:
-    """Creates an API docs file from a provided text.
-
-    Args:
-        markdown_str (str): Markdown string with line breaks to write to file.
-        filename (str): Filename without the .md
-        watermark (bool): If `True`, add a watermark with a timestamp to bottom of the markdown files.
-        disable_markdownlint (bool): If `True`, an inline tag is added to disable markdownlint for this file.
-        out_path (str): The output directory
-    """
-    if not markdown_str:
-        # Dont write empty files
-        return
-
-    md_file = filename
-    if not filename.endswith(".md"):
-        md_file = filename + ".md"
-
-    if disable_markdownlint:
-        markdown_str = "<!-- markdownlint-disable -->\n" + markdown_str
-
-    if watermark:
-        markdown_str += _WATERMARK_TEMPLATE.format(
-            date=datetime.date.today().strftime("%d %b %Y")
-        )
-
-    print("Writing {}.".format(md_file))
-    with open(os.path.join(out_path, md_file), "w", encoding="utf-8") as f:
-        f.write(markdown_str)
 
 
 def _code_snippet(snippet: str) -> str:
@@ -501,6 +467,9 @@ class MarkdownGenerator(object):
 
         self.generated_objects: List[Dict] = []
 
+        self.cross_refs = {}
+        self.buffers = {}
+
     def _get_src_path(self, obj: Any, append_base: bool = True) -> str:
         """Creates a src path string with line info for use as markdown link.
 
@@ -761,6 +730,23 @@ class MarkdownGenerator(object):
         Returns:
             str: Markdown documentation for selected module.
         """
+
+        # register for cross_ref
+        for name, item in inspect.getmembers(module):
+            try:
+                module_name = inspect.getmodule(item).__name__.replace("ice.", "")
+                if -1 == inspect.getabsfile(item).find("/ice/"): continue
+            except: continue
+            if inspect.isfunction(item):
+                self.cross_refs[name] = f"./{module_name}.md#function-{name.lower()}"
+            if inspect.isclass(item):
+                self.cross_refs[name] = f"./{module_name}.md#class-{name.lower()}"
+                for name_1, item_1 in inspect.getmembers(item):
+                    if inspect.ismethod(item_1):
+                        self.cross_refs[f"{name}.{name_1}"] = f"./{module_name}.md#method-{name_1.lower()}"
+                    if isinstance(item_1, property):
+                        self.cross_refs[f"{name}.{name_1}"] = f"./{module_name}.md#property-{name_1.lower()}"
+
         if _is_object_ignored(module):
             # The module is ignored from generation
             return ""
@@ -919,6 +905,59 @@ class MarkdownGenerator(object):
             modules=modules_md, classes=classes_md, functions=functions_md
         )
 
+    def to_md_file(
+        self,
+        markdown_str: str,
+        filename: str,
+        out_path: str = ".",
+        watermark: bool = True,
+        disable_markdownlint: bool = True,
+    ) -> None:
+        """Creates an API docs file from a provided text.
+
+        Args:
+            markdown_str (str): Markdown string with line breaks to write to file.
+            filename (str): Filename without the .md
+            watermark (bool): If `True`, add a watermark with a timestamp to bottom of the markdown files.
+            disable_markdownlint (bool): If `True`, an inline tag is added to disable markdownlint for this file.
+            out_path (str): The output directory
+        """
+        if not markdown_str:
+            # Dont write empty files
+            return
+
+        md_file = filename
+        if not filename.endswith(".md"):
+            md_file = filename + ".md"
+
+        if disable_markdownlint:
+            markdown_str = "<!-- markdownlint-disable -->\n" + markdown_str
+
+        if watermark:
+            markdown_str += _WATERMARK_TEMPLATE.format(
+                date=datetime.date.today().strftime("%d %b %Y")
+            )
+
+        self.buffers[os.path.join(out_path, md_file)] = markdown_str
+
+    
+    def sub_cross_ref(self, match:re.Match):
+        identifier = match.group(1)
+        key = identifier.replace("ice.", "").replace("llutil.", "").replace("core.", "").replace("api.", "")
+        if key in self.cross_refs:
+            identifier = f"[`{identifier}`]({self.cross_refs[key]})"
+        else:
+            identifier = f"`{identifier}`"
+        return identifier
+
+    def flush(
+        self
+    ):
+        for filepath, markdown_str in self.buffers.items():
+            markdown_str = _RE_CROSSREF.sub(self.sub_cross_ref, markdown_str)
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(markdown_str)
+
 
 def generate_docs(
     paths: List[str],
@@ -1010,7 +1049,7 @@ def generate_docs(
                     if stdout_mode:
                         print(module_md)
                     else:
-                        to_md_file(
+                        generator.to_md_file(
                             module_md,
                             mod.__name__,
                             out_path=output_path,
@@ -1043,7 +1082,7 @@ def generate_docs(
                 if stdout_mode:
                     print(module_md)
                 else:
-                    to_md_file(
+                    generator.to_md_file(
                         module_md,
                         module_name,
                         out_path=output_path,
@@ -1090,7 +1129,7 @@ def generate_docs(
                             if stdout_mode:
                                 print(module_md)
                             else:
-                                to_md_file(
+                                generator.to_md_file(
                                     module_md,
                                     mod.__name__,
                                     out_path=output_path,
@@ -1107,7 +1146,7 @@ def generate_docs(
                     if stdout_mode:
                         print(import_md)
                     else:
-                        to_md_file(
+                        generator.to_md_file(
                             import_md, path, out_path=output_path, watermark=watermark
                         )
             else:
@@ -1117,12 +1156,14 @@ def generate_docs(
         if not overview_file.endswith(".md"):
             overview_file = overview_file + ".md"
 
-        to_md_file(
+        generator.to_md_file(
             generator.overview2md(),
             overview_file,
             out_path=output_path,
             watermark=watermark,
         )
+
+    generator.flush()
 
 
 if __name__ == "__main__":
