@@ -3,52 +3,8 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `core.graph`
-An executable configuration graph.
 
 
-
-
-**Note:**
-
-> We describe the concept of this core module in following few lines and show some pesudo-codes. This is very close to but not the same as the real code.
-
-
-An acyclic directed hypergraph $G$ consists of a set of vertices $V$ and a set of hyperarcs $H$, where a hyperarc is a pair $<X, Y>$ , $X$ and $Y$ non empty subset of $V$.
-
-
-We have a tag system that split the vertices $V$ into maybe overlapping subsets $V_i$, that each of which is a degenerated hypergraph $G_i$ that only consists of vertices $V_i$ and a set of hyperarcs $H_i$ so that each hyperarc is a pair $<x, Y>$, where $x \in V_i$ and $Y \subset V_i$. We call tails $x$ as producers and heads $Y$ as consumers in each hyperarc, this states the dependencies.
-
-
-User defines a vertice (`Node` in the code) by specify a computation process $f$ (`forward` in the code) and the resources $R$ (`Dataset`s, `nn.Module`s, imperatively programmed function definitions such as losses and metrics, etc.) needed by it.
-
-
-```python
-vertice_1 = Node(
-     name = "consumer_node_name",
-     resources = ...,
-     forward = lambda n, x: do_something_with(n.resources, x["producer_node_name"]),
-     tags = ["group1", "group2"],
-)
-```
-
-
-A longer version of `forward` parameter that corresponds to the previous notation would be `forward = lambda self, V_i: do_something_with(self.resources, V_i["x"])`,  but we will stick to the shorter version in the code.
-
-
-So at the time of configuration, we are able to define every material as a node, and the name of nodes can be duplicated, i.e. multiple $x\in V$ can have the same identifier, as long as they does not have the same tag $i$ that selects $V_i$. The tags mechanism is flexible. Every node can have multiple of them, and multiple tags can be specified so that a union of subsets will be retrieved. If no tag is specified for a node, a default tag `*` will be used and a retrival will always include the `*` group.
-
-
-```python
-hyper_graph = HyperGraph([
-     vertice_1,
-     vertice_2,
-     ...,
-     vertice_n,
-])
-
-activated_graph = hyper_graph["group1", "group3", "group5"]
-freeze_and_execute(activated_graph)
-```
 
 
 
@@ -57,7 +13,7 @@ freeze_and_execute(activated_graph)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L45"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L7"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `InvalidURIError`
 An Exception raised when valid node URI is expected.
@@ -71,7 +27,7 @@ An Exception raised when valid node URI is expected.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L49"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L11"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `StopTask`
 An Exception raised to exit current task.
@@ -85,7 +41,7 @@ An Exception raised to exit current task.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L15"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Node`
 
@@ -114,14 +70,6 @@ Returns the node name in the current activated [`ExecutableGraph`](./core.graph.
 
 
 
-**Returns:**
-
-
- - <b>`str|None`</b>:  the name specified by `ice.add_...(name=...)`.
-
-
-
-
 ---
 
 #### <kbd>property</kbd> step_mode
@@ -146,15 +94,7 @@ Returns the node name in the current activated [`ExecutableGraph`](./core.graph.
 
 #### <kbd>property</kbd> uris
 
-Returns the node URIs in the current [`HyperGraph`](./core.hypergraph.md#class-hypergraph).
-
-
-
-
-**Returns:**
-
-
- - <b>`List[str]`</b>:  ["{tag}/{name}"], each as a unique identifier of this node.
+Returns the node URIs <{tag}/{name}> in the current [`HyperGraph`](./core.hypergraph.md#class-hypergraph).
 
 
 
@@ -163,7 +103,7 @@ Returns the node URIs in the current [`HyperGraph`](./core.hypergraph.md#class-h
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L96"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L50"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `backward`
 
@@ -179,7 +119,7 @@ backward()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L60"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `clean_up`
 
@@ -195,7 +135,7 @@ clean_up()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L110"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L64"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `dry_run`
 
@@ -211,7 +151,7 @@ dry_run()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L102"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L56"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `epoch_end`
 
@@ -227,7 +167,7 @@ epoch_end()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L100"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L54"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `epoch_start`
 
@@ -243,7 +183,7 @@ epoch_start()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L93"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L47"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `forward`
 
@@ -259,7 +199,7 @@ forward()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L62"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `interrupt`
 
@@ -275,7 +215,7 @@ interrupt()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L104"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L58"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `prepare`
 
@@ -290,7 +230,7 @@ Prepare all resources, including moving tensors to GPU.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L98"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L52"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
@@ -307,7 +247,7 @@ update()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L113"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L67"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `NodeOutputCache`
 
@@ -321,7 +261,7 @@ update()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L119"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L73"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__getitem__`
 
@@ -336,7 +276,7 @@ Execute node with name `name` if not executed, return the last executed cache el
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L125"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L79"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `clear`
 
@@ -352,7 +292,7 @@ Clear the cache, next calls to `__getitem__` will recalculate.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L130"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L84"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ExecutableGraph`
 
@@ -366,7 +306,7 @@ Clear the cache, next calls to `__getitem__` will recalculate.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L139"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L93"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `add_node`
 
@@ -382,7 +322,7 @@ add_node(node_name, node, group_names)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L161"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L115"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `apply`
 
@@ -398,7 +338,7 @@ apply(method: str)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L185"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L139"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `clean_up`
 
@@ -414,7 +354,7 @@ clean_up()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L170"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L124"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `iterate`
 
@@ -430,7 +370,7 @@ iterate(hyper_graph)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L153"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `partial_apply`
 
@@ -446,7 +386,7 @@ partial_apply(method: str, filter: Callable[[Node], bool] = lambda _: True)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L119"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `prepare`
 

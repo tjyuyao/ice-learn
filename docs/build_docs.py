@@ -852,13 +852,14 @@ class MarkdownGenerator(object):
             print(f"Could not generate markdown for object type {str(type(obj))}")
             return ""
 
-    def overview2md(self) -> str:
+    def overview2md(self, out_path) -> str:
         """Generates a documentation overview file based on the generated docs."""
 
         entries_md = ""
         for obj in list(
             filter(lambda d: d["type"] == "module", self.generated_objects)
         ):
+            if not os.path.exists(f"{out_path}/{obj['module']}.md"): continue
             full_name = obj["full_name"]
             if "module" in obj:
                 link = "./" + obj["module"] + ".md#" + obj["anchor_tag"]
@@ -877,6 +878,7 @@ class MarkdownGenerator(object):
         for obj in list(filter(lambda d: d["type"] == "class", self.generated_objects)):
             module_name = obj["module"].split(".")[-1]
             name = module_name + "." + obj["full_name"]
+            if not os.path.exists(f"{out_path}/{obj['module']}.md"): continue
             link = "./" + obj["module"] + ".md#" + obj["anchor_tag"]
             description = obj["description"]
             entries_md += f"\n- [`{name}`]({link})"
@@ -892,6 +894,7 @@ class MarkdownGenerator(object):
         ):
             module_name = obj["module"].split(".")[-1]
             name = module_name + "." + obj["full_name"]
+            if not os.path.exists(f"{out_path}/{obj['module']}.md"): continue
             link = "./" + obj["module"] + ".md#" + obj["anchor_tag"]
             description = obj["description"]
             entries_md += f"\n- [`{name}`]({link})"
@@ -957,6 +960,7 @@ class MarkdownGenerator(object):
             markdown_str = _RE_CROSSREF.sub(self.sub_cross_ref, markdown_str)
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(markdown_str)
+        self.buffers.clear()
 
 
 def generate_docs(
@@ -1041,9 +1045,16 @@ def generate_docs(
                     mod = loader.find_module(module_name).load_module(module_name)  # type: ignore
                     module_md = generator.module2md(mod)
                     if not module_md:
-                        # Module md is empty -> ignore module and all submodules
-                        # Add module to ignore list, so submodule will also be ignored
-                        ignored_modules.append(module_name)
+                        continue
+
+                    charcnt = 0
+                    for line in module_md.split("\n"):
+                        if line.startswith("# "):
+                            charcnt = 0
+                        else:
+                            charcnt += len(line.strip())
+                    
+                    if charcnt == 0:
                         continue
 
                     if stdout_mode:
@@ -1152,12 +1163,14 @@ def generate_docs(
             else:
                 raise Exception(f"Failed to generate markdown for {path}.")
 
+    generator.flush()
+    
     if overview_file and not stdout_mode:
         if not overview_file.endswith(".md"):
             overview_file = overview_file + ".md"
 
         generator.to_md_file(
-            generator.overview2md(),
+            generator.overview2md(output_path),
             overview_file,
             out_path=output_path,
             watermark=watermark,
@@ -1172,7 +1185,12 @@ if __name__ == "__main__":
         output_path="./docs/documents/",
         src_base_url="https://github.com/tjyuyao/ice-learn/blob/main/",
         remove_package_prefix=True,
-        ignored_modules=[],
+        ignored_modules=[
+            "llutil.multiprocessing.spawn",
+            "llutil.multiprocessing.pool",
+            "llutil.multiprocessing.queue",
+            "llutil.multiprocessing.reductions",
+        ],
         overview_file="README.md",
         watermark=False,
         validate=False,
