@@ -636,19 +636,20 @@ class MarkdownGenerator(object):
             }
         )
 
-        # try:
-        #     # object module should be the same as the calling module
-        #     if (
-        #         hasattr(cls.__init__, "__module__")
-        #         and cls.__init__.__module__ == modname
-        #     ):
-        #         init = self.func2md(cls.__init__, clsname=clsname)
-        #     else:
-        #         init = ""
-        # except (ValueError, TypeError):
-        #     # this happens if __init__ is outside the repo
-        #     init = ""
-        init = ""
+        try:
+            if hasattr(cls, "__freeze__"):
+                init = self.func2md(cls.__freeze__)
+            elif (
+                # object module should be the same as the calling module
+                hasattr(cls.__init__, "__module__")
+                and cls.__init__.__module__ == modname
+            ):
+                init = self.func2md(cls.__init__, clsname=clsname)
+            else:
+                init = ""
+        except (ValueError, TypeError):
+            # this happens if __init__ is outside the repo
+            init = ""
 
         variables = []
         for name, obj in inspect.getmembers(
@@ -1031,8 +1032,8 @@ def generate_docs(
             if validate and subprocess.call(f"{pydocstyle_cmd} {path}", shell=True) > 0:
                 raise Exception(f"Validation for {path} failed.")
 
-            if not stdout_mode:
-                print(f"Generating docs for python package at: {path}")
+            # if not stdout_mode:
+            #     print(f"Generating docs for python package at: {path}")
 
             # Generate one file for every discovered module
             for loader, module_name, _ in pkgutil.walk_packages([path]):
