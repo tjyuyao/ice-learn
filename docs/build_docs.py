@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Main module for markdown generation."""
 
+import ast
 import datetime
 import importlib
 import importlib.util
@@ -13,7 +14,8 @@ import subprocess
 import traceback
 import types
 from pydoc import locate
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, overload
+
 
 _RE_BLOCKSTART_LIST = re.compile(
     r"(Args:|Arg:|Arguments:|Parameters:|Kwargs:|Attributes:|Returns:|Yields:|Kwargs:|Raises:).{0,2}$",
@@ -29,7 +31,7 @@ _RE_ARGSTART = re.compile(r"(.{1,}?):(.{2,})", re.IGNORECASE)
 
 _IGNORE_GENERATION_INSTRUCTION = "lazydocs: ignore"
 
-_RE_CROSSREF = re.compile(r"``([a-zA-Z_][a-zA-Z0-9_]*)``")
+_RE_CROSSREF = re.compile(r"``([a-zA-Z_][a-zA-Z0-9_\.\(\)]*)``")
 
 
 # String templates
@@ -251,6 +253,7 @@ def _get_class_that_defined_method(meth: Any) -> Any:
 
 
 def _get_docstring(obj: Any) -> str:
+    if isinstance(obj, str): return obj
     return "" if obj.__doc__ is None else inspect.getdoc(obj) or ""
 
 
@@ -601,6 +604,83 @@ class MarkdownGenerator(object):
             markdown = _SOURCE_BADGE_TEMPLATE.format(path=path) + markdown
 
         return markdown
+    
+    def overloaded2md(self, func: Callable, overloads:List[ast.FunctionDef], clsname: str = "", depth: int = 3) -> str:
+        """Takes a function (or method) and generates markdown docs.
+
+        Args:
+            func (Callable): Selected function (or method) for markdown generation.
+            clsname (str, optional): Class name to prepend to funcname. Defaults to "".
+            depth (int, optional): Number of # to append to class name. Defaults to 3.
+
+        Returns:
+            str: Markdown documentation for selected function.
+        """
+        if _is_object_ignored(func):
+            # The function is ignored from generation
+            return ""
+
+        section = "#" * depth
+        funcname = func.__name__
+        modname = None
+        if hasattr(func, "__module__"):
+            modname = func.__module__
+
+        escfuncname = (
+            "%s" % funcname if funcname.startswith("_") else funcname
+        )  # "`%s`"
+
+        full_name = "%s%s" % ("%s." % clsname if clsname else "", escfuncname)
+        header = full_name
+
+        if self.remove_package_prefix:
+            # TODO: Evaluate
+            # Only use the name
+            header = escfuncname
+
+        path = self._get_src_path(func)
+        summary = _get_doc_summary(func)
+        func_type = "method"
+
+        self.generated_objects.append(
+            {
+                "type": func_type,
+                "name": header,
+                "full_name": full_name,
+                "module": modname,
+                "anchor_tag": _get_anchor_tag(func_type + "-" + header),
+                "description": summary,
+            }
+        )
+        
+        markdowns = []
+        
+        for fn_ast in overloads:
+            
+            doc = str(fn_ast.body[0].value.value)
+            doc = _doc2md(doc)
+            doc = doc.replace("\n" + "    "*(depth-1), "\n")
+            
+            src = ast.unparse(fn_ast)
+            i_quotes = src.find('"""')
+            if -1 != i_quotes: src = src[:i_quotes]
+            funcdef = re.search('def *(.*) *:', src).group(1)
+            
+            # build the signature
+            markdown = _FUNC_TEMPLATE.format(
+                section=section,
+                header=header,
+                funcdef=funcdef,
+                func_type=func_type,
+                doc=doc if doc else "*No documentation found.*",
+            )
+
+            if path:
+                markdown = _SOURCE_BADGE_TEMPLATE.format(path=path) + markdown
+                
+            markdowns.append(markdown)
+
+        return markdowns
 
     def class2md(self, cls: Any, depth: int = 2) -> str:
         """Takes a class and creates markdown text to document its methods and variables.
@@ -638,7 +718,7 @@ class MarkdownGenerator(object):
 
         try:
             if hasattr(cls, "__freeze__"):
-                init = self.func2md(cls.__freeze__)
+                init = self.func2md(cls.__freeze__, clsname=clsname)
             elif (
                 # object module should be the same as the calling module
                 hasattr(cls.__init__, "__module__")
@@ -684,8 +764,18 @@ class MarkdownGenerator(object):
                     + "\n%s <kbd>handler</kbd> %s\n" % (subsection, handler_name)
                 )
 
-        methods = []
-        # for name, obj in getmembers(cls, inspect.isfunction):
+        methods = []   
+        # identify overloaded function                 
+        overloaded = {}            
+        cls_src = inspect.getsource(cls)
+        cls_ast = ast.parse(cls_src)
+        for fn_ast in cls_ast.body[0].body:
+            if not isinstance(fn_ast, ast.FunctionDef): continue
+            decorator_list = [ast.get_source_segment(cls_src, i) for i in fn_ast.decorator_list]
+            if "overload" in decorator_list:
+                if not fn_ast.name in overloaded:
+                    overloaded[fn_ast.name] = []
+                overloaded[fn_ast.name].append(fn_ast)
         for name, obj in inspect.getmembers(
             cls, lambda a: inspect.ismethod(a) or inspect.isfunction(a)
         ):
@@ -702,9 +792,15 @@ class MarkdownGenerator(object):
                 # object module should be the same as the calling module
                 and obj.__module__ == modname
             ):
-                function_md = self.func2md(obj, clsname=clsname, depth=depth + 1)
-                if function_md:
-                    methods.append(_SEPARATOR + function_md)
+                if name not in overloaded:
+                    function_md = self.func2md(obj, clsname=clsname, depth=depth + 1)
+                    if function_md:
+                        methods.append(_SEPARATOR + function_md)
+                else:
+                    fn_mds = self.overloaded2md(obj, overloaded[name], clsname=clsname, depth=depth + 1)
+                    for function_md in fn_mds:
+                        methods.append(_SEPARATOR + function_md)
+                        
 
         markdown = _CLASS_TEMPLATE.format(
             section=section,
@@ -743,7 +839,7 @@ class MarkdownGenerator(object):
             if inspect.isclass(item):
                 self.cross_refs[name] = f"./{module_name}.md#class-{name.lower()}"
                 for name_1, item_1 in inspect.getmembers(item):
-                    if inspect.ismethod(item_1):
+                    if inspect.ismethod(item_1) or inspect.isfunction(item_1):
                         self.cross_refs[f"{name}.{name_1}"] = f"./{module_name}.md#method-{name_1.lower()}"
                     if isinstance(item_1, property):
                         self.cross_refs[f"{name}.{name_1}"] = f"./{module_name}.md#property-{name_1.lower()}"
@@ -947,7 +1043,7 @@ class MarkdownGenerator(object):
     
     def sub_cross_ref(self, match:re.Match):
         identifier = match.group(1)
-        key = identifier.replace("ice.", "").replace("llutil.", "").replace("core.", "").replace("api.", "")
+        key = identifier.replace("ice.", "").replace("llutil.", "").replace("core.", "").replace("api.", "").strip("()")
         if key in self.cross_refs:
             identifier = f"[`{identifier}`]({self.cross_refs[key]})"
         else:

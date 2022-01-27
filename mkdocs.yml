@@ -10,9 +10,19 @@ plugins:
     - awesome-pages
 
 theme:
-  name: material
+    name: material
+    features:
+        - content.code.annotate 
 
-markdown_extensions: 
+markdown_extensions:
+    - pymdownx.highlight:
+        anchor_linenums: true
+        use_pygments: true
+        # linenums: true
+        # linenums_style: pymdownx-inline
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences
     - mdx_math:  # (https://github.com/mitya57/python-markdown-math) 
         enable_dollar_delimiter: True #for use of inline $..$
     - fenced_code

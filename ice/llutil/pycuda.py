@@ -1,3 +1,5 @@
+"""Integrates PyCUDA to PyTorch and ice."""
+
 import os
 import re
 from functools import wraps
@@ -14,7 +16,7 @@ import pycuda.driver as cuda
 import torch
 from pycuda.compiler import SourceModule
 
-from .config import configurable
+from .config import Configurable, configurable
 
 
 _int_regex = re.compile(r'\\bint\\b')
@@ -62,8 +64,7 @@ class _Tensor(cuda.PointerHolderBase):
         cuda.memcpy_htod(int(self.gpudata) + 16, memoryview(numpy.uintp(int(self.stride.data_ptr()))))
 
 
-@configurable
-class CUDAModule:
+class CUDAModule(Configurable):
     """Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
     
     ``ice.CUDAModule`` works differently compared to pycuda's ``SourceModule`` in following ways:
@@ -103,7 +104,7 @@ class CUDAModule:
 
     """
     
-    def __init__(self, source, float_bits, int_bits=32, include_dirs=[], boundscheck=True, **kwds):
+    def __freeze__(self, source, float_bits, int_bits=32, include_dirs=[], boundscheck=True, **kwds):
         """Setup the parameters for compiling a CUDA source.
 
         Args:

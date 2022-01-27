@@ -1,4 +1,5 @@
-"""
+""" parse arguments for functions and command line.
+
 This module provides helper functions for commonly used argument processing for functions, 
 and a FlexibleArgParser for command line argument parsing. The default singleton of this
 argument parser is accessable via ``ice.args``.
@@ -9,11 +10,11 @@ import sys
 _type = type
 
 def isa(obj, types):
-    """Helper function: alias for python built-in ``isinstance``."""
+    """an alias for python built-in ``isinstance``."""
     return isinstance(obj, types)
 
 def as_list(maybe_element):
-    """Helper function: regularize input into list of element.
+    """helps to regularize input into list of element.
 
     No matter what is input, will output a list for your iteration.
     
@@ -51,7 +52,7 @@ def as_list(maybe_element):
 
 
 def as_dict(maybe_element, key):
-    """Helper function: regularize input into a dict.
+    """helps to regularize input into a dict.
 
     if ``maybe_element`` is not a dict, will return a dict with single
     key as ``{key:maybe_element}``, else will return ``maybe_element``.
@@ -106,7 +107,8 @@ class FlexibleArgParser:
     >>> # same as `python <script>.py 2 k1=4` in shell.
     >>> ice.args.parse_args(["2", "k1=4"])
     >>>
-    >>> ice.args.setdefault("k1", 8, int)  # This line is optional for this example; setdefault() generally is optional.
+    >>> # setdefault() generally is optional.
+    >>> ice.args.setdefault("k1", 8, int)
     >>> ice.args.setdefault("k2", 8)
     >>>
     >>> assert len(ice.args) == 3

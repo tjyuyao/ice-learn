@@ -3,9 +3,12 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `llutil.argparser`
+parse arguments for functions and command line.
+
+
 This module provides helper functions for commonly used argument processing for functions, 
 and a FlexibleArgParser for command line argument parsing. The default singleton of this
-argument parser is accessable via ``ice.args``.
+argument parser is accessable via `ice.args`.
 
 
 
@@ -16,7 +19,7 @@ argument parser is accessable via ``ice.args``.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L11"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L12"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `isa`
 
@@ -24,7 +27,7 @@ argument parser is accessable via ``ice.args``.
 isa(obj, types)
 ```
 
-Helper function: alias for python built-in `isinstance`.
+an alias for python built-in `isinstance`.
 
 
 
@@ -32,7 +35,7 @@ Helper function: alias for python built-in `isinstance`.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L15"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L16"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `as_list`
 
@@ -40,7 +43,7 @@ Helper function: alias for python built-in `isinstance`.
 as_list(maybe_element)
 ```
 
-Helper function: regularize input into list of element.
+helps to regularize input into list of element.
 
 
 No matter what is input, will output a list for your iteration.
@@ -72,7 +75,7 @@ assert func(["a", "b"]) == ["a", "b"]
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L54"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `as_dict`
 
@@ -80,7 +83,7 @@ assert func(["a", "b"]) == ["a", "b"]
 as_dict(maybe_element, key)
 ```
 
-Helper function: regularize input into a dict.
+helps to regularize input into a dict.
 
 
 if `maybe_element` is not a dict, will return a dict with single
@@ -121,7 +124,7 @@ assert as_dict("v", "k") == {"k": "v"}
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L88"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L89"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ArgumentMissingError`
 Raised when a required argument is missing from command line.
@@ -135,7 +138,7 @@ Raised when a required argument is missing from command line.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L90"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L91"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ArgumentTypeError`
 Raised when converting an argument failed.
@@ -149,7 +152,7 @@ Raised when converting an argument failed.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L93"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L94"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `FlexibleArgParser`
 A flexible and lightweight argument parser that saves loads of code.
@@ -176,7 +179,8 @@ import ice
 # same as `python <script>.py 2 k1=4` in shell.
 ice.args.parse_args(["2", "k1=4"])
 
-ice.args.setdefault("k1", 8, int)  # This line is optional for this example; setdefault() generally is optional.
+# setdefault() generally is optional.
+ice.args.setdefault("k1", 8, int)
 ice.args.setdefault("k2", 8)
 
 assert len(ice.args) == 3
@@ -203,12 +207,26 @@ assert  0 == ice.args.k2
 
 
 
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L135"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>method</kbd> `__init__`
+
+```python
+__init__() → None
+```
+
+
+
+
+
+
+
 
 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L136"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L138"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `parse_args`
 
@@ -231,7 +249,7 @@ Manually parse args.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `setdefault`
 
@@ -263,7 +281,7 @@ original or updated value.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L199"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L201"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 

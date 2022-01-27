@@ -3,8 +3,7 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `llutil.pycuda`
-
-
+Integrates PyCUDA to PyTorch and ice.
 
 
 
@@ -13,13 +12,13 @@
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L65"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L67"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `CUDAModule`
 Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
 
 
-``ice.CUDAModule`` works differently compared to pycuda's `SourceModule` in following ways:
+[`ice.CUDAModule`](./llutil.pycuda.md#class-cudamodule) works differently compared to pycuda's `SourceModule` in following ways:
 
 
 
@@ -66,6 +65,53 @@ kernels.matmul(a, b, c, M, N, K, grid=(N // 32 + 1, M // 32 + 1), block=(32, 32,
 torch.cuda.synchronize()
 assert torch.allclose(c, torch.mm(a, b))
 ```
+
+
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>method</kbd> `__freeze__`
+
+```python
+__freeze__(
+    source,
+    float_bits,
+    int_bits=32,
+    include_dirs=[],
+    boundscheck=True,
+    **kwds
+)
+```
+
+Setup the parameters for compiling a CUDA source.
+
+
+
+
+**Args:**
+
+
+ - <b>`source`</b> (str):  CUDA C++ source string.
+
+ - <b>`float_bits`</b> (int):  bit width of float values used as tensor scalar.
+
+ - <b>`int_bits`</b> (int, optional):  bit width of default int scalar. Defaults to 32.
+
+ - <b>`include_dirs`</b> (list, optional):  paths of extra include dirs. Defaults to [].
+
+ - <b>`boundscheck`</b> (bool, optional):  enable out of bound check for tensors. Defaults to True.
+
+ - <b>`**kwds`</b>:  other keyword args you would like to pass to pycuda's `SourceModule`.
+
+
+
+
+**Note:**
+
+>Direct written `float` and `int` token in the source string will be substituted
+to ensure the default scalar data type matches the tensors. If you do not want 
+this to happen, use more specific CUDA typename such as `__half`, `double`, `int16_t`, etc.
+
 
 
 

@@ -1,3 +1,5 @@
+"""helps developers of ice to test."""
+
 import torch
 import pytest
 

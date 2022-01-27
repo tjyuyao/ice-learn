@@ -9,7 +9,7 @@ DictProcessor = Callable[[Dict], Dict]
 
 
 def dictprocess(f):
-    r"""
+    r"""a decorator that convert function into a DictProcessor (`Callable[[Dict], Dict]`).
     
     ``ice.dictprocess`` is a function decorator that convert any function into a callable DictProcessor class that would take a dict as input and update its content.
     The input arguments and return values of the function are automatically mapped to source and destination the keywords of the state dict being modified.

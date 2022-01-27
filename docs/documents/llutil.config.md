@@ -20,7 +20,7 @@
 configurable(cls)
 ```
 
-This decorator delays the initialization of `cls` until ``freeze()``.
+This decorator delays the initialization of `cls` until [`freeze()`](./llutil.config.md#function-freeze).
 
 
 
@@ -285,6 +285,20 @@ objattr(obj, attrname)
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L221"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Configurable`
+
+
+
+
+
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L225"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>method</kbd> `__init__`
+
+```python
+__init__(*args, **kwds) → None
+```
+
 
 
 

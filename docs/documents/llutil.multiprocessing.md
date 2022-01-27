@@ -3,7 +3,10 @@
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `llutil.multiprocessing`
-ice.llutil.multiprocessing is a modified version of ``torch.multiprocessing``. It's designed to change
+a drop-in replacement for `torch.multiprocessing`.
+
+
+ice.llutil.multiprocessing is a modified version of `torch.multiprocessing`. It's designed to change
 ``import torch.multiprocessing as mp`` to ``from ice import multiprocessing as mp`` to have all the lambda functions, 
 closures as well as pytorch tensors sent through processes in Data Distributed Parallel paradigm.
 
@@ -20,7 +23,7 @@ contents, and we recommend referring to very good docs of the original module.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L44"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L45"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `called_from_main`
 

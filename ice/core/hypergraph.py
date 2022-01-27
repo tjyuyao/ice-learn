@@ -126,7 +126,7 @@ class HyperGraph:
         ...
 
     @overload
-    def run(self, tasks, launcher:ElasticLauncher):
+    def run(self, tasks, launcher:ElasticLauncher="auto"):
         ...
 
     def run(self, tasks, launcher:ElasticLauncher="auto"):

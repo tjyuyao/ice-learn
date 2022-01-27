@@ -1,4 +1,5 @@
-"""
+""" a drop-in replacement for `torch.multiprocessing`.
+
 ice.llutil.multiprocessing is a modified version of ``torch.multiprocessing``. It's designed to change
 ``import torch.multiprocessing as mp`` to ``from ice import multiprocessing as mp`` to have all the lambda functions, 
 closures as well as pytorch tensors sent through processes in Data Distributed Parallel paradigm.
