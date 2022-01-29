@@ -48,4 +48,7 @@ def called_from_main():
     Returns:
         bool
     """
-    return len(inspect.stack()) <= 3
+    for frameinfo in inspect.stack():
+        if "spawn_main" == frameinfo.function:
+            return False
+    return True

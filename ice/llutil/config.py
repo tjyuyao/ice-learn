@@ -254,9 +254,10 @@ class Configurable:
         if objattr(self, "_frozen"):
             raise AttributeError(attrname)
         else:
-            reprstr = str(self)
-            if len(reprstr) > 60: reprstr = reprstr[:60] + " ... "
-            raise AttributeError(f"Configurable \"{reprstr}\" is not frozen, and this may be a reason of not having attribute `{attrname}`.")
+            raise AttributeError(attrname)
+            # reprstr = str(self)
+            # if len(reprstr) > 60: reprstr = reprstr[:60] + " ... "
+            # raise AttributeError(f"Configurable \"{reprstr}\" is not frozen, and this may be a reason of not having attribute `{attrname}`.")
 
     def clone(self, deepcopy=True):
         return clone(self, deepcopy=deepcopy)

@@ -39,14 +39,15 @@ class Node(Configurable):
             **resources: resources will be updated into the attributes of Node.
         """
         if forward is not None:
-            self.forward = forward  # override original implementation
+            self.forward_impl = lambda x: forward(self, x)  # override original implementation
             
         self.egraph: ExecutableGraph = None
         
         for k, v in resources.items():
             if hasattr(self, k) and not k in self.EVENTS:
                 assert False, f"{k} is preserved for other usage and can not be used as a resource name."
-            setattr(self, k, v)
+            if callable(v): setattr(self, k, lambda *a, **k: v(self, *a, **k))
+            else: setattr(self, k, v)
 
     @property
     def name(self) -> str:
@@ -73,8 +74,24 @@ class Node(Configurable):
     def step_mode(self) -> bool:
         """whether current task is running by step (True) or by epoch (False)."""
         return self.egraph.task.step_mode
+    
+    @property
+    def output(self):
+        return self.forward()
 
-    def forward(self, graph:"GraphOutputCache"): """calculates forward pass results of the node, inputs of current executable graph can be directly retrieved from `graph` argument."""
+    def forward(self):
+        """retrieves forward output in cache or calculates it using `forward_impl` and save the output to the cache. Subclasses should not override this method."""
+        
+        name = self.name
+        cache = self.egraph.cache
+        if name in cache:
+            return cache[name]
+        else:
+            output = self.forward_impl(cache)
+            cache[name] = output
+            return output
+
+    def forward_impl(self, graph:"GraphOutputCache"): """forward pass of the node, inputs of current executable graph can be directly retrieved from `graph` argument."""
 
     def backward(self): """calculates gradients."""
 
@@ -97,15 +114,21 @@ class Node(Configurable):
 
 class GraphOutputCache:
 
-    def __init__(self, graph:"ExecutableGraph") -> None:
-        self.graph = graph
+    def __init__(self, egraph:"ExecutableGraph") -> None:
+        self.egraph = egraph
         self.clear()
 
     def __getitem__(self, name):
         """Execute node with name ``name`` if not executed, return the last executed cache else."""
         if name not in self.data:
-            self.data[name] = self.graph[name].forward()
+            self.data[name] = self.egraph[name].forward()
         return self.data[name]
+
+    def __contains__(self, key):
+        return key in self.data
+    
+    def __setitem__(self, name, value):
+        self.data[name] = value
 
     def clear(self):
         """Clear the cache, next calls to ``__getitem__`` will recalculate."""
@@ -122,18 +145,23 @@ class ExecutableGraph:
         self.task = None
 
     def add_node(self, node_name, node, group_names):
-        if node_name in self.nodes.keys():
-            assert node is self.nodes[node_name], "Different node can not share node_name in one task."
-            assert node_name == self.node_names[node], f"A node_name cannot have two different names: `{node_name}` and `{self.node_names[node]}`."
-        else:
-            self.nodes[node_name] = node
-            self.node_names[node] = node_name
-            self.group_names[node] = set()
+        if node_name in self.nodes.keys() and node is not self.nodes[node_name]:
+            if self.group_names[self.nodes[node_name]] != ["*/"]:
+                assert node is self.nodes[node_name], "Different node can not share node_name in one task."
+                assert node_name == self.node_names[node], f"A node_name cannot have two different names: `{node_name}` and `{self.node_names[node]}`."
+            elif ["*/"] == group_names:
+                return
+        self.nodes[node_name] = node
+        self.node_names[node] = node_name
+        self.group_names[node] = set()
         for group_name in as_list(group_names):
             self.group_names[node].add(group_name)
 
     def __getitem__(self, key):
         return self.nodes[key]
+
+    def items(self):
+        return self.nodes.items()
 
     def apply(self,
               method: str,
@@ -145,7 +173,7 @@ class ExecutableGraph:
                 getattr(v, method)(*args, **kwds)
 
     def prepare_nodes(self):
-        for node in self.nodes.items():
+        for node in self.nodes.values():
             node.egraph = self
         self.apply("prepare")
         

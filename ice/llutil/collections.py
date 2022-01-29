@@ -38,8 +38,10 @@ class Counter(Dict):
     def __getitem__(self, key):
         try:
             return super().__getitem__(key)
-        except KeyError:
-            return 0
+        except KeyError as e:
+            if key.startswith('__'):  # escape hidden values
+                raise e
+        return 0
 
     def total(self):
         return sum(self.values())

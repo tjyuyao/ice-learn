@@ -7,31 +7,30 @@ import torch.cuda
 from ice.core.graph import ExecutableGraph, InvalidURIError, StopTask
 from ice.llutil.argparser import as_list, isa
 from ice.llutil.collections import Counter
-from ice.llutil.config import configurable
+from ice.llutil.config import Configurable, configurable, is_configurable
 from ice.llutil.launcher import ElasticLauncher
 from ice.llutil.logging import get_logger
 from ice.llutil.multiprocessing import called_from_main
 from torch.autograd.grad_mode import set_grad_enabled
 
 
-class _Task:
+class _Task(Configurable):
 
-    def __init__(self, *, steps: int = 0, epochs: int = 0):
+    def __freeze__(self, *, steps: int = 0, epochs: int = 0):
         self.steps = steps
         self.epochs = epochs
 
 
-@configurable
 class Task(_Task):
 
     @overload
-    def __init__(self, *, train: bool, steps: int, tags="*"): ...
+    def __freeze__(self, *, train: bool, steps: int, tags="*"): ...
 
     @overload
-    def __init__(self, *, train: bool, epochs: int, tags="*"): ...
+    def __freeze__(self, *, train: bool, epochs: int, tags="*"): ...
 
-    def __init__(self, *, train: bool, tags="*", **kwds):
-        super().__init__(**kwds)
+    def __freeze__(self, *, train: bool, tags="*", **kwds):
+        super().__freeze__(**kwds)
         assert self.epochs == 0 or self.steps == 0
         self.training = train
         self.tags = tags
@@ -51,8 +50,9 @@ class Task(_Task):
         self.egraph.task = self
 
         if self.egraph is not hyper_graph.last_executed_egraph:
-            hyper_graph.last_executed_egraph.clean_up()
-            self.egraph.prepare()
+            if hyper_graph.last_executed_egraph is not None:
+                hyper_graph.last_executed_egraph.clean_up_nodes()
+            self.egraph.prepare_nodes()
             if self.launcher.assigned_device.type == "cuda":
                 torch.cuda.empty_cache() # result in more precise value in `nvidia-smi`.
         hyper_graph.last_executed_egraph = self.egraph
@@ -77,14 +77,13 @@ class Task(_Task):
         return "train" if self.training else "eval"
 
 
-@configurable
 class Repeat(_Task):
 
-    def __init__(self, tasks:List[_Task], times:int) -> None:
+    def __freeze__(self, tasks:List[_Task], times:int) -> None:
         self.tasks = tasks
         self.repeat = times
         self.etasks = [deepcopy(t) for _ in range(times) for t in self.tasks]
-        super().__init__(
+        super().__freeze__(
             steps=sum(t.steps for t in self.etasks if isa(t, _Task)),
             epochs=sum(t.steps for t in self.etasks if isa(t, _Task)),
         )
@@ -126,17 +125,25 @@ class HyperGraph:
         ...
 
     @overload
-    def run(self, tasks, launcher:ElasticLauncher="auto"):
+    def run(self, tasks, launcher:ElasticLauncher):
         ...
 
-    def run(self, tasks, launcher:ElasticLauncher="auto"):
+    def run(self, tasks, device="auto", launcher:ElasticLauncher=None):
         if called_from_main():
-            if isa(launcher, str):
-                launcher = ElasticLauncher(devices=launcher)
-            launcher(self._run_impl, self, tasks, launcher)
+            if launcher is None:
+                launcher = ElasticLauncher(devices=device)
+            launcher.freeze()
+            launcher(self._run_impl, tasks, launcher)
 
     def _run_impl(self, tasks, launcher:ElasticLauncher):
+        
+        for group in self.groups.values():
+            for node in group.nodes.values():
+                node.freeze()
+                
         for task in as_list(tasks):
+            if is_configurable(task):
+                task.freeze()
             if isa(task, _Task):
                 with set_grad_enabled(task.training):
                     task(self, launcher)
@@ -157,7 +164,7 @@ class HyperGraph:
                 group_name, node_name = self._parse_uri(uri)
                 if not group_name in self.groups:
                     self.groups[group_name] = ExecutableGraph()
-                self.groups[group_name][node_name] = value
+                self.groups[group_name].add_node(node_name, value, group_name)
             return value
         except InvalidURIError: pass
 
@@ -174,8 +181,8 @@ class HyperGraph:
 
         # assume ``key`` is a (list of) group_name.
         group_names = ['*/'] + [n.rstrip('/') + '/' for n in as_list(key)]
-        shortcut_key = hash(group_names)
-        if shortcut_key in self.shortcuts:
+        shortcut_key = hash(tuple(group_names))
+        if shortcut_key not in self.shortcuts:
             egraph = ExecutableGraph()
             for group_name in group_names:
                 if group_name not in self.groups:
@@ -215,7 +222,7 @@ class HyperGraph:
         """
         if not isa(uri, str): raise InvalidURIError(uri)
         idns = uri.rfind("/") + 1
-        if -1 == idns: raise InvalidURIError(uri)
+        if 0 == idns: raise InvalidURIError(uri)
         group_name, node_name = uri[:idns], uri[idns:]
         if 0 == len(node_name): raise InvalidURIError(uri)
         return group_name, node_name

@@ -11,6 +11,7 @@ _type = type
 
 def isa(obj, types):
     """an alias for python built-in ``isinstance``."""
+    if types is callable: return callable(obj)
     return isinstance(obj, types)
 
 def as_list(maybe_element):
