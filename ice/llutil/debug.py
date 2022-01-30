@@ -17,7 +17,7 @@ breakpoint = set_trace
 class SubProcessPdb(pdb.Pdb):
     """Pdb that works from a multiprocessing child"""
 
-    _original_stdin_fd = sys.stdin.fileno()
+    _original_stdin_fd = None if type(sys.stdin).__name__ == "DontReadFromInput" else sys.stdin.fileno()
     _original_stdin = None
     
     def __init__(self):

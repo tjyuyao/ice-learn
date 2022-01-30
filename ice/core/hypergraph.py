@@ -121,26 +121,70 @@ class HyperGraph:
         self[uris] = node
 
     @overload
-    def run(self, tasks, device="auto"):
+    def run(self, tasks, devices="auto"): ...
+    
+    @overload
+    def run(self, tasks, launcher:ElasticLauncher=None): ...
+        
+    @overload
+    def run(
+        self,
+        tasks,
+        devices="auto",
+        nnodes="1:1",
+        dist_backend="auto",
+        monitor_interval=5,
+        node_rank=0,
+        master_addr="127.0.0.1",
+        master_port=None,
+        redirects="0",
+        tee="0",
+        log_dir=None,
+        role="default",
+        max_restarts=0,
+        omp_num_threads=1,
+        start_method="spawn",
+    ):
         ...
 
     @overload
-    def run(self, tasks, launcher:ElasticLauncher):
+    def run(
+        self,
+        tasks,
+        devices="auto",
+        nnodes="1:1",
+        dist_backend="auto",
+        monitor_interval=5,
+        rdzv_id="none",
+        rdzv_endpoint="",
+        rdzv_backend="static",
+        rdzv_configs="",
+        standalone=False,
+        redirects="0",
+        tee="0",
+        log_dir=None,
+        role="default",
+        max_restarts=0,
+        omp_num_threads=1,
+        start_method="spawn",
+    ):
         ...
 
-    def run(self, tasks, device="auto", launcher:ElasticLauncher=None):
+    def run(self, tasks, launcher:ElasticLauncher=None, **kwds):
         if called_from_main():
             if launcher is None:
-                launcher = ElasticLauncher(devices=device)
+                launcher = ElasticLauncher(**kwds)
+            else:
+                launcher.update(kwds)
             launcher.freeze()
             launcher(self._run_impl, tasks, launcher)
 
     def _run_impl(self, tasks, launcher:ElasticLauncher):
-        
+
         for group in self.groups.values():
             for node in group.nodes.values():
                 node.freeze()
-                
+
         for task in as_list(tasks):
             if is_configurable(task):
                 task.freeze()

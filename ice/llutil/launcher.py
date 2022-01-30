@@ -3,7 +3,7 @@
 import logging
 import os
 import time
-from typing import List
+from typing import List, overload
 import uuid
 import random
 
@@ -96,11 +96,11 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
 
 class ElasticLauncher(Configurable):
     """A helper ``Configurable`` class for `torchrun` and `torch.distributed.launch`.
-        
+
     PyTorch's elastic launch ability is embeded in this Configurable, for details please see [here](https://pytorch.org/docs/stable/elastic/run.html).
-    
+
     ``HyperGraph.run()`` uses this class to launch multiple processes. Directly usage is also possible (see the example below).
-    
+
     **Example:**
 
     ```python
@@ -115,36 +115,38 @@ class ElasticLauncher(Configurable):
         launcher(worker, launcher)
     ```
     """
-    def __freeze__(self,
+
+    @overload
+    def __init__(self,
 
         # Worker/node size related arguments.
         devices="auto",
-        nnodes="1:1", 
+        nnodes="1:1",
         dist_backend="auto",
 
         # Rendezvous related arguments
         rdzv_id="none",
-        rdzv_endpoint="",  # 
-        rdzv_backend="static",  # 
-        rdzv_configs="",  # 
-        standalone=False,  # 
+        rdzv_endpoint="",
+        rdzv_backend="static",
+        rdzv_configs="",
+        standalone=False,
 
         # User-code launch related arguments.
-        max_restarts=0,  # 
-        monitor_interval=5,  # 
-        start_method="spawn",  # 
-        redirects="0",  # 
-        tee="0",  # 
-        log_dir=None,  # 
-        role="default",  # 
+        max_restarts=0,
+        monitor_interval=5,
+        start_method="spawn",
+        redirects="0",
+        tee="0",
+        log_dir=None,
+        role="default",
 
         # Backwards compatible parameters with caffe2.distributed.launch.
-        node_rank=0, #  
-        master_addr="127.0.0.1",  # 
-        master_port=None,  # "")
+        node_rank=0,
+        master_addr="127.0.0.1",
+        master_port=None,
 
         omp_num_threads = 1,
-    ):
+    ): 
         """
 
         **Args:**
@@ -173,6 +175,40 @@ class ElasticLauncher(Configurable):
             - **`master_port`** ([type], optional): Port on the master node (rank 0) to be used for communication during distributed training. Defaults will generate a random port between `16894` and `17194`.
             - **`omp_num_threads`** (int, optional): set `OMP_NUM_THREADS` environment if not exists. Defaults to 1.
         """
+
+    def __init__(self, *args, **kwds) -> None:
+        super().__init__(*args, **kwds)
+
+    def __freeze__(self,
+
+        # Worker/node size related arguments.
+        devices="auto",
+        nnodes="1:1",
+        dist_backend="auto",
+
+        # Rendezvous related arguments
+        rdzv_id="none",
+        rdzv_endpoint="",
+        rdzv_backend="static",
+        rdzv_configs="",
+        standalone=False,
+
+        # User-code launch related arguments.
+        max_restarts=0,
+        monitor_interval=None,
+        start_method="spawn",
+        redirects="0",
+        tee="0",
+        log_dir=None,
+        role="default",
+
+        # Backwards compatible parameters with caffe2.distributed.launch.
+        node_rank=0,
+        master_addr="127.0.0.1",
+        master_port=None,
+
+        omp_num_threads = 1,
+    ):
         if standalone:
             rdzv_backend = "c10d"
             rdzv_endpoint = "localhost:29400"
@@ -220,6 +256,12 @@ class ElasticLauncher(Configurable):
             rdzv_endpoint = f"{master_addr}:{master_port}"
         else:
             rdzv_endpoint = rdzv_endpoint
+            
+        if monitor_interval is None:
+            if nproc_per_node == 1 and max_nodes == 1:
+                monitor_interval = 1  # for faster debugging
+            else:
+                monitor_interval = 5
 
         self.config = LaunchConfig(
             min_nodes=min_nodes,
@@ -262,7 +304,7 @@ class ElasticLauncher(Configurable):
     @property
     def local_rank(self):
         return int(os.environ["LOCAL_RANK"])
-    
+
     @property
     def rank(self):
         return int(os.environ["RANK"])
@@ -278,7 +320,7 @@ class ElasticLauncher(Configurable):
     @property
     def role_name(self):
         return os.environ["ROLE_NAME"]
-    
+
     @property
     def local_world_size(self):
         return int(os.environ["LOCAL_WORLD_SIZE"])

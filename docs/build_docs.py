@@ -717,14 +717,14 @@ class MarkdownGenerator(object):
         )
 
         try:
-            if hasattr(cls, "__freeze__"):
-                init = self.func2md(cls.__freeze__, clsname=clsname)
-            elif (
+            if (
                 # object module should be the same as the calling module
                 hasattr(cls.__init__, "__module__")
                 and cls.__init__.__module__ == modname
             ):
                 init = self.func2md(cls.__init__, clsname=clsname)
+            elif hasattr(cls, "__freeze__"):
+                init = self.func2md(cls.__freeze__, clsname=clsname)
             else:
                 init = ""
         except (ValueError, TypeError):
