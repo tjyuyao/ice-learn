@@ -8,3 +8,5 @@ from ice.llutil.dictprocess import dictprocess
 from ice.llutil.multiprocessing import called_from_main
 
 from ice.core.graph import Node, ExecutableGraph
+
+from ice.llutil.debug import breakpoint, set_trace

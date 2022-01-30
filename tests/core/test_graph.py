@@ -3,8 +3,6 @@ from ice.core.graph import InvalidURIError, Node, ExecutableGraph, GraphOutputCa
 from ice.core.hypergraph import HyperGraph, Task
 from ice.llutil.collections import ConfigDict
 
-import traceback
-
 def assertTrue(expr, msg):
     assert expr, msg
 
@@ -14,8 +12,6 @@ class SimpleNode(Node):
         return super().__freeze__(value=0)
     
     def forward_impl(self, graph:GraphOutputCache):
-        # traceback.print_stack()
-        # print("*"*120)
         self.value += 1
         return self.value
     
