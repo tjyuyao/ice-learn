@@ -35,8 +35,7 @@ def _parse_min_max_nnodes(nnodes: str):
     return min_nodes, max_nodes
 
 
-def _parse_devices_and_backend(devices: str, dist_backend: str):
-
+def _parse_devices_and_backend(devices: str = "auto", dist_backend: str = "auto"):
     # determine device type
     if devices[:3] == "cpu" or (
         devices[:4] == "auto" and not torch.cuda.is_available()
@@ -58,7 +57,7 @@ def _parse_devices_and_backend(devices: str, dist_backend: str):
     # determine device indices
     idid = devices.find(":")
     if -1 == idid:
-        out = [torch.device(device_type)]
+        out = [torch.device(device_type, 0)]
     else:
         out = []
         for indices in devices[idid+1:].split(","):
@@ -90,6 +89,8 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
         rank=launcher.rank,
         world_size=launcher.world_size,
     )
+    if launcher.assigned_device.type == "cuda":
+        torch.cuda.set_device(launcher.assigned_device)
     entrypoint(*args)
     dist.destroy_process_group()
 

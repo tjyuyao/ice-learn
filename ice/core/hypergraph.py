@@ -4,7 +4,7 @@ from inspect import signature
 from typing import Dict, List, overload
 
 import torch.cuda
-from ice.core.graph import ExecutableGraph, InvalidURIError, StopTask
+from ice.core.graph import ExecutableGraph, GraphOutputCache, InvalidURIError, StopTask, Node
 from ice.llutil.argparser import as_list, isa
 from ice.llutil.collections import Counter
 from ice.llutil.config import Configurable, configurable, is_configurable
@@ -13,36 +13,42 @@ from ice.llutil.logging import get_logger
 from ice.llutil.multiprocessing import called_from_main
 from torch.autograd.grad_mode import set_grad_enabled
 
+from ice.llutil.print import _print
+
 
 class _Task(Configurable):
 
     def __freeze__(self, *, steps: int = 0, epochs: int = 0):
-        self.steps = steps
-        self.epochs = epochs
+        self.total_steps = steps
+        self.total_epochs = epochs
 
 
 class Task(_Task):
 
     @overload
-    def __freeze__(self, *, train: bool, steps: int, tags="*"): ...
+    def __init__(self, *, train: bool, steps: int, tags="*"): ...
 
     @overload
-    def __freeze__(self, *, train: bool, epochs: int, tags="*"): ...
+    def __init__(self, *, train: bool, epochs: int, tags="*"): ...
+    
+    def __init__(self, *args, **kwds) -> None:
+        super().__init__(*args, **kwds)
 
     def __freeze__(self, *, train: bool, tags="*", **kwds):
         super().__freeze__(**kwds)
-        assert self.epochs == 0 or self.steps == 0
+        assert self.total_epochs == 0 or self.total_steps == 0
         self.training = train
         self.tags = tags
-        self.step_mode = self.epochs == 0
+        self.step_mode = self.total_epochs == 0
+        self.task_steps = 0
+        self.task_epochs = 0
 
     def __repr__(self) -> str:
         return repr(self._config)
 
     def __call__(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
         # maintain running progress.
-        hyper_graph.global_counters.tasks[self._train_str] += 1
-        hyper_graph.global_counters.epochs[self._train_str] += self.epochs
+        self.hyper_graph = hyper_graph
 
         # prepare states.
         self.launcher = launcher
@@ -57,35 +63,72 @@ class Task(_Task):
                 torch.cuda.empty_cache() # result in more precise value in `nvidia-smi`.
         hyper_graph.last_executed_egraph = self.egraph
 
-        # run epochs: assert self.epochs == 0 or self.steps == 0
-        for _ in range(self.epochs):
+        # run epochs: assert self.epochs != 0 and self.steps == 0
+        for task_epochs in range(self.total_epochs):
+            self.task_epochs = task_epochs
             self.egraph.apply("epoch_start")
             while True:
                 try: self.egraph.iterate(hyper_graph)
                 except StopIteration: break
                 except StopTask: return
             self.egraph.apply("epoch_end")
+            self.global_epochs += 1
 
-        # run steps: assert self.epochs == 0 or self.steps == 0
-        for _ in range(self.steps):
+        # run steps: assert self.epochs == 0 and self.steps != 0
+        for task_steps in range(self.total_steps):
+            self.task_steps = task_steps
             try:
                 self.egraph.iterate(hyper_graph)
             except StopTask: return
+            
+        self.global_tasks += 1
 
     @property
     def _train_str(self):
         return "train" if self.training else "eval"
+    
+    @property
+    def global_tasks(self):
+        return self.hyper_graph.global_counters.tasks[self._train_str]
+        
+    @global_tasks.setter
+    def global_tasks(self, value):
+        self.hyper_graph.global_counters.tasks[self._train_str] = value
+        return value
+    
+    @property
+    def global_epochs(self):
+        return self.hyper_graph.global_counters.epochs[self._train_str]
+    
+    @global_epochs.setter
+    def global_epochs(self, value):
+        self.hyper_graph.global_counters.epochs[self._train_str] = value
+        return value
 
+    @property
+    def global_steps(self):
+        return self.hyper_graph.global_counters.steps[self._train_str]
+    
+    @global_steps.setter
+    def global_steps(self, value):
+        self.hyper_graph.global_counters.steps[self._train_str] = value
+        return value
 
 class Repeat(_Task):
 
+    @overload
+    def __init__(self, tasks:List[_Task], times:int) -> None: ...
+
+    def __init__(self, *args, **kwds) -> None:
+        super().__init__(*args, **kwds)        
+        
     def __freeze__(self, tasks:List[_Task], times:int) -> None:
         self.tasks = tasks
         self.repeat = times
         self.etasks = [deepcopy(t) for _ in range(times) for t in self.tasks]
         super().__freeze__(
-            steps=sum(t.steps for t in self.etasks if isa(t, _Task)),
-            epochs=sum(t.steps for t in self.etasks if isa(t, _Task)),
+            steps=sum(t.total_steps for t in self.etasks if isa(t, _Task)),
+            epochs=sum(t.total_steps for t in self.etasks if isa(t, _Task)),
         )
 
     def __call__(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
@@ -113,12 +156,25 @@ class HyperGraph:
         self.resumed_counters = self.global_counters
         self.last_executed_egraph = None
 
-    def add_node(self, name, node, tags="*"):
+    def add(self, name, node, tags="*"):
         uris = []
-        for tag in tags:
+        for tag in as_list(tags):
             as_group_name = tag.rstrip('/') + '/'
             uris.append(as_group_name + name)
         self[uris] = node
+    
+    def print_output_of(self, *nodes, every=1, total=None, tags:List[str] = "*"):
+
+        def probe_fn(n:Node, x:GraphOutputCache):
+            if n.current_launcher.local_rank != 0: return
+            if total is not None and n.global_steps // every > total: return  # total
+            if n.global_steps and (n.global_steps+1) % every: return # every
+            prefix = f"E{n.global_epochs}S{n.global_steps+1}:"
+
+            for nodename in as_list(nodes):
+                _print(x[nodename], prefix=prefix, uri=nodename)
+
+        self.add(f"print_output_of({','.join(as_list(nodes))})", Node(forward=probe_fn), tags=tags)
 
     @overload
     def run(self, tasks, devices="auto"): ...

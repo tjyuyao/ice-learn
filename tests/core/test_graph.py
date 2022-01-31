@@ -25,8 +25,8 @@ class SimpleNode(Node):
 
 _C = ConfigDict()
 _C.GRAPH.G1 = HyperGraph()
-_C.GRAPH.G1.add_node("n1", SimpleNode())
-_C.GRAPH.G1.add_node("n2", Node(forward=lambda n, x: x['n1'] * 2))
+_C.GRAPH.G1.add("n1", SimpleNode())
+_C.GRAPH.G1.add("n2", Node(forward=lambda n, x: x['n1'] * 2))
 
 def test_simple_node():
     assert isinstance(_C.GRAPH.G1, HyperGraph)

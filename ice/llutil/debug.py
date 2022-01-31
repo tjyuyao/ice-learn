@@ -5,14 +5,11 @@ from turtle import pd
 
 
 def set_trace(local_rank=0):
-    if local_rank == int(os.environ["LOCAL_RANK"]):
+    if "LOCAL_RANK" not in os.environ or local_rank == int(os.environ["LOCAL_RANK"]):
         frame = sys._getframe().f_back  # pop the current stackframe off
         pdb = SubProcessPdb()
         pdb.set_trace(frame=frame)
-
-
-breakpoint = set_trace
-
+        
 
 class SubProcessPdb(pdb.Pdb):
     """Pdb that works from a multiprocessing child"""

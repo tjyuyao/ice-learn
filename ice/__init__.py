@@ -1,4 +1,3 @@
-from .api import *
 import torch
 
 import multiprocessing as python_multiprocessing
@@ -12,3 +11,8 @@ python_multiprocessing.SimpleQueue = multiprocessing.SimpleQueue
 from ice.llutil.multiprocessing._atfork import register_after_fork
 register_after_fork(torch.get_num_threads)
 del register_after_fork
+
+import os
+os.environ['PYTHONBREAKPOINT'] = "ice.set_trace"
+
+from .api import *

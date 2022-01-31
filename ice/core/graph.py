@@ -2,6 +2,8 @@
 
 from typing import Any, Callable, Dict, List
 
+import torch
+
 from ice.llutil.argparser import as_list
 from ice.llutil.config import Configurable
 
@@ -66,7 +68,7 @@ class Node(Configurable):
         return self.egraph.task.training
 
     @property
-    def device(self):
+    def device(self) -> torch.device:
         """the assigned device by current launcher."""
         return self.egraph.task.launcher.assigned_device
 
@@ -74,10 +76,38 @@ class Node(Configurable):
     def step_mode(self) -> bool:
         """whether current task is running by step (True) or by epoch (False)."""
         return self.egraph.task.step_mode
+
+    @property
+    def current_task(self):
+        return self.egraph.task
+    
+    @property
+    def current_launcher(self):
+        return self.egraph.task.launcher
+    
+    @property
+    def current_tag_group(self):
+        return self.egraph.nodes
     
     @property
     def output(self):
         return self.forward()
+    
+    @property
+    def global_steps(self):
+        return self.egraph.task.global_steps
+
+    @property
+    def global_epochs(self):
+        return self.egraph.task.global_epochs
+
+    @property
+    def task_steps(self):
+        return self.egraph.task.task_steps
+
+    @property
+    def task_epochs(self):
+        return self.egraph.task.task_epochs
 
     def forward(self):
         """retrieves forward output in cache or calculates it using `forward_impl` and save the output to the cache. Subclasses should not override this method."""
@@ -101,15 +131,29 @@ class Node(Configurable):
 
     def epoch_end(self): """an event hook for epoch end. (only for epoch mode)"""
 
-    def prepare(self): """an event hook for prepare all resources at switching executable graphs, e.g. moving models to device, initialize dataloaders, etc."""
+    def prepare(self): """an event hook for prepare all resources at switching executable graphs."""
     
-    def clean_up(self): """an event hook for clean up all resources at switching executable graphs, e.g. clear device memory, closing files, etc."""
+    def clean_up(self): """an event hook for clean up all resources at switching executable graphs."""
 
     def dry_run(self): """only update states about progress."""
     
     def state_dict(self): """returns serialization of current node."""
     
     def load_state_dict(self, state_dict): """resumes node state from state_dict."""
+    
+    def move(self, data):
+        device = self.device
+        if isinstance(data, (torch.Tensor, torch.nn.Module)):
+            if device.type == "cpu": return data.cpu()
+            else: return data.cuda()
+        elif isinstance(data, list):
+            for i, v in enumerate(data): data[i] = self.move(v)
+            return data
+        elif isinstance(data, dict):
+            for k, v in data.items(): data[k] = self.move(v)
+            return data
+        else:
+            return data
 
 
 class GraphOutputCache:
@@ -195,3 +239,4 @@ class ExecutableGraph:
                 self.apply("update")
             else:
                 raise StopTask()
+        self.task.global_steps += 1
