@@ -13,4 +13,6 @@ from ice.llutil.multiprocessing import called_from_main
 from ice.core.graph import Node, ExecutableGraph
 from ice.core.hypergraph import HyperGraph, Task, Repeat
 from ice.core.dataset import DatasetNode
+from ice.core.optim import Optimizer
+from ice.core.module import ModuleNode
 

@@ -141,7 +141,6 @@ class CUDAModule(Configurable):
         self.torch_float_type = {16: torch.float16, 32: torch.float32, 64: torch.float64}[float_bits]
     
     def __getattr__(self, name):
-        print(name)
         @wraps(cuda.Function.__call__)
         def wrapper(*args, block=(1, 1, 1), grid=(1, 1), **kwds):
             casted_args = []

@@ -1,13 +1,16 @@
 import ice
 import torch
-from torch import nn
+from torch import log_, nn
 from torch.nn import functional as F
+from torch.optim import SGD
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, Normalize, ToTensor
 
+@ice.configurable
 class Net(nn.Module):
+    
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
         self.bn = nn.BatchNorm2d(10)
         self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
@@ -27,13 +30,22 @@ class Net(nn.Module):
 
 
 _C = ice.ConfigDict()
+
 _C.DATASETS.MNIST.TRANSFORM = Compose([ToTensor(), Normalize((0.1307,), (0.3081,))])
 _C.DATASETS.MNIST.TRAIN = MNIST(download=True, root="/tmp/MNIST94117", transform=_C.DATASETS.MNIST.TRANSFORM, train=True)
 _C.DATASETS.MNIST.TRAIN_NODE = ice.DatasetNode(_C.DATASETS.MNIST.TRAIN, batch_size=2, shuffle=True)
+
+_C.MODULES.NET_NODE = ice.ModuleNode(
+    module=Net(),
+    forward=lambda n, x: n.module(x['mnist'][0]),
+    optimizers=ice.Optimizer(SGD, dict(lr=0.01, momentum=0.5))
+    )
+
 _C.GRAPHS.G1 = ice.HyperGraph()
 _C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.TRAIN_NODE, tags="train")
-_C.GRAPHS.G1.print_output_of("mnist")
+_C.GRAPHS.G1.add("net", _C.MODULES.NET_NODE)
+_C.GRAPHS.G1.print_output_of("net")
 _C.GRAPHS.G1.run(
     ice.Task(train=True, steps=10, tags="train"),
-    devices="cuda:0"
+    devices="cuda:0",
 )

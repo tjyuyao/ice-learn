@@ -1,6 +1,7 @@
+from functools import partial
+from typing import Any
 import torch
 import copy
-from functools import wraps
 
 
 def _inplace_surrogate(cls, funcname):
@@ -75,15 +76,14 @@ def configurable(cls):
         cls.__freeze__ = getattr(cls, "__init__")
 
     # substitute the original initialization function.
-    @wraps(cls.__freeze__)
-    def make_config(self, *args, **kwds):
-        object.__setattr__(self, "_builder", _Builder(cls, self, *args, **kwds))
+    def make_config(obj, *args, **kwds):
+        object.__setattr__(obj, "_builder", _Builder(cls, obj, *args, **kwds))
     cls.__init__ = make_config
 
     # surrogate other functions
     _inplace_surrogate(cls, "__getattribute__")
     _inplace_surrogate(cls, "__getattr__")
-    _inplace_surrogate(cls, "__repr__")
+    _inplace_surrogate(cls, "__str__")
     _inplace_surrogate(cls, "__getitem__")
     _inplace_surrogate(cls, "__setitem__")
 
@@ -165,6 +165,8 @@ def clone(obj, deepcopy=True):
         obj = obj.__class__({k: clone(v, deepcopy=deepcopy) for k, v in obj.items()})
     elif has_builder(obj):
         obj = obj._builder.clone(deepcopy=deepcopy)
+    elif isinstance(obj, Configurable):
+        obj = obj.clone()
     elif isinstance(obj, torch.Tensor):
         obj = obj.clone()
     elif deepcopy:
@@ -174,7 +176,7 @@ def clone(obj, deepcopy=True):
     return obj
 
 
-def freeze(obj, deepcopy=True):
+def freeze(obj):
     """freeze configurables recursively.
 
     **Freezing** is the process of building the configuration into real objects.
@@ -184,7 +186,6 @@ def freeze(obj, deepcopy=True):
 
     Args:
         obj (configurable or list/dict of configurables): the configurable object to be freeze.
-        deepcopy (bool, optional): copy resources by value. Defaults to True.
 
     Returns:
         Frozen version of the original configurable.
@@ -198,19 +199,17 @@ def freeze(obj, deepcopy=True):
         See examples for ``configurable`` and ``clone``.
     """
     if isinstance(obj, list):
-        obj = [freeze(x, deepcopy=deepcopy) for x in obj]
+        obj = [freeze(x) for x in obj]
     elif isinstance(obj, tuple):
-        obj = tuple(freeze(x, deepcopy=deepcopy) for x in obj)
+        obj = tuple(freeze(x) for x in obj)
     elif isinstance(obj, dict):
-        obj = obj.__class__({k: freeze(v, deepcopy=deepcopy) for k, v in obj.items()})
+        obj = obj.__class__({k: freeze(v) for k, v in obj.items()})
     elif has_builder(obj):
         obj = obj._builder.freeze()
+    elif isinstance(obj, Configurable):
+        obj = obj.freeze()
     elif isinstance(obj, torch.Tensor):
         obj = obj.clone()
-    elif deepcopy:
-        obj = copy.deepcopy(obj)
-    else:
-        obj = copy.copy(obj)
     return obj
 
 
@@ -223,13 +222,16 @@ class Configurable:
     is_configurable = True
 
     def __init__(self, *args, **kwds) -> None:
-        self._argnames = self.__freeze__.__code__.co_varnames[1:]
+        try:
+            objattr(self, "_cls")
+        except AttributeError:
+            self._obj = self
+            self._cls = self.__class__
+        self._argnames = self._cls.__freeze__.__code__.co_varnames[1:]
         self._kwds = kwds
         self._frozen = False
         for i, v in enumerate(args):
             self[i] = v
-        self._cls = self.__class__
-        self._obj = self
 
     def __getitem__(self, key):
         if isinstance(key, int):
@@ -260,15 +262,15 @@ class Configurable:
             # raise AttributeError(f"Configurable \"{reprstr}\" is not frozen, and this may be a reason of not having attribute `{attrname}`.")
 
     def clone(self, deepcopy=True):
-        return clone(self, deepcopy=deepcopy)
+        return self._cls(**clone(self._kwds, deepcopy=deepcopy))
 
-    def freeze(self, deepcopy=True):
+    def freeze(self):
         # make twice freezing legal.
         if self._frozen: return self._obj
         # mark as frozen so that orig__init__ will be able to manipulate the original instance via __getattribute__.
         self._frozen = True
         # initialize the class instance
-        self._cls.__freeze__(self._obj, **freeze(self._kwds, deepcopy=deepcopy))
+        self._cls.__freeze__(self._obj, **self._kwds)
         return self._obj
 
 
@@ -279,14 +281,13 @@ class _Builder(Configurable):
     """
 
     def __init__(self, cls, obj, *args, **kwds) -> None:
-        self.__freeze__ = cls.__freeze__
-        super().__init__(*args, **kwds)
         self._cls = cls
         self._obj = obj
-
-    def clone(self, deepcopy=True):
-        return self._cls(**clone(self._kwds, deepcopy=deepcopy))
-
-    def __repr__(self):
+        super().__init__(*args, **kwds)
+    
+    def __str__(self):
         kwds = ', '.join([f"{k}={str(objattr(self, '_kwds')[k])}" for k in objattr(self, '_argnames') if k in objattr(self, '_kwds')])
         return f"{objattr(self, '_cls').__name__}({kwds})"
+    
+    def __reduce__(self) -> tuple[Any, ...]:
+        return (partial(self._cls, **self._kwds), ())

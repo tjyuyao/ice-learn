@@ -1,8 +1,12 @@
 import dill
 import pytest
 import torch.nn as nn
+from torch.nn import functional as F
 from ice.llutil.config import configurable, make_configurable
 from ice.llutil.launcher import ElasticLauncher
+from ice.core.optim import Optimizer
+from ice.core.module import ModuleNode
+from torch.optim import SGD
 
 make_configurable(nn.Conv2d)
 make_configurable(nn.Conv2d)
@@ -57,7 +61,7 @@ def test_decoration():
     i['b'] = 1
 
     # unfrozen configurable can be printed as a legal construction python statement.
-    assert repr(i) == "AClass(a=2, b=1)"
+    assert str(i) == "AClass(a=2, b=1)"
 
     # real initialization of original object.
     i.freeze()
@@ -66,6 +70,41 @@ def test_decoration():
 
 def test_pickable():
     i = AClass(1, 2)
+    i.__reduce__()
+    buf = dill.dumps(i)
+    j = dill.loads(buf)
+    j.freeze()
+    assert j.a == 1 and j.b == 2
+
+@configurable
+class Net(nn.Module):
+    
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
+        self.bn = nn.BatchNorm2d(10)
+        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
+        self.conv2_drop = nn.Dropout2d()
+        self.fc1 = nn.Linear(320, 50)
+        self.fc2 = nn.Linear(50, 10)
+
+    def forward(self, x):
+        x = F.relu(F.max_pool2d(self.conv1(x), 2))
+        x = self.bn(x)
+        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
+        x = x.view(-1, 320)
+        x = F.relu(self.fc1(x))
+        x = F.dropout(x, training=self.training)
+        x = self.fc2(x)
+        return F.log_softmax(x, dim=-1)
+
+
+def test_module_pickable():
+    i = ModuleNode(
+        module=Net(),
+        forward=lambda n, x: n.module(x['mnist'][0]),
+        optimizers=Optimizer(SGD, dict(lr=0.01, momentum=0.5))
+        )
     i.__reduce__()
     buf = dill.dumps(i)
     _ = dill.loads(buf)
@@ -78,6 +117,6 @@ def worker(aobj_buffer):
 
 @pytest.mark.slow
 def test_multiprocessing():
-    launcher = ElasticLauncher(devices="auto:0,1").freeze()
+    launcher = ElasticLauncher(devices="auto:0,0").freeze()
     aobj = AClass(1, 2)
     launcher(worker, dill.dumps(aobj, byref=True))

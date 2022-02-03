@@ -92,6 +92,7 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     if launcher.assigned_device.type == "cuda":
         torch.cuda.set_device(launcher.assigned_device)
     entrypoint(*args)
+    time.sleep(0.5)
     dist.destroy_process_group()
 
 

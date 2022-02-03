@@ -43,9 +43,6 @@ class Task(_Task):
         self.task_steps = 0
         self.task_epochs = 0
 
-    def __repr__(self) -> str:
-        return repr(self._config)
-
     def __call__(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
         # maintain running progress.
         self.hyper_graph = hyper_graph
@@ -169,7 +166,7 @@ class HyperGraph:
             if n.current_launcher.local_rank != 0: return
             if total is not None and n.global_steps // every > total: return  # total
             if n.global_steps and (n.global_steps+1) % every: return # every
-            prefix = f"E{n.global_epochs}S{n.global_steps+1}:"
+            prefix = f"E{n.global_epochs+1}S{n.global_steps+1}:"
 
             for nodename in as_list(nodes):
                 _print(x[nodename], prefix=prefix, uri=nodename)
@@ -236,10 +233,6 @@ class HyperGraph:
             launcher(self._run_impl, tasks, launcher)
 
     def _run_impl(self, tasks, launcher:ElasticLauncher):
-
-        for group in self.groups.values():
-            for node in group.nodes.values():
-                node.freeze()
 
         for task in as_list(tasks):
             if is_configurable(task):

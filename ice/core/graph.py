@@ -1,6 +1,6 @@
 """contains ``Node`` and ``ExecutableGraph``."""
 
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, overload
 
 import torch
 
@@ -31,6 +31,15 @@ class Node(Configurable):
     
     EVENTS = ("forward", "backward", "update", "epoch_start", "epoch_end", "prepare", "clean_up", "dry_run")
 
+    @overload
+    def __init__(self,
+                 forward: Callable[["Node", "GraphOutputCache"], Any] = None,
+                 **resources): ...
+    
+    def __init__(self, *args, **kwds) -> None:
+        super().__init__(*args, **kwds)
+        self.egraph: ExecutableGraph = None
+
     def __freeze__(self,
                    forward: Callable[["Node", "GraphOutputCache"], Any] = None,
                    **resources) -> None:
@@ -42,9 +51,7 @@ class Node(Configurable):
         """
         if forward is not None:
             self.forward_impl = lambda x: forward(self, x)  # override original implementation
-            
-        self.egraph: ExecutableGraph = None
-        
+                    
         for k, v in resources.items():
             if hasattr(self, k) and not k in self.EVENTS:
                 assert False, f"{k} is preserved for other usage and can not be used as a resource name."
@@ -121,7 +128,7 @@ class Node(Configurable):
             cache[name] = output
             return output
 
-    def forward_impl(self, graph:"GraphOutputCache"): """forward pass of the node, inputs of current executable graph can be directly retrieved from `graph` argument."""
+    def forward_impl(self, cache:"GraphOutputCache"): """forward pass of the node, inputs of current executable graph can be directly retrieved from `graph` argument."""
 
     def backward(self): """calculates gradients."""
 
@@ -219,6 +226,7 @@ class ExecutableGraph:
     def prepare_nodes(self):
         for node in self.nodes.values():
             node.egraph = self
+            node.freeze()
         self.apply("prepare")
         
     def clean_up_nodes(self):
