@@ -23,9 +23,9 @@ class SubProcessPdb(pdb.Pdb):
     def _cmdloop(self) -> None:
         backup_stdin = sys.stdin
         try:
-            if not self._original_stdin:
-                self._original_stdin = os.fdopen(self._original_stdin_fd)
-            sys.stdin = self._original_stdin
+            if not SubProcessPdb._original_stdin:
+                SubProcessPdb._original_stdin = os.fdopen(self._original_stdin_fd)
+            sys.stdin = SubProcessPdb._original_stdin
             self.cmdloop()
         finally:
             sys.stdin = backup_stdin
