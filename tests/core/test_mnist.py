@@ -6,6 +6,8 @@ from torch.optim import SGD
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, Normalize, ToTensor
 
+from ice.core.loss import LossNode
+
 @ice.configurable
 class Net(nn.Module):
     
@@ -33,19 +35,21 @@ _C = ice.ConfigDict()
 
 _C.DATASETS.MNIST.TRANSFORM = Compose([ToTensor(), Normalize((0.1307,), (0.3081,))])
 _C.DATASETS.MNIST.TRAIN = MNIST(download=True, root="/tmp/MNIST94117", transform=_C.DATASETS.MNIST.TRANSFORM, train=True)
-_C.DATASETS.MNIST.TRAIN_NODE = ice.DatasetNode(_C.DATASETS.MNIST.TRAIN, batch_size=2, shuffle=True)
+_C.DATASETS.MNIST.TRAIN_NODE = ice.DatasetNode(_C.DATASETS.MNIST.TRAIN, batch_size=64, shuffle=True)
 
 _C.MODULES.NET_NODE = ice.ModuleNode(
     module=Net(),
     forward=lambda n, x: n.module(x['mnist'][0]),
     optimizers=ice.Optimizer(SGD, dict(lr=0.01, momentum=0.5))
     )
+_C.LOSSES.NLL = LossNode(forward=lambda n, x: F.nll_loss(x["net"], x["mnist"][1]))
 
 _C.GRAPHS.G1 = ice.HyperGraph()
 _C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.TRAIN_NODE, tags="train")
 _C.GRAPHS.G1.add("net", _C.MODULES.NET_NODE)
-_C.GRAPHS.G1.print_output_of("net")
+_C.GRAPHS.G1.add("nll_loss", _C.LOSSES.NLL, tags="train")
+_C.GRAPHS.G1.print_output_of("nll_loss", every=100)
 _C.GRAPHS.G1.run(
-    ice.Task(train=True, steps=10, tags="train"),
+    ice.Task(train=True, epochs=2, tags="train"),
     devices="cuda:0",
 )

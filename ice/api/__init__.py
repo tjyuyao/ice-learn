@@ -15,4 +15,5 @@ from ice.core.hypergraph import HyperGraph, Task, Repeat
 from ice.core.dataset import DatasetNode
 from ice.core.optim import Optimizer
 from ice.core.module import ModuleNode
+from ice.core.loss import LossNode
 

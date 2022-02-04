@@ -97,10 +97,6 @@ class Node(Configurable):
         return self.egraph.nodes
     
     @property
-    def output(self):
-        return self.forward()
-    
-    @property
     def global_steps(self):
         return self.egraph.task.global_steps
 
@@ -194,6 +190,7 @@ class ExecutableGraph:
         self.node_names:Dict[Node, str] = {}
         self.cache = GraphOutputCache(self)
         self.task = None
+        self.losses_counter = 0
 
     def add_node(self, node_name, node, group_names):
         if node_name in self.nodes.keys() and node is not self.nodes[node_name]:

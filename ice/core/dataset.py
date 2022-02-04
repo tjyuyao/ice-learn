@@ -141,8 +141,11 @@ class DatasetNode(Node):
         try:
             sample = next(self.iterator)
         except StopIteration as e:
+            # update states and iterator
             self.internal_epoch += 1
             self.sampler.set_epoch(epoch=self.internal_epoch)
+            self.iterator = iter(self.loader)
+            # continue working
             if self.step_mode:
                 sample = next(self.iterator)
             else:
