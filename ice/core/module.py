@@ -16,7 +16,7 @@ class _ModuleProxy(nn.Module):
     def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any]) -> None:
         super().__init__()
         self.node = node
-        self.module = module
+        self._module = module
         self.forward_override = forward
     
     def forward(self, cache):
