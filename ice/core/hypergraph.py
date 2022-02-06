@@ -1,12 +1,14 @@
 from argparse import Namespace
+from asyncio import tasks
 from copy import deepcopy
+from dataclasses import dataclass
 from inspect import signature
 from typing import Dict, List, overload
 
 import torch.cuda
 from ice.core.graph import ExecutableGraph, GraphOutputCache, InvalidURIError, StopTask, Node
 from ice.llutil.argparser import as_list, isa
-from ice.llutil.collections import Counter
+from ice.llutil.collections import Dict
 from ice.llutil.config import Configurable, configurable, is_configurable
 from ice.llutil.launcher import ElasticLauncher
 from ice.llutil.logging import get_logger
@@ -38,12 +40,17 @@ class Task(_Task):
         super().__freeze__(**kwds)
         assert self.total_epochs == 0 or self.total_steps == 0
         self.training = train
-        self.tags = tags
+        self.tags = [as_group_name(tag) for tag in as_list(tags)]
         self.step_mode = self.total_epochs == 0
         self.task_steps = 0
         self.task_epochs = 0
-
+        return self
+    
     def __call__(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
+        with set_grad_enabled(self.training):
+            self.__call__impl(hyper_graph, launcher)
+
+    def __call__impl(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
         # maintain running progress.
         self.hyper_graph = hyper_graph
 
@@ -123,10 +130,12 @@ class Repeat(_Task):
         self.tasks = tasks
         self.repeat = times
         self.etasks = [deepcopy(t) for _ in range(times) for t in self.tasks]
+        [t.freeze() for t in self.etasks if is_configurable(t)]
         super().__freeze__(
             steps=sum(t.total_steps for t in self.etasks if isa(t, _Task)),
             epochs=sum(t.total_steps for t in self.etasks if isa(t, _Task)),
         )
+        return self
 
     def __call__(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
         hyper_graph._run_impl(self.etasks, launcher)
@@ -137,6 +146,39 @@ class Repeat(_Task):
         return reprstr
 
 
+class Counter:
+    
+    def __init__(self) -> None:
+        self.train = 0
+        self.eval = 0
+        
+    def __getitem__(self, key):
+        if key == "train":
+            return self.train
+        elif key == "eval":
+            return self.eval
+        else:
+            raise KeyError(key)
+    
+    def __setitem__(self, key, value):
+        if key == "train":
+            self.train = value
+        elif key == "eval":
+            self.eval = value
+        else:
+            raise KeyError(key)
+    
+    @property
+    def total(self):
+        return self.train + self.eval
+
+@dataclass
+class GlobalCounters:
+    tasks:Counter = Counter()
+    steps:Counter = Counter()
+    epochs:Counter = Counter()
+
+
 class HyperGraph:
     """HyperGraph is the container for all nodes.
     """
@@ -145,20 +187,15 @@ class HyperGraph:
         self.groups:Dict[str, ExecutableGraph] = {}
         self.groups["*/"] = ExecutableGraph()
         self.shortcuts:Dict[str, ExecutableGraph] = {}
-        self.global_counters = Namespace(
-            tasks = Counter(),
-            steps = Counter(),
-            epochs = Counter(),
-        )
+        self.global_counters = GlobalCounters()
         self.resumed_counters = self.global_counters
         self.last_executed_egraph = None
 
     def add(self, name, node, tags="*"):
         uris = []
         for tag in as_list(tags):
-            as_group_name = tag.rstrip('/') + '/'
-            uris.append(as_group_name + name)
-        self[uris] = node
+            uris.append(as_group_name(tag) + name)
+        self[uris] = node.clone(deepcopy=True)
     
     def print_output_of(self, *nodes, every=1, total=None, tags:List[str] = "*"):
 
@@ -238,8 +275,7 @@ class HyperGraph:
             if is_configurable(task):
                 task.freeze()
             if isa(task, _Task):
-                with set_grad_enabled(task.training):
-                    task(self, launcher)
+                task(self, launcher)
             elif isa(task, callable):
                 args = [x for x, _ in zip(
                     [self, launcher],
@@ -315,14 +351,18 @@ class HyperGraph:
         """
         if not isa(uri, str): raise InvalidURIError(uri)
         idns = uri.rfind("/") + 1
-        if 0 == idns: raise InvalidURIError(uri)
-        group_name, node_name = uri[:idns], uri[idns:]
+        if 0 == idns:
+            group_name, node_name = '*/', uri
+        else:
+            group_name, node_name = uri[:idns], uri[idns:]
         if 0 == len(node_name): raise InvalidURIError(uri)
         return group_name, node_name
 
     def _get_node_by_uri(self, uri):
         group_name, node_name = self._parse_uri(uri)
-        return self.groups[group_name][node_name]
+        try: return self.groups[group_name][node_name]
+        except KeyError: pass
+        raise KeyError(group_name + node_name)
 
     def _has_node_by_uri(self, uri):
         try:
@@ -336,3 +376,7 @@ class HyperGraph:
 
     def _training_tasks_resumed(self) -> bool:
         return self.global_counters.tasks["train"] >= self.resumed_counters.tasks["train"]
+
+
+def as_group_name(tag):
+    return tag.rstrip('/') + '/'

@@ -57,6 +57,8 @@ class Node(Configurable):
                 assert False, f"{k} is preserved for other usage and can not be used as a resource name."
             if callable(v): setattr(self, k, lambda *a, **k: v(self, *a, **k))
             else: setattr(self, k, v)
+            
+        return self
 
     @property
     def name(self) -> str:
@@ -239,7 +241,7 @@ class ExecutableGraph:
             else:
                 self.apply("dry_run")
         else: # eval
-            if self._training_tasks_resumed(hyper_graph):
+            if hyper_graph._training_tasks_resumed():
                 self.apply("forward")
                 self.apply("update")
             else:

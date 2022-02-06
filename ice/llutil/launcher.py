@@ -209,7 +209,7 @@ class ElasticLauncher(Configurable):
         master_addr="127.0.0.1",
         master_port=None,
 
-        omp_num_threads = 1,
+        omp_num_threads = None,
     ):
         if standalone:
             rdzv_backend = "c10d"
@@ -233,17 +233,21 @@ class ElasticLauncher(Configurable):
         nproc_per_node = len(self._devices)
         logging.info(f"Using nproc_per_node={nproc_per_node}.")
 
-        if "OMP_NUM_THREADS" not in os.environ and nproc_per_node > 1:
+        if "OMP_NUM_THREADS" not in os.environ and omp_num_threads is None and nproc_per_node > 1:
             log.warning(
                 f"\n***********************************************************************************\n"
-                  f"Setting OMP_NUM_THREADS for each process to be {omp_num_threads} in default, to avoid your system \n"
+                  f"Setting OMP_NUM_THREADS for each process to be 1 in default, to avoid your system \n"
                   f"being overloaded, this is often not optimal, please consider tuning it.\n"
                   f"***********************************************************************************"
             )
             # This env variable will be passed down to the subprocesses
+            os.environ["OMP_NUM_THREADS"] = '1'
+        elif "OMP_NUM_THREADS" not in os.environ and omp_num_threads is not None:
             os.environ["OMP_NUM_THREADS"] = str(omp_num_threads)
-        elif "OMP_NUM_THREADS" in os.environ:
+        elif "OMP_NUM_THREADS" in os.environ and omp_num_threads is None:
             omp_num_threads = os.environ["OMP_NUM_THREADS"]
+        elif "OMP_NUM_THREADS" in os.environ and omp_num_threads is not None:
+            raise ValueError(f'os.environ["OMP_NUM_THREADS"] set to {os.environ["OMP_NUM_THREADS"]} but omp_num_threads set to {omp_num_threads}.')
 
         rdzv_configs = _parse_rendezvous_config(rdzv_configs)
 

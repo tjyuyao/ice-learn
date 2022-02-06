@@ -103,6 +103,8 @@ class ModuleNode(Node):
         self.untrainable_params = untrainable_params
         
         self.optim_counter = Counter()
+
+        return self
         
     def prepare(self):
         if self.training:
@@ -131,6 +133,7 @@ class ModuleNode(Node):
         return self._ddp_module(cache)
     
     def update(self):
+        if not self.training: return
         for optimizer in self.optimizers:
             optimizer.update(self.optim_counter.epochs,
                              self.optim_counter.steps)

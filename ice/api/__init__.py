@@ -1,5 +1,5 @@
 from ice.llutil import test
-from ice.llutil.collections import Dict, Counter, ConfigDict
+from ice.llutil.collections import Dict, ConfigDict
 from ice.llutil.argparser import args, as_dict, as_list, isa
 from ice.llutil.config import (clone, configurable, Configurable, freeze, is_configurable,
                                make_configurable)
@@ -16,4 +16,4 @@ from ice.core.dataset import DatasetNode
 from ice.core.optim import Optimizer
 from ice.core.module import ModuleNode
 from ice.core.loss import LossNode
-
+from ice.core.metric import Meter, Metric, ValueMeter, SummationMeter, AverageMeter, MovingAverageMeter, MetricNode

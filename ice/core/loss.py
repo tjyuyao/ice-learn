@@ -43,10 +43,12 @@ class LossNode(Node):
             raise NotImplementedError(f"Unimplemented for LossMode `{loss_mode}`")
 
     def forward_impl(self, cache: "GraphOutputCache"):
-        self.egraph.losses_counter += 1
+        if self.training:
+            self.egraph.losses_counter += 1
         return self.loss_fn(self, cache)
 
     def backward(self):
+        assert self.training
         self.egraph.losses_counter -= 1
         if self.loss_mode == LossMode.MANUAL:
             loss = self.forward() * self.weight

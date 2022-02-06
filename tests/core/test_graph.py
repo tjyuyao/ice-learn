@@ -50,5 +50,5 @@ def test_two_nodes():
 
 
 def test_parse_uri():
-    with pytest.raises(InvalidURIError):
-        HyperGraph._parse_uri("*")
+    HyperGraph._parse_uri("node_name") == ("*/", "node_name")
+    HyperGraph._parse_uri("*/n1") == ("*/", "n1")

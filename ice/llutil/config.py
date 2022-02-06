@@ -252,14 +252,15 @@ class Configurable:
         for k, v in explicit.items():
             self[k] = v
 
+    def __str__(self):
+        kwds = ', '.join([f"{k}={str(objattr(self, '_kwds')[k])}" for k in objattr(self, '_argnames') if k in objattr(self, '_kwds')])
+        return f"{objattr(self, '_cls').__name__}({kwds})"
+
     def __getattr__(self, attrname):
         if objattr(self, "_frozen"):
             raise AttributeError(attrname)
         else:
-            raise AttributeError(attrname)
-            # reprstr = str(self)
-            # if len(reprstr) > 60: reprstr = reprstr[:60] + " ... "
-            # raise AttributeError(f"Configurable \"{reprstr}\" is not frozen, and this may be a reason of not having attribute `{attrname}`.")
+            raise AttributeError(f"Configurable \"{str(self)}\" is not frozen, which may be the reason of not having attribute `{attrname}`.")
 
     def clone(self, deepcopy=True):
         return self._cls(**clone(self._kwds, deepcopy=deepcopy))
@@ -284,10 +285,6 @@ class _Builder(Configurable):
         self._cls = cls
         self._obj = obj
         super().__init__(*args, **kwds)
-    
-    def __str__(self):
-        kwds = ', '.join([f"{k}={str(objattr(self, '_kwds')[k])}" for k in objattr(self, '_argnames') if k in objattr(self, '_kwds')])
-        return f"{objattr(self, '_cls').__name__}({kwds})"
     
     def __reduce__(self) -> tuple[Any, ...]:
         return (partial(self._cls, **self._kwds), ())
