@@ -13,6 +13,7 @@ from torch.distributed.elastic.multiprocessing.errors import record
 from torch.distributed.elastic.multiprocessing import Std
 from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
 from torch.distributed.launcher.api import LaunchConfig, launch_agent
+from torch.distributed.elastic.multiprocessing.api import SignalException
 from ice.llutil.config import Configurable
 
 from ice.llutil.logging import get_logger
@@ -289,7 +290,10 @@ class ElasticLauncher(Configurable):
     @record
     def __call__(self, entrypoint, *args):
         args = [self, entrypoint] + list(args)
-        launch_agent(self.config, _wrap, list(args))
+        try: 
+            launch_agent(self.config, _wrap, list(args))
+        except SignalException as e:
+            get_logger().warn(f"Process {os.getpid()} got signal: {e.sigval}")
 
     @property
     def devices(self) -> List[torch.device]:
