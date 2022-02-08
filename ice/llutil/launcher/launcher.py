@@ -2,22 +2,22 @@
 
 import logging
 import os
-import time
-from typing import List, overload
-import uuid
 import random
+import signal
+import time
+from types import FrameType
+import uuid
+from typing import List, overload
 
 import torch
 import torch.distributed as dist
-from torch.distributed.elastic.multiprocessing.errors import record
-from torch.distributed.elastic.multiprocessing import Std
-from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
-from torch.distributed.launcher.api import LaunchConfig, launch_agent
-from torch.distributed.elastic.multiprocessing.api import SignalException
 from ice.llutil.config import Configurable
-
 from ice.llutil.logging import get_logger
-
+from torch.distributed.elastic.multiprocessing import Std
+from torch.distributed.elastic.multiprocessing.errors import record
+from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
+from .launch_agent import LaunchConfig, launch_agent
+from .events import Events
 
 log = get_logger()
 
@@ -84,7 +84,10 @@ def _parse_devices_and_backend(devices: str = "auto", dist_backend: str = "auto"
     return out, dist_backend
 
 
+def _ignore_sigint(signum: int, frame: FrameType) -> None: ...
+
 def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
+    signal.signal(signal.SIGINT, _ignore_sigint)
     dist.init_process_group(
         backend=launcher.dist_backend,
         rank=launcher.rank,
@@ -149,6 +152,8 @@ class ElasticLauncher(Configurable):
         master_port=None,
 
         omp_num_threads = 1,
+        
+        events:Events = None,
     ): 
         """
 
@@ -211,6 +216,8 @@ class ElasticLauncher(Configurable):
         master_port=None,
 
         omp_num_threads = None,
+        
+        events:Events = None,
     ):
         if standalone:
             rdzv_backend = "c10d"
@@ -286,14 +293,13 @@ class ElasticLauncher(Configurable):
             tee=Std.from_str(tee),
             log_dir=log_dir,
         )
+        
+        self.events = events
 
     @record
     def __call__(self, entrypoint, *args):
         args = [self, entrypoint] + list(args)
-        try: 
-            launch_agent(self.config, _wrap, list(args))
-        except SignalException as e:
-            get_logger().warn(f"Process {os.getpid()} got signal: {e.sigval}")
+        launch_agent(self.config, _wrap, list(args), self.events)
 
     @property
     def devices(self) -> List[torch.device]:

@@ -14,6 +14,9 @@ class InvalidURIError(Exception):
 
 class StopTask(Exception):
     """An Exception raised to exit current task."""
+    
+class StopAllTasks(Exception):
+    """An Exception raised to exit current running."""
 
 
 class Node(Configurable):
@@ -87,16 +90,12 @@ class Node(Configurable):
         return self.egraph.task.step_mode
 
     @property
-    def current_task(self):
+    def task(self):
         return self.egraph.task
     
     @property
-    def current_launcher(self):
+    def launcher(self):
         return self.egraph.task.launcher
-    
-    @property
-    def current_tag_group(self):
-        return self.egraph.nodes
     
     @property
     def global_steps(self):
@@ -142,12 +141,13 @@ class Node(Configurable):
 
     def dry_run(self): """only update states about progress."""
     
-    def state_dict(self): """returns serialization of current node."""
+    def state_dict(self) -> Dict: """returns serialization of current node."""
     
-    def load_state_dict(self, state_dict): """resumes node state from state_dict."""
+    def load_state_dict(self, _state_dict:Dict, strict:bool): """resumes node state from state_dict."""
     
-    def move(self, data):
-        device = self.device
+    def move(self, data, device=None):
+        if device is None:
+            device = self.device
         if isinstance(data, (torch.Tensor, torch.nn.Module)):
             if device.type == "cpu": return data.cpu()
             else: return data.cuda()
@@ -231,19 +231,24 @@ class ExecutableGraph:
     def clean_up_nodes(self):
         self.apply("clean_up")
 
-    def iterate(self, hyper_graph):
+    def iterate(self):
         self.cache.clear()
-        if self.task.training:
-            if hyper_graph._training_steps_resumed():
-                self.apply("forward")
-                self.apply("backward")
-                self.apply("update")
-            else:
-                self.apply("dry_run")
-        else: # eval
-            if hyper_graph._training_tasks_resumed():
-                self.apply("forward")
-                self.apply("update")
-            else:
-                raise StopTask()
         self.task.global_steps += 1
+        if self.task.training:
+            self.apply("forward")
+            self.apply("backward")
+            self.apply("update")
+        else: # eval
+            self.apply("forward")
+            self.apply("update")
+        
+    def state_dict(self):
+        _state_dict = {
+            name: node.freeze().state_dict()
+            for name, node in self.nodes.items()
+        }
+        return _state_dict
+    
+    def load_state_dict(self, _state_dict, strict):
+        for name, node in self.nodes.items():
+            node.freeze().load_state_dict(_state_dict[name], strict)

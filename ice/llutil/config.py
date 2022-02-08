@@ -109,7 +109,23 @@ def is_configurable(cls) -> bool:
 
 
 def has_builder(obj) -> bool:
-    return hasattr(obj, "_builder")
+    try: 
+        object.__getattribute__(obj, "_builder")
+        return True
+    except:
+        return False
+
+
+def frozen(obj):
+    if is_configurable(obj):
+        if has_builder(obj):
+            builder = object.__getattribute__(obj, "_builder")
+            return builder._frozen
+        else:
+            return obj._frozen
+    else:
+        return True  # view normal objects as a frozen version
+            
 
 
 def make_configurable(*classes):
@@ -164,7 +180,7 @@ def clone(obj, deepcopy=True):
     elif isinstance(obj, dict):
         obj = obj.__class__({k: clone(v, deepcopy=deepcopy) for k, v in obj.items()})
     elif has_builder(obj):
-        obj = obj._builder.clone(deepcopy=deepcopy)
+        obj = objattr(obj, "_builder").clone(deepcopy=deepcopy)
     elif isinstance(obj, Configurable):
         obj = obj.clone()
     elif isinstance(obj, torch.Tensor):
@@ -258,9 +274,9 @@ class Configurable:
 
     def __getattr__(self, attrname):
         if objattr(self, "_frozen"):
-            raise AttributeError(attrname)
+            raise AttributeError(f"\"{self._cls.__name__}\" does not have attribute \"{attrname}\".")
         else:
-            raise AttributeError(f"Configurable \"{str(self)}\" is not frozen, which may be the reason of not having attribute `{attrname}`.")
+            raise AttributeError(f"Configurable \"{str(self)}\" is not frozen, which may be the reason of not having attribute \"{attrname}\".")
 
     def clone(self, deepcopy=True):
         return self._cls(**clone(self._kwds, deepcopy=deepcopy))

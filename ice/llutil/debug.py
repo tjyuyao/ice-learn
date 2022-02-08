@@ -1,14 +1,23 @@
+import inspect
 import pdb
 import os
 import sys
-from turtle import pd
 
+from ice.llutil.launcher.events import global_shared_events
 
-def set_trace(local_rank=0):
-    if "LOCAL_RANK" not in os.environ or local_rank == int(os.environ["LOCAL_RANK"]):
-        frame = sys._getframe().f_back  # pop the current stackframe off
-        pdb = SubProcessPdb()
-        pdb.set_trace(frame=frame)
+def _set_trace():
+    frame=sys._getframe().f_back.f_back
+    pdb = SubProcessPdb()
+    pdb.set_trace(frame=frame)
+    
+def set_trace(debug_local_rank=0):
+    if "LOCAL_RANK" not in os.environ:  # main process
+        _set_trace()
+    elif debug_local_rank == int(os.environ["LOCAL_RANK"]):  # target process
+        _set_trace()
+    else:  # other process
+        global_shared_events["debugger_start"].wait()
+        global_shared_events["debugger_end"].wait()
         
 
 class SubProcessPdb(pdb.Pdb):
@@ -19,13 +28,31 @@ class SubProcessPdb(pdb.Pdb):
     
     def __init__(self):
         pdb.Pdb.__init__(self, nosigint=True)
-        
-    def _cmdloop(self) -> None:
+    
+    # General interaction function
+    def _cmdloop(self):
         backup_stdin = sys.stdin
-        try:
-            if not SubProcessPdb._original_stdin:
-                SubProcessPdb._original_stdin = os.fdopen(self._original_stdin_fd)
-            sys.stdin = SubProcessPdb._original_stdin
-            self.cmdloop()
-        finally:
-            sys.stdin = backup_stdin
+        if "debugger_end" in global_shared_events:
+            global_shared_events["debugger_end"].clear()
+            global_shared_events["debugger_start"].set()
+            
+        while True:
+            try:
+                if not SubProcessPdb._original_stdin:
+                    SubProcessPdb._original_stdin = os.fdopen(self._original_stdin_fd)
+                sys.stdin = SubProcessPdb._original_stdin
+            
+                # keyboard interrupts allow for an easy way to cancel
+                # the current command, so allow them during interactive input
+                self.allow_kbdint = True
+                self.cmdloop()
+                self.allow_kbdint = False
+                break
+            except KeyboardInterrupt:
+                self.message('--KeyboardInterrupt--')
+            finally:
+                sys.stdin = backup_stdin
+        
+        if "debugger_end" in global_shared_events:
+            global_shared_events["debugger_end"].set()
+            global_shared_events["debugger_start"].clear()

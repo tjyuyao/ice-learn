@@ -72,3 +72,12 @@ class Optimizer(Configurable):
         # update the network parameters and clear gradients
         self.optimizer.step()
         self.optimizer.zero_grad()
+        
+    def state_dict(self, rank):
+        self.optimizer.consolidate_state_dict()
+        if rank == 0:
+            _state_dict = self.optimizer.state_dict()
+            return _state_dict
+    
+    def load_state_dict(self, _state_dict):
+        self.optimizer.load_state_dict(_state_dict)

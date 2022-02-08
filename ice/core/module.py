@@ -12,58 +12,63 @@ from torch.nn.parallel import DistributedDataParallel
 
 
 class _ModuleProxy(nn.Module):
-    
+
     def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any]) -> None:
         super().__init__()
         self.node = node
         self._module = module
         self.forward_override = forward
-    
+
     def forward(self, cache):
         return self.forward_override(self.node, cache)
 
 
 class ModuleNode(Node):
     """a node that extends `torch.nn.Module`
-    
+
     `ModuleNode` manages neural network modules (`torch.nn.Module`) and the optimizers responsible to train them. For each `ModuleNode`, multiple optimizers can be specified, each of which can be responsible for different group of parameters by filtering parameters names.
-    
+
     Multiple `ModelNode` with different training configuration under differnt tags can share a same `torch.nn.Module`.
     """
-    
+
     @overload
     def __init__(self,
                    module: nn.Module,
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
+                   weight_init_fn: Callable[[nn.Module], None] = None,
                    find_unused_parameters=False,
-                   ): ...
-    
+                   ):        ...
+
     @overload
     def __init__(self,
                    module: nn.Module,
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
+                   weight_init_fn: Callable[[nn.Module], None] = None,
                    find_unused_parameters=False,
                    broadcast_buffers=True,
                    bucket_cap_mb=25,
                    gradient_as_bucket_view=False,
-                   ): ...
-    
+                   ):        ...
+
     def __init__(self, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
-    
+
     def __freeze__(self,
                    module: nn.Module,
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
+                   weight_init_fn: Callable[[nn.Module], None] = None,
                    find_unused_parameters=False,
                    broadcast_buffers=True,
                    bucket_cap_mb=25,
                    gradient_as_bucket_view=False,
                    ):
         super().__freeze__()
-        self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module.freeze())
+        module.freeze()
+        if weight_init_fn is not None: weight_init_fn(module)
+        self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
         self.move(self.module)
         self._ddp_module = DistributedDataParallel(
             _ModuleProxy(self, module, forward),
@@ -71,14 +76,16 @@ class ModuleNode(Node):
             bucket_cap_mb=bucket_cap_mb,
             find_unused_parameters=find_unused_parameters,
             gradient_as_bucket_view=gradient_as_bucket_view)
-        
+
         optim_cfgs = as_dict(optimizers, "*") if optimizers is not None else {}
         for param in self.module.parameters():
             param.requires_grad = False
-        
+
+        optimizers_keys = []
         optimizers:List[Optimizer] = []
         trainable_params:Set[torch.nn.parameter.Parameter] = set()
         for patterns, optimizer in optim_cfgs.items():
+            optimizers_keys.append(patterns)
             matched_params = []  # ! this should not be a set(), which will cause DDP error.
             for param_uri, param in self.module.named_parameters():
                 for pattern in as_list(patterns):
@@ -91,21 +98,22 @@ class ModuleNode(Node):
                     get_logger().warning(f"pattern `{pattern}` does not match any parameters in `{module}`.")
             optimizer['params'] = matched_params
             optimizers.append(optimizer.freeze())
-            
+
         untrainable_params:Set[torch.nn.parameter.Parameter] = set()
         for param in self.module.parameters():
             if param.requires_grad == False:
                 untrainable_params.add(param)
-        
+
+        self.optimizers_keys = optimizers_keys
         self.optimizers = optimizers
         self.optimizable = len(trainable_params) > 0
         self.trainable_params = trainable_params
         self.untrainable_params = untrainable_params
-        
+
         self.optim_counter = Counter()
 
         return self
-        
+
     def prepare(self):
         if self.training:
             for param in self.trainable_params:
@@ -124,17 +132,114 @@ class ModuleNode(Node):
         for optimizer in self.optimizers:
             optimizer.epoch_start(self.optim_counter.epochs,
                                   self.optim_counter.steps)
-            
+
     def epoch_end(self):
         if self.training:
             self.optim_counter.epochs += 1
-    
+
     def forward_impl(self, cache: "GraphOutputCache"):
         return self._ddp_module(cache)
-    
+
     def update(self):
         if not self.training: return
         for optimizer in self.optimizers:
             optimizer.update(self.optim_counter.epochs,
                              self.optim_counter.steps)
             self.optim_counter.steps += 1
+
+    def state_dict(self):
+        _state_dict = {
+            "module": self.module.state_dict(),
+            "optim_counter": {k:v for k, v in self.optim_counter.items()},
+            "optimizers_keys": {key:i for i, key in enumerate(self.optimizers_keys)},
+            "optimizers": [optimizer.state_dict(self.launcher.rank) for optimizer in self.optimizers],
+            "optimizers_backup_states": getattr(self, "optimizers_backup_states", {"optimizers_keys":{}})
+        }
+        return _state_dict
+
+    def load_state_dict(self, _state_dict:Dict, strict:bool):
+        with torch.no_grad():
+            # load module
+            result = self.module.load_state_dict(_state_dict["module"], strict=strict)
+            if not strict:
+                if len(result.unexpected_keys) > 0:
+                    get_logger().warn(
+                        'Unexpected key(s) when loading a {}: {}. '.format(
+                            self.module.__class__.__name__,
+                            ', '.join('"{}"'.format(k) for k in result.unexpected_keys)))
+                if len(result.missing_keys) > 0:
+                    get_logger().warn(
+                        'Missing key(s) when loading a {}: {}. '.format(
+                            self.module.__class__.__name__,
+                            ', '.join('"{}"'.format(k) for k in result.missing_keys)))
+            # load optim_counter
+            for k, v in _state_dict["optim_counter"].items():
+                self.optim_counter[k] = v
+            # load optimizers
+            _backup_states = _state_dict["optimizers_backup_states"]
+            if self.optimizers_keys == _state_dict["optimizers_keys"]:
+                for optimizer, optim_states in zip(self.optimizers, _state_dict["optimizers"]):
+                    optimizer.load_state_dict(optim_states)
+            else:
+                missing_keys:Set[str] = []
+                unexpected_keys_in_state: Set[str] = set(_state_dict["optimizers_keys"].keys())
+                unexpected_keys_in_backup: Set[str] = set(_backup_states["optimizers_keys"].keys())
+                loaded_from_backup = set()
+                for i, key in enumerate(self.optimizers_keys):
+                    optimizer = self.optimizers[i]
+                    if key in _state_dict["optimizers_keys"]:
+                        j = _state_dict["optimizers_keys"][key]
+                        optimizer.load_state_dict(_state_dict["optimizers"][j])
+                        unexpected_keys_in_state.remove(key)
+                    elif key in _backup_states["optimizers_keys"]:
+                        j = _backup_states["optimizers_keys"][key]
+                        optimizer.load_state_dict(_backup_states["optimizers"][j])
+                        unexpected_keys_in_backup.remove(key)
+                        loaded_from_backup.add(key)
+                    else:
+                        missing_keys.add(key)
+                        
+                warn_flag = False
+                warn_msgs = [f"optimizers_keys does not match for {self.module.__class__.__name__}.\n"]
+                if len(missing_keys) > 0:
+                    warn_msgs.append(
+                        "Missing key(s) ({}) are not load.\n".format(
+                            ', '.join('"{}"'.format(k) for k in missing_keys)
+                        ))
+                    warn_flag = True
+                unexpected_keys = unexpected_keys_in_state.union(unexpected_keys_in_backup)
+                if len(unexpected_keys) > 0:
+                    warn_msgs.append(
+                        "Unexpected key(s) ({}) are saved as a backup for future use.\n".format(
+                            ', '.join('"{}"'.format(k) for k in unexpected_keys)
+                        ))
+                    warn_flag = True
+                if len(loaded_from_backup) > 0:
+                    warn_msgs.append(
+                        "Following keys are loaded from a backup version: {}.\n".format(
+                            ', '.join('"{}"'.format(k) for k in loaded_from_backup)
+                        ))
+                    warn_flag = True
+                if warn_flag:
+                    get_logger().warn(''.join(warn_msgs))
+                
+                # update backup states
+                _new_backup_states = {
+                    "optimizers_keys": {},
+                    "optimizers": {},
+                }
+                u = 0
+                for key in unexpected_keys_in_backup:
+                    if key in unexpected_keys_in_state: continue
+                    j = _backup_states["optimizers_keys"][key]
+                    _new_backup_states["optimizers_keys"][key] = u
+                    _new_backup_states["optimizers"][key] = _backup_states["optimizers"][j]
+                    u += 1
+                for key in unexpected_keys_in_state:
+                    i = _state_dict["optimizers_keys"][key]
+                    _new_backup_states["optimizers_keys"][key] = u
+                    _new_backup_states["optimizers"][key] = _state_dict["optimizers"][i]
+                    u += 1
+                _backup_states = _new_backup_states
+            # save as a backup
+            setattr(self, "optimizers_backup_states", _backup_states)

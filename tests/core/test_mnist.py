@@ -47,12 +47,14 @@ _C.MODULES.NET_NODE = ice.ModuleNode(
     )
 _C.LOSSES.NLL_NODE = LossNode(forward=lambda n, x: F.nll_loss(x["net"], x["mnist"][1]))
 
+
 _C.GRAPHS.G1 = ice.HyperGraph()
 _C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.TRAIN_NODE, tags="train")
 _C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.VAL_NODE, tags="val")
 _C.GRAPHS.G1.add("net", _C.MODULES.NET_NODE)
 _C.GRAPHS.G1.add("nll_loss", _C.LOSSES.NLL_NODE)
 _C.GRAPHS.G1.add("avg_nll_loss", ice.MetricNode(ice.AverageMeter(), forward=lambda n, x: x['nll_loss']), tags="val")
+_C.GRAPHS.G1.print_forward_output("nll_loss", every=100)
 
 
 def report(g: ice.HyperGraph, launcher: ElasticLauncher):
@@ -64,11 +66,15 @@ def report(g: ice.HyperGraph, launcher: ElasticLauncher):
 
 
 _C.GRAPHS.G1.run(
-    ice.Repeat([
-        ice.Task(train=True, epochs=1, tags="train"),
-        ice.Task(train=False, epochs=1, tags="val"),
-        report,
-    ], times=5),
+    [
+        # lambda g: g.load_checkpoint("out/unnamed_eqy3bwtb/ckpts/E1S53.pth"),
+        ice.Repeat([
+            ice.Task(train=True, epochs=1, tags="train"),
+            lambda g: g.save_checkpoint(),
+            ice.Task(train=False, epochs=1, tags="val"),
+            report,
+        ], times=5)
+    ],
     devices="cuda:0,0",
     omp_num_threads=4,
     monitor_interval=1,

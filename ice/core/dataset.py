@@ -1,12 +1,13 @@
 #export
 
+import math
 from random import seed
 import numpy as np
 import torch
 import re
 import collections
 from torch._six import string_classes
-from typing import List, Callable, Optional, Dict, Any, Union, overload
+from typing import Iterator, List, Callable, Optional, Dict, Any, Sized, Union, overload
 from copy import copy
 
 from torch.utils.data import DataLoader, Dataset
@@ -74,6 +75,50 @@ def failsafe_collate(batch):
     raise TypeError(_FAILSAFE_COLLATE_ERR_MSG_FORMAT.format(elem_type))
 
 
+class ResumableDistributedSampler(DistributedSampler):
+    
+    def __init__(self, dataset: Dataset, num_replicas: Optional[int] = None, rank: Optional[int] = None, shuffle: bool = True, seed: int = 0, drop_last: bool = False, num_iters:int=None) -> None:
+        super().__init__(dataset, num_replicas, rank, shuffle, seed, drop_last)
+        self.start_batch_idx = 0
+        self.num_iters = num_iters
+        
+    def set_start_batch_idx(self, i):
+        self.start_batch_idx = i
+    
+    def __iter__(self) -> Iterator:
+        if self.shuffle:
+            # deterministically shuffle based on epoch and seed
+            g = torch.Generator()
+            g.manual_seed(self.seed + self.epoch)
+            indices = torch.randperm(len(self.dataset), generator=g).tolist()
+        else:
+            indices = list(range(len(self.dataset)))
+
+        if not self.drop_last:
+            # add extra samples to make it evenly divisible
+            padding_size = self.total_size - len(indices)
+            if padding_size <= len(indices):
+                indices += indices[:padding_size]
+            else:
+                indices += (indices * math.ceil(padding_size / len(indices)))[:padding_size]
+        else:
+            # remove tail of data to make it evenly divisible.
+            indices = indices[:self.total_size]
+        assert len(indices) == self.total_size
+
+        # subsample
+        indices = indices[self.rank:self.total_size:self.num_replicas]
+        assert len(indices) == self.num_samples
+        
+        indices = indices[self.start_batch_idx:]
+        self.start_batch_idx = 0
+
+        if self.num_iters is not None:
+            indices = indices[:self.num_iters]
+
+        return iter(indices)
+
+
 class DatasetNode(Node):
     """Automating DataLoader and DataSampler creation and maintainance."""
     
@@ -84,7 +129,7 @@ class DatasetNode(Node):
                  shuffle: bool = False,
                  drop_last: bool = False,
                  num_workers: int = 0,
-                 steps_per_epoch: int = None,
+                 num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
                  pin_memory: bool = False,
                  worker_init_fn: Optional[Callable] = None,
@@ -103,7 +148,7 @@ class DatasetNode(Node):
                  shuffle: bool = False,
                  drop_last: bool = False,
                  num_workers: int = 0,
-                 steps_per_epoch: int = None,
+                 num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
                  pin_memory: bool = False,
                  worker_init_fn: Optional[Callable] = None,
@@ -116,7 +161,7 @@ class DatasetNode(Node):
         
         pipeline = Compose(as_list(pipeline)) if isinstance(pipeline, list) else pipeline
         
-        self.sampler = DistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last)
+        self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch)
         self.loader = DataLoader(
                 dataset,
                 batch_size=batch_size,
@@ -128,7 +173,6 @@ class DatasetNode(Node):
                 worker_init_fn=worker_init_fn,
                 persistent_workers=persistent_workers,
             )
-        self.steps_per_epoch = steps_per_epoch
         self.internal_epoch = 0
         self.internal_steps = 0
         self.iterator = None
@@ -140,8 +184,10 @@ class DatasetNode(Node):
         
         try:
             sample = next(self.iterator)
+            self.internal_steps += 1
         except StopIteration as e:
             # update states and iterator
+            self.internal_steps = 0
             self.internal_epoch += 1
             self.sampler.set_epoch(epoch=self.internal_epoch)
             self.iterator = iter(self.loader)
@@ -152,3 +198,17 @@ class DatasetNode(Node):
                 raise e
         
         return self.move(sample)
+    
+    def state_dict(self) -> Dict:
+        _state_dict = {
+            "internal_epoch": self.internal_epoch,
+            "internal_steps": self.internal_steps,
+        }
+        return _state_dict
+    
+    def load_state_dict(self, _state_dict: Dict, strict: bool=None):
+        self.internal_epoch = _state_dict["internal_epoch"]
+        self.internal_steps = _state_dict["internal_steps"]
+        self.sampler.set_epoch(epoch=self.internal_epoch)
+        self.sampler.set_start_batch_idx(self.internal_steps)
+        self.iterator = iter(self.loader)
