@@ -97,7 +97,7 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
         torch.cuda.set_device(launcher.assigned_device)
     entrypoint(*args)
     time.sleep(0.5)
-    dist.destroy_process_group()
+    # dist.destroy_process_group()
 
 
 class ElasticLauncher(Configurable):
@@ -242,13 +242,6 @@ class ElasticLauncher(Configurable):
         logging.info(f"Using nproc_per_node={nproc_per_node}.")
 
         if "OMP_NUM_THREADS" not in os.environ and omp_num_threads is None and nproc_per_node > 1:
-            log.warning(
-                f"\n***********************************************************************************\n"
-                  f"Setting OMP_NUM_THREADS for each process to be 1 in default, to avoid your system \n"
-                  f"being overloaded, this is often not optimal, please consider tuning it.\n"
-                  f"***********************************************************************************"
-            )
-            # This env variable will be passed down to the subprocesses
             os.environ["OMP_NUM_THREADS"] = '1'
         elif "OMP_NUM_THREADS" not in os.environ and omp_num_threads is not None:
             os.environ["OMP_NUM_THREADS"] = str(omp_num_threads)

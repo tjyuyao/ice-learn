@@ -1,18 +1,17 @@
 #export
 
 import math
-from random import seed
 import numpy as np
 import torch
 import re
 import collections
 from torch._six import string_classes
-from typing import Iterator, List, Callable, Optional, Dict, Any, Sized, Union, overload
-from copy import copy
+from typing import Iterator, List, Callable, Optional, Dict, Union, overload
 
 from torch.utils.data import DataLoader, Dataset
-from torch.utils.data import DistributedSampler, RandomSampler, WeightedRandomSampler
+from torch.utils.data import DistributedSampler  # TODO: WeightedRandomSampler
 
+from ice.llutil.config import freeze
 from ice.llutil.argparser import as_dict, as_list
 from ice.core.graph import Node
 from ice.llutil.dictprocess import Compose, DictProcessor
@@ -119,19 +118,37 @@ class ResumableDistributedSampler(DistributedSampler):
         return iter(indices)
 
 
+class _DatasetProxy(Dataset):
+
+    def __init__(self, node, dataset, pipeline) -> None:
+        super().__init__()
+        self.node = node
+        self._dataset = dataset
+        self.pipeline = pipeline
+
+    def __len__(self):
+        return len(self._dataset)
+    
+    def __getitem__(self, index):
+        sample = self._dataset.__getitem__(index)
+        sample = as_dict(sample, "sample")
+        sample = self.pipeline(sample)
+        return sample
+
+
 class DatasetNode(Node):
     """Automating DataLoader and DataSampler creation and maintainance."""
     
     @overload
     def __init__(self,
                  dataset: Dataset,
-                 batch_size: int = 1,
                  shuffle: bool = False,
-                 drop_last: bool = False,
+                 batch_size: int = 1,
                  num_workers: int = 0,
+                 pin_memory: bool = False,
+                 drop_last: bool = False,
                  num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
-                 pin_memory: bool = False,
                  worker_init_fn: Optional[Callable] = None,
                  persistent_workers: bool = False,
                  collate_fn: Optional[Callable] = failsafe_collate,
@@ -144,13 +161,13 @@ class DatasetNode(Node):
     
     def __freeze__(self,
                  dataset: Dataset,
-                 batch_size: int = 1,
                  shuffle: bool = False,
-                 drop_last: bool = False,
+                 batch_size: int = 1,
                  num_workers: int = 0,
+                 pin_memory: bool = False,
+                 drop_last: bool = False,
                  num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
-                 pin_memory: bool = False,
                  worker_init_fn: Optional[Callable] = None,
                  persistent_workers: bool = False,
                  collate_fn: Optional[Callable] = failsafe_collate,
@@ -158,10 +175,11 @@ class DatasetNode(Node):
                  ) -> None:
         
         super().__freeze__()
-        
+        freeze(dataset)
         pipeline = Compose(as_list(pipeline)) if isinstance(pipeline, list) else pipeline
-        
-        self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch)
+        dataset = _DatasetProxy(self, dataset, pipeline)
+
+        self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch, seed=torch.random.initial_seed())
         self.loader = DataLoader(
                 dataset,
                 batch_size=batch_size,
@@ -196,7 +214,7 @@ class DatasetNode(Node):
                 sample = next(self.iterator)
             else:
                 raise e
-        
+
         return self.move(sample)
     
     def state_dict(self) -> Dict:

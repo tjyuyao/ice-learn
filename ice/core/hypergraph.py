@@ -6,6 +6,7 @@ import tempfile
 from copy import deepcopy
 from dataclasses import dataclass
 from inspect import signature
+import time
 from typing import Dict, List, Optional, overload
 import numpy as np
 
@@ -14,7 +15,7 @@ from ice.core.graph import (ExecutableGraph, GraphOutputCache, InvalidURIError,
                             Node, StopAllTasks, StopTask)
 from ice.llutil.argparser import as_list, isa
 from ice.llutil.collections import Dict as iDict
-from ice.llutil.config import Configurable, is_configurable
+from ice.llutil.config import Configurable, frozen, is_configurable
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
 from ice.llutil.logging import get_logger
 from ice.llutil.multiprocessing import called_from_main
@@ -254,26 +255,30 @@ class HyperGraph:
         self.global_counters = GlobalCounters()
         self.last_executed_egraph = None
         self.run_info = iDict()
+        self.num_workers = 0
 
-    def add(self, name, node, tags="*"):
+    def add(self, name, node:Node, tags="*"):
         uris = []
         for tag in as_list(tags):
             uris.append(as_group_name(tag) + name)
         self[uris] = node.clone(deepcopy=True)
 
-    def print_forward_output(self, *nodes, every=1, total=None, tags:List[str] = "*", train_only=True):
+        if isa(node, Configurable) and not frozen(node) and "num_workers" in node:
+            self.num_workers = max(self.num_workers, node["num_workers"])
+
+    def print_forward_output(self, *nodenames, every=1, total=None, tags:List[str] = "*", train_only=True, localrank0_only=True):
 
         def probe_fn(n:Node, x:GraphOutputCache):
             if train_only and not n.training: return
-            if n.launcher.local_rank != 0: return
+            if localrank0_only and n.launcher.local_rank != 0: return
             if total is not None and n.global_steps // every > total: return  # total
             if n.global_steps > 1 and n.global_steps % every: return # every
             prefix = f"E{self.global_counters.epochs.train}S{self.global_counters.steps.train}:"
 
-            for nodename in as_list(nodes):
+            for nodename in as_list(nodenames):
                 _print(x[nodename], prefix=prefix, uri=nodename)
 
-        self.add(f"print_output_of({','.join(as_list(nodes))})", Node(forward=probe_fn), tags=tags)
+        self.add(f"print_output_of({','.join(as_list(nodenames))})", Node(forward=probe_fn), tags=tags)
 
     @overload
     def run(self, tasks, devices="auto", run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0): ...
@@ -308,6 +313,8 @@ class HyperGraph:
             kwds["log_dir"] = self.run_info.log_dir
             kwds["start_method"] = start_method
             kwds["events"] = Events(start_method)
+            if "omp_num_threads" not in kwds:
+                kwds["omp_num_threads"] = self.num_workers + 1
 
             if launcher is None:
                 launcher = ElasticLauncher(**kwds)

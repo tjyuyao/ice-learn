@@ -221,7 +221,7 @@ def freeze(obj):
     elif isinstance(obj, dict):
         obj = obj.__class__({k: freeze(v) for k, v in obj.items()})
     elif has_builder(obj):
-        obj = obj._builder.freeze()
+        obj = objattr(obj, "_builder").freeze()
     elif isinstance(obj, Configurable):
         obj = obj.freeze()
     elif isinstance(obj, torch.Tensor):

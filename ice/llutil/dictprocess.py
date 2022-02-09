@@ -74,11 +74,12 @@ def dictprocess(f):
             try:
                 ret = f(*args, **mapped, **unmapped)
             except Exception as e:
-                eargs = list(e.args)
                 if len(unmapped):
+                    eargs = list(e.args)
                     eargs.append(
                         f"This may be caused by unmapped transform keyword arguments: {unmapped}.")
-                raise TypeError(*eargs)
+                    raise e.__class__(*eargs)
+                raise e
 
             # post process: remapping output keywords
             if dst is None:

@@ -6,6 +6,7 @@ argument parser is accessable via ``ice.args``.
 """
 
 import sys
+import socket
 
 _type = type
 
@@ -86,6 +87,8 @@ def _format_arg(arg):
             break
     return farg
 
+def get_hostname():
+    return socket.gethostname()
 
 class ArgumentMissingError(Exception): """Raised when a required argument is missing from command line."""
 

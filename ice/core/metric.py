@@ -152,15 +152,16 @@ class SummationMeter(Meter):
         self.summation: torch.Tensor = 0
 
     def update(self, batch_sum: torch.Tensor):
-        self.summation += batch_sum.detach()
+        self.unsync_summation += batch_sum.detach()
 
     def evaluate(self):
         return self.summation
     
     def sync(self):
+        if self.unsync_summation == 0: return
         dist.all_reduce(self.unsync_summation, op=dist.ReduceOp.SUM)
         self.summation += self.unsync_summation
-        self.unsync_summation = 0
+        self.unsync_summation = torch.zeros_like(self.summation)
 
 
 class AverageMeter(Meter):
@@ -180,9 +181,10 @@ class AverageMeter(Meter):
         return self.summation / self.count
     
     def sync(self):
+        if self.unsync_summation == 0: return
         dist.all_reduce(self.unsync_summation, op=dist.ReduceOp.SUM)
         self.summation += self.unsync_summation
-        self.unsync_summation = 0
+        self.unsync_summation = torch.zeros_like(self.summation)
         self.count += self.unsync_count * dist.get_world_size()
         self.unsync_count = 0
 

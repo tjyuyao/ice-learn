@@ -17,6 +17,7 @@ multiprocess = "^0.70.12"
 PySocks = "^1.7.1"
 pycuda = {version = "^2021.1", optional = true}
 varname = "^0.8.1"
+opencv-python = "^4.5.5"
 
 [tool.poetry.extras]
 pycuda = ["pycuda"]

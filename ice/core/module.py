@@ -138,7 +138,10 @@ class ModuleNode(Node):
             self.optim_counter.epochs += 1
 
     def forward_impl(self, cache: "GraphOutputCache"):
-        return self._ddp_module(cache)
+        if self.training:
+            return self._ddp_module(cache)
+        else:
+            return self._ddp_module.module(cache)
 
     def update(self):
         if not self.training: return
