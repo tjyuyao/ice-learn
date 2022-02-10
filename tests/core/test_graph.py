@@ -43,7 +43,7 @@ def test_two_nodes():
     _C.GRAPH.G1.run(
         [
             Task(train=True, steps=2),
-            lambda g: assertTrue(g["*/n2"].output == (111+1)*2, f"test_two_nodes: expecting 224, get {g['*/n2'].output}")
+            lambda g: assertTrue(g["*/n2"].forward() == (111+1)*2, f"test_two_nodes: expecting 224, get {g['*/n2'].forward()}")
         ],
         devices="cpu"
     )
