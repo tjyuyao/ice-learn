@@ -1,7 +1,8 @@
 import pytest
 import torch
 import torch.distributed as dist
-from ice.llutil.launcher import ElasticLauncher, _parse_devices_and_backend
+from ice.llutil.launcher import ElasticLauncher
+from ice.llutil.launcher.launcher import _parse_devices_and_backend
 import ice
 
 

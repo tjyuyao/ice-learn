@@ -18,7 +18,7 @@ from ice.llutil.collections import Dict as iDict
 from ice.llutil.config import Configurable, frozen, is_configurable
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
 from ice.llutil.logging import get_logger
-from ice.llutil.multiprocessing import called_from_main
+from ice.llutil.multiprocessing import in_main_process
 from ice.llutil.print import _print
 from torch.autograd.grad_mode import set_grad_enabled
 
@@ -306,7 +306,7 @@ class HyperGraph:
         
         self._set_initial_rng_state(seed)
 
-        if called_from_main():
+        if in_main_process():
             self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
             
             kwds["rdzv_id"] = run_id

@@ -42,11 +42,8 @@ init_reductions()
 
 import inspect
 
-def called_from_main():
-    """Another version of ``if __name__ == "__main__"`` that works everywhere.
-    
-    Returns:
-        bool
+def in_main_process():
+    """Whether current process is worker process or main process.
     """
     for frameinfo in inspect.stack():
         if "spawn_main" == frameinfo.function:

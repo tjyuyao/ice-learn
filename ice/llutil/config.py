@@ -1,7 +1,10 @@
-from functools import partial
-from typing import Any
-import torch
 import copy
+from functools import partial
+from inspect import Parameter, signature
+from typing import Any
+
+import torch
+from ice.llutil.multiprocessing import in_main_process
 
 
 def _inplace_surrogate(cls, funcname):
@@ -17,9 +20,11 @@ def _inplace_surrogate(cls, funcname):
             else:
                 value = getattr(cfg, funcname)(*a, **k)
         except AttributeError:
-            # this will only occur during unpickling, the unpickler tries to retrieve some class meta variables.
             if funcname == "__getattribute__":
-                value = object.__getattribute__(cls, *a)
+                if len(a) and a[0] == 'freeze':
+                    return object.__getattribute__(cfg, *a)
+                else:
+                    value = object.__getattribute__(cls, *a)
             elif funcname == "__getattr__":
                 raise AttributeError(*a)
             else:
@@ -301,6 +306,17 @@ class _Builder(Configurable):
         self._cls = cls
         self._obj = obj
         super().__init__(*args, **kwds)
+        if not in_main_process():
+            # auto freeze()
+            for argname, arg in signature(self._cls.__freeze__).parameters.items():
+                if arg.kind == Parameter.VAR_POSITIONAL:
+                    if argname not in self._kwds:
+                        break
+                    else: continue
+                else: continue
+            else:
+                self.freeze()
+
     
     def __reduce__(self) -> tuple[Any, ...]:
         return (partial(self._cls, **self._kwds), ())
