@@ -248,7 +248,8 @@ class ElasticLauncher(Configurable):
         elif "OMP_NUM_THREADS" in os.environ and omp_num_threads is None:
             omp_num_threads = os.environ["OMP_NUM_THREADS"]
         elif "OMP_NUM_THREADS" in os.environ and omp_num_threads is not None:
-            raise ValueError(f'os.environ["OMP_NUM_THREADS"] set to {os.environ["OMP_NUM_THREADS"]} but omp_num_threads set to {omp_num_threads}.')
+            if int(os.environ["OMP_NUM_THREADS"]) != int(omp_num_threads):
+                raise ValueError(f'os.environ["OMP_NUM_THREADS"] set to {os.environ["OMP_NUM_THREADS"]} but omp_num_threads set to {omp_num_threads}.')
 
         rdzv_configs = _parse_rendezvous_config(rdzv_configs)
 
