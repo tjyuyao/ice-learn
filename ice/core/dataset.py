@@ -131,8 +131,9 @@ class _DatasetProxy(Dataset):
     
     def __getitem__(self, index):
         sample = self._dataset.__getitem__(index)
-        sample = as_dict(sample, "sample")
-        sample = self.pipeline(sample)
+        if self.pipeline is not None:
+            sample = as_dict(sample, "sample")
+            sample = self.pipeline(sample)
         return sample
 
 
