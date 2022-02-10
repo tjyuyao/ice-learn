@@ -82,7 +82,7 @@ def configurable(cls):
 
     # substitute the original initialization function.
     def make_config(obj, *args, **kwds):
-        object.__setattr__(obj, "_builder", _Builder(cls, obj, *args, **kwds))
+        _Builder(cls, obj, *args, **kwds)
     cls.__init__ = make_config
 
     # surrogate other functions
@@ -306,6 +306,7 @@ class _Builder(Configurable):
         self._cls = cls
         self._obj = obj
         super().__init__(*args, **kwds)
+        object.__setattr__(obj, "_builder", self)
         if not in_main_process():
             # auto freeze()
             for argname, arg in signature(self._cls.__freeze__).parameters.items():
