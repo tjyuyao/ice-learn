@@ -4,6 +4,7 @@ from inspect import Parameter, signature
 from typing import Any
 
 import torch
+from ice.llutil.argparser import isa
 from ice.llutil.multiprocessing import in_main_process
 
 
@@ -21,10 +22,13 @@ def _inplace_surrogate(cls, funcname):
                 value = getattr(cfg, funcname)(*a, **k)
         except AttributeError:
             if funcname == "__getattribute__":
-                if len(a) and a[0] == 'freeze':
+                if len(a) and a[0] in ('freeze', 'clone', 'update'):
                     return object.__getattribute__(cfg, *a)
                 else:
-                    value = object.__getattribute__(cls, *a)
+                    try:
+                        value = object.__getattribute__(cls, *a)
+                    except AttributeError:
+                        value = object.__getattribute__(self, *a)
             elif funcname == "__getattr__":
                 raise AttributeError(*a)
             else:
@@ -91,6 +95,7 @@ def configurable(cls):
     _inplace_surrogate(cls, "__str__")
     _inplace_surrogate(cls, "__getitem__")
     _inplace_surrogate(cls, "__setitem__")
+    _inplace_surrogate(cls, "__call__")
 
     # return the modified cls
     return cls
@@ -261,9 +266,17 @@ class Configurable:
 
     def __setitem__(self, key, value):
         assert not self._frozen, "Frozen configuration can not be altered, please use clone() at proper time."
-        if isinstance(key, int):
-            key = self._argnames[key]
-        self._kwds[key] = value
+        if isa(key, tuple):
+            for i in key:
+                if i in self._argnames:
+                    self.__setitem__(i, value)
+                    break
+            else:
+                raise KeyError(key)
+        else:
+            if isa(key, int):
+                key = self._argnames[key]
+            self._kwds[key] = value
 
     def __contains__(self, key):
         return key in self._kwds
@@ -272,6 +285,7 @@ class Configurable:
         explicit.update(implicit)
         for k, v in explicit.items():
             self[k] = v
+        return self
 
     def __str__(self):
         kwds = ', '.join([f"{k}={str(objattr(self, '_kwds')[k])}" for k in objattr(self, '_argnames') if k in objattr(self, '_kwds')])
@@ -295,6 +309,16 @@ class Configurable:
         self._cls.__freeze__(self._obj, **self._kwds)
         return self._obj
 
+    def auto_freeze(self):
+        for argname, arg in signature(self._cls.__freeze__).parameters.items():
+            if arg.kind == Parameter.POSITIONAL_OR_KEYWORD:
+                if argname not in self._kwds:
+                    break
+                else: continue
+            else: continue
+        else:
+            self.freeze()
+        return self._obj
 
 class _Builder(Configurable):
     """This class stores the arguments and meta informations that is needed by ``configurable`` decorator.
@@ -308,16 +332,16 @@ class _Builder(Configurable):
         super().__init__(*args, **kwds)
         object.__setattr__(obj, "_builder", self)
         if not in_main_process():
-            # auto freeze()
-            for argname, arg in signature(self._cls.__freeze__).parameters.items():
-                if arg.kind == Parameter.VAR_POSITIONAL:
-                    if argname not in self._kwds:
-                        break
-                    else: continue
-                else: continue
-            else:
-                self.freeze()
+            self.auto_freeze()
 
-    
     def __reduce__(self) -> tuple[Any, ...]:
+        assert not self._frozen
         return (partial(self._cls, **self._kwds), ())
+
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        newobj = self.clone()
+        for i, arg in enumerate(args):
+            newobj[i] = arg
+        for k, arg in kwds.items():
+            newobj[k] = arg
+        return newobj.auto_freeze()
