@@ -1,6 +1,7 @@
 import copy
 from functools import partial
 from inspect import Parameter, signature
+from multiprocessing import get_logger
 from typing import Any
 
 import torch
@@ -14,12 +15,17 @@ def _inplace_surrogate(cls, funcname):
     def newfunc(self, *a, **k):
         try:
             cfg = object.__getattribute__(self, "_builder")
+            if not cfg._frozen:
+                try:
+                    value = getattr(cfg, funcname)(*a, **k)
+                except AttributeError as e:
+                    get_logger().info(f"Try to automatically freeze due to AttributeError:\n{e.args[0]}")
+                    self.auto_freeze()
+                    if not cfg._frozen: raise
             if cfg._frozen:
                 fn = getattr(cls, backupname)  # will get None instead of raise AttributeError if not hasattr(original_class, funcname), so
                 if fn is None: raise AttributeError(funcname) # we raise it manually.
                 value = fn(self, *a, **k)
-            else:
-                value = getattr(cfg, funcname)(*a, **k)
         except AttributeError:
             if funcname == "__getattribute__":
                 if len(a) and a[0] in ('freeze', 'clone', 'update_params'):
@@ -87,9 +93,13 @@ def configurable(cls):
         cls.__freeze__ = getattr(cls, "__init__")
 
     # substitute the original initialization function.
-    def make_config(obj, *args, **kwds):
-        _Builder(cls, obj, *args, **kwds)
-    cls.__init__ = make_config
+    def __new_init__(obj, *args, **kwds):
+        if obj.configurable_class_id == cls.configurable_class_id:
+            _Builder(cls, obj, *args, **kwds)
+        else:  # called from subclass instance
+            cls.__freeze__(obj, *args, **kwds)
+
+    cls.__init__ = __new_init__
 
     # surrogate other functions
     _inplace_surrogate(cls, "__getattribute__")
