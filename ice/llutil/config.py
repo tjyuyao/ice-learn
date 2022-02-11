@@ -4,7 +4,7 @@ from inspect import Parameter, signature
 from typing import Any
 
 import torch
-from ice.llutil.argparser import isa
+from ice.llutil.argparser import as_list, isa
 from ice.llutil.multiprocessing import in_main_process
 
 
@@ -22,7 +22,7 @@ def _inplace_surrogate(cls, funcname):
                 value = getattr(cfg, funcname)(*a, **k)
         except AttributeError:
             if funcname == "__getattribute__":
-                if len(a) and a[0] in ('freeze', 'clone', 'update'):
+                if len(a) and a[0] in ('freeze', 'clone', 'update_params'):
                     return object.__getattribute__(cfg, *a)
                 else:
                     try:
@@ -78,9 +78,11 @@ def configurable(cls):
         return cls
 
     # mark the cls so that is becomes a configurable class.
-    cls.is_configurable = True
+    cls.configurable_class_id = id(cls)
 
-    if not hasattr(cls, "__freeze__"):
+    try:
+        object.__getattribute__(cls, "__freeze__")
+    except AttributeError:
         # use the original initialization function as __freeze__.
         cls.__freeze__ = getattr(cls, "__init__")
 
@@ -115,11 +117,11 @@ def is_configurable(cls) -> bool:
     >>> assert ice.is_configurable(nn.Conv2d)
 
     """
-    return hasattr(cls, "is_configurable")
+    return getattr(cls, "configurable_class_id", None) in (id(cls), -1)
 
 
 def has_builder(obj) -> bool:
-    try: 
+    try:
         object.__getattribute__(obj, "_builder")
         return True
     except:
@@ -135,7 +137,6 @@ def frozen(obj):
             return obj._frozen
     else:
         return True  # view normal objects as a frozen version
-            
 
 
 def make_configurable(*classes):
@@ -245,7 +246,7 @@ def objattr(obj, attrname):
 
 class Configurable:
 
-    is_configurable = True
+    configurable_class_id = -1
 
     def __init__(self, *args, **kwds) -> None:
         try:
@@ -253,43 +254,156 @@ class Configurable:
         except AttributeError:
             self._obj = self
             self._cls = self.__class__
-        self._argnames = self._cls.__freeze__.__code__.co_varnames[1:]
-        self._kwds = kwds
+
+        param_signs = list(signature(self._cls.__freeze__).parameters.items())[1:]
+        self._args_only = []
+        self._args_only_count = 0
+        self._args_only_names = {}
+        self._args_or_kwds = {}
+        self._argnames = []
+        self._var_args = []
+        self._var_args_name = None
+        self._kwds_only = {}
+        self._var_kwds = {}
+        self._var_kwds_name = None
+        for name, param in param_signs:
+            if param.kind == Parameter.POSITIONAL_ONLY:
+                self._args_only.append(param.default)
+                self._args_only_names[name] = self._args_only_count
+                self._args_only_count += 1
+            elif param.kind == Parameter.POSITIONAL_OR_KEYWORD:
+                self._args_or_kwds[name] = param.default
+                self._argnames.append(name)
+            elif param.kind == Parameter.VAR_POSITIONAL:
+                self._var_args_name = name
+            elif param.kind == Parameter.KEYWORD_ONLY:
+                self._kwds_only[name] = param.default
+            elif param.kind == Parameter.VAR_KEYWORD:
+                self._var_kwds_name = name
+            else:
+                assert False, "unknown param kind"
+
+        self._all_args_count = self._args_only_count + len(self._args_or_kwds)
+        self._all_kwds_names = list(self._args_only_names.keys()) + self._argnames + [self._var_args_name, self._var_kwds_name] + list(self._kwds_only.keys())
+
         self._frozen = False
-        for i, v in enumerate(args):
-            self[i] = v
+        self.update_params(*args, **kwds)
+
+    def update_params(self, *args, **kwds):
+        # if provided args for position-only params, all of them should be provided.
+        if self._args_only_count and len(args):
+            self._args_only = [None] * self._args_only_count
+            for idx in range(self._args_only_count):
+                try:
+                    self._args_only[idx] = args[idx]
+                except IndexError:
+                    raise TypeError(f" {self._cls.__name__} missing 1 required position-only argument '{self._args_only_names[idx]}'.")
+            args = args[idx+1:]
+        # args or kwds
+        if len(self._args_or_kwds) and len(args):
+            for idx, arg in enumerate(args):
+                self[self._args_only_count + idx] = arg
+            args = args[idx+1:]
+        # var_args
+        if self._var_args_name is not None and len(args):
+            self._var_args = args
+            args = []
+        if len(args):
+            raise TypeError(f"{self._cls.__name__} doesn't accept variable position-only arguments.")
+        # kwds
+        for name, arg in kwds.items():
+            self[name] = arg
+        return self._obj
 
     def __getitem__(self, key):
         if isinstance(key, int):
-            key = self._argnames[key]
-        return self._kwds[key]
+            if key < 0:
+                raise KeyError(key)
+            elif key < self._args_only_count:
+                return self._args_only[key]
+            elif key < self._all_args_count:
+                key = self._argnames[key - self._args_only_count]
+                return self._args_or_kwds[key]
+            else:
+                raise KeyError(key)
+        else:
+            if key in self._args_or_kwds:
+                return self._args_or_kwds[key]
+            elif key in self._kwds_only:
+                return self._kwds_only[key]
+            elif key == self._var_args_name:
+                return self._var_args
+            elif key == self._var_kwds_name:
+                return self._var_kwds
+            elif key in self._args_only_names:
+                idx = self._args_only_names[key]
+                return self._args_only[idx]
+            elif key in self._var_kwds:
+                return self._var_kwds[key]
+            else:
+                raise KeyError(key)
 
     def __setitem__(self, key, value):
         assert not self._frozen, "Frozen configuration can not be altered, please use clone() at proper time."
         if isa(key, tuple):
             for i in key:
-                if i in self._argnames:
+                if i in self:
                     self.__setitem__(i, value)
                     break
             else:
                 raise KeyError(key)
         else:
-            if isa(key, int):
-                key = self._argnames[key]
-            self._kwds[key] = value
+            if isinstance(key, int):
+                if key < 0:
+                    raise KeyError(key)
+                elif key < self._args_only_count:
+                    self._args_only[key] = value
+                elif key < self._all_args_count:
+                    key = self._argnames[key - self._args_only_count]
+                    self._args_or_kwds[key] = value
+                else:
+                    raise KeyError(key)
+            else:
+                if key in self._args_or_kwds:
+                    self._args_or_kwds[key] = value
+                elif key in self._kwds_only:
+                    self._kwds_only[key] = value
+                elif key == self._var_args_name:
+                    self._var_args = as_list(value)
+                elif key == self._var_kwds_name:
+                    if not isa(value, dict):
+                        raise TypeError(f"direct assignment of '**{key}' argument of '{self._cls.__name__}' type should be a dict.")
+                    self._var_kwds = value
+                elif key in self._args_only_names:
+                    idx = self._args_only_names[key]
+                    self._args_only[idx] = value
+                elif self._var_kwds_name is not None:
+                    self._var_kwds[key] = value
+                else:
+                    raise KeyError(key, f"'{self._cls.__name__}' does not accept variable keywords arguments.")
 
     def __contains__(self, key):
-        return key in self._kwds
-
-    def update(self, explicit={}, **implicit):
-        explicit.update(implicit)
-        for k, v in explicit.items():
-            self[k] = v
-        return self
+        if isa(key, int):
+            return key >= 0 and key < self._all_args_count
+        elif isa(key, str):
+            return key in self._all_kwds_names
+        else:
+            raise TypeError(key)
 
     def __str__(self):
-        kwds = ', '.join([f"{k}={str(objattr(self, '_kwds')[k])}" for k in objattr(self, '_argnames') if k in objattr(self, '_kwds')])
-        return f"{objattr(self, '_cls').__name__}({kwds})"
+        args = []
+        if self._args_only_count:
+            args.append(', '.join([str(arg) for arg in self._args_only]))
+        if len(self._args_or_kwds):
+            args.append(', '.join([f"{k}={v}" for k, v in self._args_or_kwds.items() if v != Parameter.empty]))
+        if len(self._var_args):
+            args.append(', '.join([str(arg) for arg in self._var_args]))
+        if len(self._kwds_only):
+            args.append(', '.join([f"{k}={v}" for k, v in self._kwds_only.items() if v != Parameter.empty]))
+        if len(self._var_kwds):
+            args.append(', '.join([f"{k}={v}" for k, v in self._var_kwds.items() if v != Parameter.empty]))
+        args = ', '.join(args)
+        return f"{objattr(self, '_cls').__name__}({args})"
 
     def __getattr__(self, attrname):
         if objattr(self, "_frozen"):
@@ -298,7 +412,13 @@ class Configurable:
             raise AttributeError(f"Configurable \"{str(self)}\" is not frozen, which may be the reason of not having attribute \"{attrname}\".")
 
     def clone(self, deepcopy=True):
-        return self._cls(**clone(self._kwds, deepcopy=deepcopy))
+        return self._cls(
+            *clone(self._args_only, deepcopy=deepcopy),
+            *clone(self._args_or_kwds, deepcopy=deepcopy).values(),
+            *clone(self._var_args, deepcopy=deepcopy),
+            **clone(self._kwds_only, deepcopy=deepcopy),
+            **clone(self._var_kwds, deepcopy=deepcopy)
+            )
 
     def freeze(self):
         # make twice freezing legal.
@@ -306,18 +426,24 @@ class Configurable:
         # mark as frozen so that orig__init__ will be able to manipulate the original instance via __getattribute__.
         self._frozen = True
         # initialize the class instance
-        self._cls.__freeze__(self._obj, **self._kwds)
+        self._cls.__freeze__(self._obj, *self._args_only, *self._args_or_kwds.values(), *self._var_args, **self._kwds_only, **self._var_kwds)
         return self._obj
 
     def auto_freeze(self):
-        for argname, arg in signature(self._cls.__freeze__).parameters.items():
-            if arg.kind == Parameter.POSITIONAL_OR_KEYWORD:
-                if argname not in self._kwds:
-                    break
-                else: continue
-            else: continue
+
+        def all_args():
+            for arg in self._args_only: yield arg
+            for arg in self._args_or_kwds.values(): yield arg
+            for arg in self._var_args: yield arg
+            for arg in self._kwds_only.values(): yield arg
+            for arg in self._var_kwds.values(): yield arg
+
+        for arg in all_args():
+            if arg is Parameter.empty:
+                break
         else:
             self.freeze()
+
         return self._obj
 
 class _Builder(Configurable):
@@ -336,12 +462,7 @@ class _Builder(Configurable):
 
     def __reduce__(self) -> tuple[Any, ...]:
         assert not self._frozen
-        return (partial(self._cls, **self._kwds), ())
+        return (partial(self._cls, *self._args_only, *self._args_or_kwds.values(), *self._var_args, **self._kwds_only, **self._var_kwds), ())
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
-        newobj = self.clone()
-        for i, arg in enumerate(args):
-            newobj[i] = arg
-        for k, arg in kwds.items():
-            newobj[k] = arg
-        return newobj.auto_freeze()
+        return self.clone().update_params(*args, **kwds).auto_freeze()

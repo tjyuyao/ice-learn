@@ -319,7 +319,7 @@ class HyperGraph:
             if launcher is None:
                 launcher = ElasticLauncher(**kwds)
             else:
-                launcher.update(kwds)
+                launcher.update_params(kwds)
             launcher.freeze()
             launcher(self._run_impl, as_list(tasks), launcher, resume_from)
 
