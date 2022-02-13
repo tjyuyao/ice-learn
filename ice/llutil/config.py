@@ -109,6 +109,8 @@ def configurable(cls):
     _inplace_surrogate(cls, "__getitem__")
     _inplace_surrogate(cls, "__setitem__")
     _inplace_surrogate(cls, "__call__")
+    _inplace_surrogate(cls, "__repr__")
+    _inplace_surrogate(cls, "extra_repr")
 
     # return the modified cls
     return cls
@@ -416,6 +418,9 @@ class Configurable:
         args = ', '.join(args)
         return f"{objattr(self, '_cls').__name__}({args})"
 
+    def extra_repr(self):
+        return ''
+
     def __getattr__(self, attrname):
         if objattr(self, "_frozen"):
             raise AttributeError(f"\"{self._cls.__name__}\" does not have attribute \"{attrname}\".")
@@ -475,8 +480,11 @@ class _Builder(Configurable):
             self.auto_freeze()
 
     def __reduce__(self) -> tuple[Any, ...]:
-        assert not self._frozen
+        assert not self._frozen, f"{self}"
         return (partial(self._cls, *self._args_only, *self._args_or_kwds.values(), *self._var_args, **self._kwds_only, **self._var_kwds), ())
     
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return super().__call__(*args, **kwds).auto_freeze()
+    
+    def __repr__(self):
+        return str(self)
