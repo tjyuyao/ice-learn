@@ -14,10 +14,11 @@ import torch.distributed as dist
 from ice.llutil.config import Configurable
 from ice.llutil.logging import get_logger
 from torch.distributed.elastic.multiprocessing import Std
-from torch.distributed.elastic.multiprocessing.errors import record
+from torch.distributed.elastic.multiprocessing.errors import record, ChildFailedError
 from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
 from .launch_agent import LaunchConfig, launch_agent
 from .events import Events
+from ice.llutil.shadow_tb import shadow
 
 log = get_logger()
 
@@ -95,7 +96,10 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     )
     if launcher.assigned_device.type == "cuda":
         torch.cuda.set_device(launcher.assigned_device)
-    entrypoint(*args)
+    try:
+        entrypoint(*args)
+    except Exception as e:
+        shadow(type(e), e, e.__traceback__)
     time.sleep(0.5)
     # dist.destroy_process_group()
 
@@ -293,7 +297,10 @@ class ElasticLauncher(Configurable):
     @record
     def __call__(self, entrypoint, *args):
         args = [self, entrypoint] + list(args)
-        launch_agent(self.config, _wrap, list(args), self.events)
+        try:
+            launch_agent(self.config, _wrap, list(args), self.events)
+        except ChildFailedError as e:
+            pass
 
     @property
     def devices(self) -> List[torch.device]:
