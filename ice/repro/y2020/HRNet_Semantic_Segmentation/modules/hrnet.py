@@ -161,7 +161,7 @@ class UpsampleConv1x1(nn.Module):
         out = self.conv1x1(x)
         out = self.bn(out)
         out = F.interpolate(out, **self.upskwds)
-        return x
+        return out
 
 
 @ice.configurable
@@ -210,14 +210,14 @@ class BranchingNewResolution(nn.Module):
             modules.append(TransformFunction(c_in, c_out, r, r, upsampler))
         for r_out in range(r+1, len(planes)):
             modules.append(TransformFunction(c_in, planes[r_out], r, r_out, upsampler))
-        self.modules = nn.ModuleList(modules)
+        self.layers = nn.ModuleList(modules)
 
     def forward(self, branches):
         out = []
-        for r, (branch, module) in enumerate(zip(as_list(branches), self.modules)):
+        for r, (branch, module) in enumerate(zip(as_list(branches), self.layers)):
             out.append(module(branch))
-        for r_out in range(r+1, len(self.modules)):
-            out.append(self.modules[r_out](branch))
+        for r_out in range(r+1, len(self.layers)):
+            out.append(self.layers[r_out](branch))
         return out
 
 
@@ -238,8 +238,8 @@ class MultiResolutionFusion(nn.Module):
 
     def forward(self, branches):
         out = []
-        for fuse_layer in self.fuse_layers:
-            out.append(sum(fuse_layer(branch) for branch in branches))
+        for fuse_layers in self.fuse_layers:
+            out.append(sum(layer(branch) for layer, branch in zip(fuse_layers, branches)))
         return out
 
 
@@ -260,7 +260,7 @@ class HRNetModule(nn.Module):
     
     def forward(self, branches):
         out = []
-        for conv, branch in zip(self.parallel_convs, branches):
+        for conv, branch in zip(self.parallel_convs, as_list(branches)):
             out.append(conv(branch))
         out = self.fusion(out)
         out = self.transition(out)
