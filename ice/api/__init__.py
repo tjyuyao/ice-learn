@@ -18,7 +18,7 @@ from ice.core.dataset import DatasetNode
 from ice.core.optim import Optimizer
 from ice.core.module import ModuleNode
 from ice.core.loss import LossNode
-from ice.core.metric import Meter, Metric, ValueMeter, SummationMeter, AverageMeter, MovingAverageMeter, MetricNode
+from ice.core.metric import Meter, DictMetric, ValueMeter, SummationMeter, AverageMeter, MovingAverageMeter, MetricNode
 
 
 default_graph = HyperGraph()

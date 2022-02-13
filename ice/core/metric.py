@@ -1,11 +1,11 @@
-from collections import deque
+from collections import deque, abc
 from copy import deepcopy
+from inspect import signature
 from typing import Any, Callable, Dict, List, Union, overload
 
 import torch
 import torch.distributed as dist
 from ice.core.graph import GraphOutputCache, Node
-
 from ice.llutil.argparser import as_dict, as_list, isa
 from ice.llutil.logging import get_logger
 
@@ -28,7 +28,7 @@ class Meter:
             get_logger().warning(f"{self.__class__} not implementing `sync` method for multi-gpu synchronization.")
 
 
-class Metric(Meter):  # metric is a container of meters but is also a meter itself
+class DictMetric(Meter):  # metric is a container of meters but is also a meter itself
 
     @overload
     def __init__(self, meters: Dict[str, Meter]): ...
@@ -50,18 +50,29 @@ class Metric(Meter):  # metric is a container of meters but is also a meter itse
             raise TypeError()
         self.meters:Dict[Meter] = {}
         self.meter_prototype = meter_prototype
+        self.update_argnames = list(signature(meter_prototype.update).parameters.keys())
 
     def reset(self):
         for meter in self.meters.values():
             meter.reset()
 
-    def update(self, value, *args):
-        value = as_dict(value, "__only_meter__")
-        for k, item in value.items():
+    def update(self, explicit={}, *shared_args, **kwds):
+        implicit = {}
+        shared_kwds = {}
+        for k, v in kwds.items():
+            if k in self.update_argnames:
+                shared_kwds[k] = v
+            else:
+                implicit[k] = v
+        if isa(explicit, abc.Mapping):
+            explicit.update(implicit)
+        else:
+            explicit = as_dict(explicit, "__only_meter__")
+        for k, item in explicit.items():
             if k not in self.meters:
                 self.meters[k] = deepcopy(self.meter_prototype)
                 self.meters[k].reset()
-            self.meters[k].update(item, *args)
+            self.meters[k].update(item, *shared_args, **shared_kwds)
             
     def sync(self):
         for meter in self.meters.values():
@@ -80,7 +91,7 @@ class MetricNode(Node):
     @overload
     def __init__(
         self,
-        metric: Union[Metric, Meter],
+        metric: Union[DictMetric, Meter],
         forward: Callable[["MetricNode", "GraphOutputCache"], Any],
         epoch_end: Callable[["MetricNode"], Any] = None,
         higher_better: bool = True,
@@ -94,7 +105,7 @@ class MetricNode(Node):
 
     def __freeze__(
         self,
-        metric: Union[Metric, Meter],
+        metric: Union[DictMetric, Meter],
         forward: Callable[["MetricNode", "GraphOutputCache"], Any],
         epoch_end: Callable[["MetricNode"], Any] = None,
         higher_better: bool = True,
@@ -103,7 +114,7 @@ class MetricNode(Node):
     ):
         super().__freeze__(forward)
 
-        self.metric = metric if isa(metric, Metric) else Metric(metric)
+        self.metric = metric if isa(metric, DictMetric) else DictMetric(metric)
         self.user_epoch_end_hook = epoch_end
         self.higher_better=higher_better
         self.trigger_saving_best_ckpt=trigger_saving_best_ckpt

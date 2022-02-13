@@ -457,6 +457,9 @@ class Configurable:
 
         return self._obj
 
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        return self.clone().update_params(*args, **kwds)
+
 class _Builder(Configurable):
     """This class stores the arguments and meta informations that is needed by ``configurable`` decorator.
 
@@ -474,6 +477,6 @@ class _Builder(Configurable):
     def __reduce__(self) -> tuple[Any, ...]:
         assert not self._frozen
         return (partial(self._cls, *self._args_only, *self._args_or_kwds.values(), *self._var_args, **self._kwds_only, **self._var_kwds), ())
-
+    
     def __call__(self, *args: Any, **kwds: Any) -> Any:
-        return self.clone().update_params(*args, **kwds).auto_freeze()
+        return super().__call__(*args, **kwds).auto_freeze()
