@@ -27,6 +27,7 @@ def _inplace_surrogate(cls, funcname):
                 if fn is None: raise AttributeError(funcname) # we raise it manually.
                 value = fn(self, *a, **k)
         except AttributeError:
+            # TODO: rephrase the exception handling part
             if funcname == "__getattribute__":
                 if len(a) and a[0] in ('freeze', 'clone', 'update_params'):
                     return object.__getattribute__(cfg, *a)
@@ -38,7 +39,7 @@ def _inplace_surrogate(cls, funcname):
             elif funcname == "__getattr__":
                 raise AttributeError(*a)
             else:
-                assert False
+                assert False, f"{cls.__name__}.{funcname}({a}, {k})"
         return value
     setattr(cls, funcname, newfunc)
 
