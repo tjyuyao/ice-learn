@@ -300,15 +300,20 @@ class StemDownsample(nn.Sequential):
         super().__init__(*modules)
 
 
-def HRNet18(upsampler=UpsampleConv1x1):
+@ice.configurable
+class HRNet18(nn.Sequential):
 
-    _HRNetStage:Type[HRNetStage] = HRNetStage(upsampler=upsampler)
-    NC = [18, 36, 72, 144]
+    out_channels = [18, 36, 72, 144]
+    
+    def __init__(self, upsampler=UpsampleConv1x1):
 
-    return nn.Sequential(
-        StemDownsample(3, 64, r=2),
-        _HRNetStage([64],   NC[:2], BottleNeckResBlock, num_blocks=4, num_modules=1),
-        _HRNetStage(NC[:2], NC[:3],      BasicResBlock, num_blocks=4, num_modules=1),
-        _HRNetStage(NC[:3], NC[:4],      BasicResBlock, num_blocks=4, num_modules=4),
-        _HRNetStage(NC[:4], NC[:4],      BasicResBlock, num_blocks=4, num_modules=3),
-    )
+        _HRNetStage:Type[HRNetStage] = HRNetStage(upsampler=upsampler)
+        NC = self.out_channels
+
+        super().__init__(
+            StemDownsample(3, 64, r=2),
+            _HRNetStage([64],   NC[:2], BottleNeckResBlock, num_blocks=4, num_modules=1),
+            _HRNetStage(NC[:2], NC[:3],      BasicResBlock, num_blocks=4, num_modules=1),
+            _HRNetStage(NC[:3], NC[:4],      BasicResBlock, num_blocks=4, num_modules=4),
+            _HRNetStage(NC[:4], NC[:4],      BasicResBlock, num_blocks=4, num_modules=3),
+        )
