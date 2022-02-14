@@ -13,7 +13,7 @@ import numpy as np
 import torch.cuda
 from ice.core.graph import (ExecutableGraph, GraphOutputCache, InvalidURIError,
                             Node, StopAllTasks, StopTask)
-from ice.llutil.argparser import as_list, isa
+from ice.llutil.argparser import as_list, is_list_of, isa
 from ice.llutil.collections import Dict as iDict
 from ice.llutil.config import Configurable, frozen, is_configurable
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
@@ -54,7 +54,7 @@ class Task(_Task):
         super().__freeze__(**kwds)
         assert self.total_epochs == 0 or self.total_steps == 0
         self.training = train
-        self.tags = [as_group_name(tag) for tag in as_list(tags)]
+        self.tags = as_list(tags)
         self.step_mode = self.total_epochs == 0
         self.task_steps = 0
         self.task_epochs = 0
@@ -73,16 +73,16 @@ class Task(_Task):
 
         # prepare states.
         self.launcher = launcher
-        self.egraph: ExecutableGraph = hyper_graph[self.tags]
+        self.egraph: ExecutableGraph = hyper_graph.select_egraph(self.tags)
         self.egraph.task = self
 
-        if self.egraph is not hyper_graph.last_executed_egraph:
-            if hyper_graph.last_executed_egraph is not None:
-                hyper_graph.last_executed_egraph.clean_up_nodes()
+        if self.egraph is not hyper_graph._last_executed_egraph:
+            if hyper_graph._last_executed_egraph is not None:
+                hyper_graph._last_executed_egraph.clean_up_nodes()
             self.egraph.prepare_nodes()
             if self.launcher.assigned_device.type == "cuda":
                 torch.cuda.empty_cache() # result in more precise value in `nvidia-smi`.
-        hyper_graph.last_executed_egraph = self.egraph
+        hyper_graph._last_executed_egraph = self.egraph
 
         # run epochs: assert self.total_epochs == 0 or self.total_steps == 0
         if self.total_epochs:
@@ -244,27 +244,98 @@ class GlobalCounters:
     steps:Counter = Counter()
     epochs:Counter = Counter()
 
+def _tags_to_uid(tags, name):
+    tags = as_list(tags)
+    if len(tags) == 1 and tags[0][0] == "#":
+        return f"{tags[0]}/{name}"
+    if len(tags) == 1 and tags[0] == "*":
+        return f"*/{name}"
+    tags = [tag for tag in tags if tag[0] != "#" and tag != "*"]
+    tag = ','.join(sorted(tags))
+    return f"{tag}/{name}"
+
+
 class HyperGraph:
     """HyperGraph is the container for all nodes.
     """
 
     def __init__(self) -> None:
-        self.groups:Dict[str, ExecutableGraph] = {}
-        self.groups["*/"] = ExecutableGraph()
-        self.shortcuts:Dict[str, ExecutableGraph] = {}
+        self.nodes = {}
         self.global_counters = GlobalCounters()
-        self.last_executed_egraph = None
         self.run_info = iDict()
-        self.num_workers = 0
+
+        self._shortcuts:Dict[str, ExecutableGraph] = {}
+        self._last_executed_egraph = None
+        self._num_workers = 0
+    
+    @property
+    def launcher(self) -> ElasticLauncher:
+        return self.run_info.launcher
 
     def add(self, name, node:Node, tags="*"):
-        uris = []
-        for tag in as_list(tags):
-            uris.append(as_group_name(tag) + name)
-        self[uris] = node.clone(deepcopy=True)
+        tags = as_list(tags)
+        assert is_list_of(tags, str)
+        uid = _tags_to_uid(tags, name)
+        assert uid not in self.nodes, f"duplicate node [name={name}] and [tags={tags}]"
+        self.nodes[uid] = [name, node, tags]
 
         if isa(node, Configurable) and not frozen(node) and "num_workers" in node:
-            self.num_workers = max(self.num_workers, node["num_workers"])
+            self._num_workers = max(self._num_workers, node["num_workers"])
+    
+    def remove(self, query):
+        raise NotImplementedError()
+
+    def select_egraph(self, query) -> ExecutableGraph:
+        query = as_list(query)
+        keys = self._select_keys(query)
+        shortcut_query = hash(tuple(query))
+        egraph = ExecutableGraph()
+        if shortcut_query not in self._shortcuts:
+            for key in keys:
+                name, node, tags = self.nodes[key]
+                egraph.add_node(name, node, tags)
+            self._shortcuts[shortcut_query] = egraph
+        else:
+            egraph = self._shortcuts[shortcut_query]
+        return egraph
+
+    def __getitem__(self, uid) -> Node:
+        try:
+            tagstr, name = uid.split("/")
+            tags = tagstr.split(",")
+            keys = self._select_keys(*tags)
+            nodes = [self.nodes[key][1] for key in keys if self.nodes[key][0]==name]
+        except:
+            raise RuntimeError(f"fail to parse node uid '{uid}'")
+        if len(nodes) != 1:
+            raise RuntimeError(f"fail to parse node uid '{uid}'")
+        return nodes[0]
+    
+    def select_nodes(self, *query):
+        keys = self._select_keys(query)
+        out = { key:self.nodes[key][1] for key in keys }
+        return out
+    
+    def _select_keys(self, *query) -> List[str]:
+        query = as_list(query)
+        if "*" in query: return list(self.nodes.keys())
+        out = []
+        for key, (_, _, tags) in self.nodes.items():
+            selected = True
+            for tag in tags:
+                if tag[0] == "#":
+                    if tag in query:
+                        selected=True
+                        break
+                elif tag == "*":
+                    selected = True
+                    break
+                else:
+                    if tag not in query:
+                        selected = False
+            if selected:
+                out.append(key)
+        return out
 
     def print_forward_output(self, *nodenames, every=1, total=None, tags:List[str] = "*", train_only=True, localrank0_only=True):
 
@@ -302,30 +373,15 @@ class HyperGraph:
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ): ...
 
-    def run(self, tasks, launcher:ElasticLauncher=None, run_id:str="unnamed", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
-        
-        self._set_initial_rng_state(seed)
-
-        if in_main_process():
-            self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
-            
-            kwds["rdzv_id"] = run_id
-            kwds["log_dir"] = self.run_info.log_dir
-            kwds["start_method"] = start_method
-            kwds["events"] = Events(start_method)
-            if "omp_num_threads" not in kwds:
-                kwds["omp_num_threads"] = self.num_workers + 1
-
-            if launcher is None:
-                launcher = ElasticLauncher(**kwds)
-            else:
-                launcher.update_params(kwds)
-            launcher.freeze()
-            launcher(self._run_impl, as_list(tasks), launcher, resume_from)
+    def _set_initial_rng_state(self, seed):
+        torch.manual_seed(seed)
+        random.seed(seed)
+        np.random.seed(seed)
 
     def _run_impl(self, tasks, launcher:ElasticLauncher, resume_from):
         self.run_info.tasks = tasks
         self.run_info.launcher = launcher
+        self.run_info._task_resumed = True
         global_shared_events["debugger_start"] = launcher.events.debugger_start
         global_shared_events["debugger_end"] = launcher.events.debugger_end
         try:
@@ -333,16 +389,7 @@ class HyperGraph:
             self.exec_tasks(tasks, launcher)
         except StopAllTasks:
             pass
-    
-    @property
-    def launcher(self) -> ElasticLauncher:
-        return self.run_info.launcher
-    
-    def _set_initial_rng_state(self, seed):
-        torch.manual_seed(seed)
-        random.seed(seed)
-        np.random.seed(seed)
-        
+
     def _prepare_out_dir(self, run_id:str, out_dir:str=None):
         """
 
@@ -368,46 +415,56 @@ class HyperGraph:
         self.run_info.out_dir = run_id_dir
         self.run_info.ckpt_dir = ckpt_dir
         self.run_info.log_dir = log_dir
+
+    def run(self, tasks, launcher:ElasticLauncher=None, run_id:str="unnamed", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
         
-    def _get_activated_groups(self):
+        self._set_initial_rng_state(seed)
 
-        tags = ["*"]
-        for task in self.run_info.tasks:
-            if isa(task, _Task):
-                tags.extend(task.freeze().tags)
-        groups = list(set([as_group_name(tag) for tag in tags]))
-        
-        return groups
+        if in_main_process():
+            self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
+            
+            kwds["rdzv_id"] = run_id
+            kwds["log_dir"] = self.run_info.log_dir
+            kwds["start_method"] = start_method
+            kwds["events"] = Events(start_method)
+            if "omp_num_threads" not in kwds:
+                kwds["omp_num_threads"] = self._num_workers + 1
 
+            if launcher is None:
+                launcher = ElasticLauncher(**kwds)
+            else:
+                launcher.update_params(kwds)
+            launcher.freeze()
+            launcher(self._run_impl, as_list(tasks), launcher, resume_from)
 
-    def save_checkpoint(self, save_to=None):
+    def save_checkpoint(self, save_to=None, tags="*"):
 
         if save_to is None:
             fname = f"E{self.global_counters.epochs.train}S{self.global_counters.steps.train}.pth"
             save_to = os.path.join(self.run_info.ckpt_dir, fname)
         
+        # handle repeated saving.
         _last_save_to = getattr(self, "_last_ckpt_save_to", None)
         setattr(self, "_last_ckpt_save_to", save_to)
-        if _last_save_to == save_to: return  # in case of repeat saving.
+        if _last_save_to == save_to: return  
         
-        activated_groups = self._get_activated_groups()
+        keys = self._select_keys(tags)
         
         _checkpoint = {
             "tasks":[task.state_dict() for task in self.run_info.tasks if isa(task, _Task)],
-            "groups":{name:self.groups[name].state_dict() for name in activated_groups},
+            "nodes":{key:self.nodes[key][1].freeze().state_dict() for key in keys},
             "counters": self.global_counters,
         }
         
         if self.launcher.rank == 0:
-        
             print(f"Saving checkpoint to \"{save_to}\".")
             torch.save(_checkpoint, save_to)
 
-    def load_checkpoint(self, resume_from, strict=False):
+    def load_checkpoint(self, resume_from, strict=False, tags="*"):
         self.run_info.resume_from = resume_from
         if resume_from is None: return
         _checkpoint = torch.load(resume_from, map_location=self.launcher.assigned_device)
-        
+
         try: # resuming task progress
             _tasks:List[Task] = [task for task in self.run_info.tasks if isa(task, _Task)]
             if len(_tasks) != len(_checkpoint["tasks"]): raise ResumeTaskFailed()
@@ -424,17 +481,15 @@ class HyperGraph:
             for t, s in zip(_tasks, _checkpoint["tasks"]):
                 t.load_state_dict(s, dry_run=False)
 
-        dummy_task = Namespace(launcher=self.run_info.launcher, training=True)
-        activated_groups = self._get_activated_groups()
-        for name, group_states in _checkpoint["groups"].items():
-            if name not in activated_groups: continue
-            egraph = self.groups[name]
-            egraph.task = dummy_task
-            egraph.prepare_nodes()
-            egraph.load_state_dict(group_states, strict=strict)
+        keys = self._select_keys(tags)
+        for key, node_state in _checkpoint["nodes"].items():
+            if key not in keys: continue
+            self.nodes[key][1].freeze().load_state_dict(node_state, strict=strict)
             
         self.global_counters = _checkpoint["counters"]
-        
+
+        self.run_info._task_resumed = False
+
         
     def exec_tasks(self, tasks, launcher:ElasticLauncher):
 
@@ -442,100 +497,16 @@ class HyperGraph:
             if is_configurable(task):
                 task.freeze()
             if isa(task, _Task):
+                if isa(task, Task) and not task.finished:
+                    self.run_info._task_resumed = True
                 task(self, launcher)
             elif isa(task, callable):
-                args = [x for x, _ in zip(
-                    [self, launcher],
-                    signature(task).parameters
-                )]
-                task(*args)
+                if self.run_info._task_resumed:
+                    args = [x for x, _ in zip(
+                        [self, launcher],
+                        signature(task).parameters
+                    )]
+                    task(*args)
             else:
                 get_logger().warning(f"A custom task `{task}` is not callable, skipping.")
 
-    def __setitem__(self, key, value):
-        # assume ``key`` is a (list of) valid uri, and ``value`` is a node.
-        try:
-            for uri in as_list(key):
-                group_name, node_name = self._parse_uri(uri)
-                if not group_name in self.groups:
-                    self.groups[group_name] = ExecutableGraph()
-                self.groups[group_name].add_node(node_name, value, group_name)
-            return value
-        except InvalidURIError: pass
-
-        # assume ``key`` is group_name and ``value`` is an ExecutableGraph.
-        assert isa(key, str) and isa(value, ExecutableGraph)
-        self.groups[as_group_name(key)] = value
-
-    def __getitem__(self, key):
-        # assume ``key`` is a valid uri.
-        try:
-            return self._get_node_by_uri(key)
-        except InvalidURIError: pass
-
-        # assume ``key`` is a (list of) group_name.
-        group_names = ['*/'] + [n.rstrip('/') + '/' for n in as_list(key)]
-        shortcut_key = hash(tuple(group_names))
-        if shortcut_key not in self.shortcuts:
-            egraph = ExecutableGraph()
-            for group_name in group_names:
-                if group_name not in self.groups:
-                    raise KeyError(f"`{group_name}` is not a valid group name or a valid node uri.")
-                group = self.groups[group_name]
-                for node_name, node in group.items():
-                    egraph.add_node(node_name, node, group_name)
-            self.shortcuts[shortcut_key] = egraph
-        else:
-            egraph = self.shortcuts[shortcut_key]
-        return egraph
-
-    def __contains__(self, name):
-        name = name.rstrip("/")
-        as_group_name = name + '/'
-        try:
-            return self._has_node_by_uri(name)
-        except InvalidURIError:
-            pass
-        for group_name in self.groups.keys():
-            if group_name.startswith(as_group_name):
-                return True
-        for group in self.groups.values():
-            if name in group:
-                return True
-        return False
-
-    @staticmethod
-    def _parse_uri(uri):
-        """Parse a uri and return group_name and node_name.
-
-        Args:
-            uri (str): "{group_name}/{node_name}"
-
-        Returns:
-            (str, str): (group_name + "/", node_name)
-        """
-        if not isa(uri, str): raise InvalidURIError(uri)
-        idns = uri.rfind("/") + 1
-        if 0 == idns:
-            group_name, node_name = '*/', uri
-        else:
-            group_name, node_name = uri[:idns], uri[idns:]
-        if 0 == len(node_name): raise InvalidURIError(uri)
-        return group_name, node_name
-
-    def _get_node_by_uri(self, uri):
-        group_name, node_name = self._parse_uri(uri)
-        try: return self.groups[group_name][node_name]
-        except KeyError: pass
-        raise KeyError(group_name + node_name)
-
-    def _has_node_by_uri(self, uri):
-        try:
-            self._get_node_by_uri(uri)
-            return True
-        except KeyError:
-            return False
-
-
-def as_group_name(tag):
-    return tag.rstrip('/') + '/'

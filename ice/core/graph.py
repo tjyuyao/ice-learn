@@ -6,6 +6,7 @@ import torch
 
 from ice.llutil.argparser import as_list
 from ice.llutil.config import Configurable
+from ice.llutil.launcher.launcher import get_current_launcher
 
 
 class InvalidURIError(Exception):
@@ -69,11 +70,6 @@ class Node(Configurable):
         return self.egraph.node_names[self]
 
     @property
-    def uris(self) -> List[str]:
-        """the node URIs `<tag/name>` in the current ``HyperGraph``."""
-        return [group_name + self.name for group_name in self.egraph.group_names[self]]
-
-    @property
     def training(self) -> bool:
         """whether current task is training."""
         if self.egraph is None or self.egraph.task is None: return False
@@ -95,7 +91,7 @@ class Node(Configurable):
     
     @property
     def launcher(self):
-        return self.egraph.task.launcher
+        return get_current_launcher()
     
     @property
     def global_steps(self):
@@ -147,7 +143,7 @@ class Node(Configurable):
     
     def move(self, data, device=None):
         if device is None:
-            device = self.device
+            device = get_current_launcher().assigned_device
         if isinstance(data, (torch.Tensor, torch.nn.Module)):
             if device.type == "cpu": return data.cpu()
             else: return data.cuda()
@@ -188,24 +184,22 @@ class ExecutableGraph:
 
     def __init__(self) -> None:
         self.nodes:Dict[str, Node] = {}
-        self.group_names:Dict[Node, List[str]] = {}
+        self.node_tags:Dict[Node, List[str]] = {}
         self.node_names:Dict[Node, str] = {}
         self.cache = GraphOutputCache(self)
         self.task = None
         self.losses_counter = 0
 
-    def add_node(self, node_name, node, group_names):
+    def add_node(self, node_name, node, tags):
         if node_name in self.nodes.keys() and node is not self.nodes[node_name]:
-            if self.group_names[self.nodes[node_name]] != ["*/"]:
+            if self.node_tags[self.nodes[node_name]] != ["*"]:
                 assert node is self.nodes[node_name], "Different node can not share node_name in one task."
                 assert node_name == self.node_names[node], f"A node_name cannot have two different names: `{node_name}` and `{self.node_names[node]}`."
-            elif ["*/"] == group_names:
+            elif ["*"] == tags:
                 return
         self.nodes[node_name] = node
         self.node_names[node] = node_name
-        self.group_names[node] = set()
-        for group_name in as_list(group_names):
-            self.group_names[node].add(group_name)
+        self.node_tags[node] = tags
 
     def __getitem__(self, key):
         return self.nodes[key]
@@ -241,14 +235,3 @@ class ExecutableGraph:
         else: # eval
             self.apply("forward")
             self.apply("update")
-        
-    def state_dict(self):
-        _state_dict = {
-            name: node.freeze().state_dict()
-            for name, node in self.nodes.items()
-        }
-        return _state_dict
-    
-    def load_state_dict(self, _state_dict, strict):
-        for name, node in self.nodes.items():
-            node.freeze().load_state_dict(_state_dict[name], strict)

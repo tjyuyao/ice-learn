@@ -96,7 +96,7 @@ class ModuleNode(Node):
                         break
                 else:
                     get_logger().warning(f"pattern `{pattern}` does not match any parameters in `{module}`.")
-            optimizer['params'] = matched_params
+            optimizer = optimizer(params=matched_params)
             optimizers.append(optimizer.freeze())
 
         untrainable_params:Set[torch.nn.parameter.Parameter] = set()

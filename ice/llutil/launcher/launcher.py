@@ -87,7 +87,15 @@ def _parse_devices_and_backend(devices: str = "auto", dist_backend: str = "auto"
 
 def _ignore_sigint(signum: int, frame: FrameType) -> None: ...
 
+_current_launcher = None
+
+def get_current_launcher() -> "ElasticLauncher":
+    global _current_launcher
+    return _current_launcher
+
 def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
+    global _current_launcher
+    _current_launcher = launcher
     signal.signal(signal.SIGINT, _ignore_sigint)
     dist.init_process_group(
         backend=launcher.dist_backend,
@@ -99,8 +107,10 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     try:
         entrypoint(*args)
     except Exception as e:
-        shadow(type(e), e, e.__traceback__)
+        if launcher.local_rank == 0:
+            shadow(type(e), e, e.__traceback__)
     time.sleep(0.5)
+    _current_launcher = None
     # dist.destroy_process_group()
 
 

@@ -67,7 +67,7 @@ def report(g: ice.HyperGraph, launcher: ElasticLauncher):
 
 _C.GRAPHS.G1.run(
     [
-        # lambda g: g.load_checkpoint("out/unnamed_eqy3bwtb/ckpts/E1S53.pth"),
+        lambda g: g.load_checkpoint("out/unnamed_prbki3b2/ckpts/E3S758.pth"),
         ice.Repeat([
             ice.Task(train=True, epochs=1, tags="train"),
             lambda g: g.save_checkpoint(),

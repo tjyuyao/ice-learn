@@ -2,6 +2,7 @@ import copy
 from functools import partial
 from inspect import Parameter, signature
 from multiprocessing import get_logger
+import traceback
 from typing import Any
 
 import torch
@@ -36,10 +37,9 @@ def _inplace_surrogate(cls, funcname):
                         value = object.__getattribute__(cls, *a)
                     except AttributeError:
                         value = object.__getattribute__(self, *a)
-            elif funcname == "__getattr__":
-                raise AttributeError(*a)
             else:
-                assert False, f"{cls.__name__}.{funcname}({a}, {k})"
+                # assert False, f"{cls.__name__}.{funcname}({a}, {k}) frozen={cfg._frozen}\nAttributeError:{e}"
+                raise
         return value
     setattr(cls, funcname, newfunc)
 
@@ -111,6 +111,7 @@ def configurable(cls):
     _inplace_surrogate(cls, "__call__")
     _inplace_surrogate(cls, "__repr__")
     _inplace_surrogate(cls, "extra_repr")
+    _inplace_surrogate(cls, "__contains__")
 
     # return the modified cls
     return cls
@@ -357,7 +358,9 @@ class Configurable:
                 raise KeyError(key)
 
     def __setitem__(self, key, value):
-        assert not self._frozen, "Frozen configuration can not be altered, please use clone() at proper time."
+        if self._frozen:
+            # traceback.print_stack()
+            raise RuntimeError(f"Frozen configuration {self._cls.__name__} can not be altered, please use clone() at proper time.")
         if isa(key, tuple):
             for i in key:
                 if i in self:

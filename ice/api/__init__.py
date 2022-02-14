@@ -3,7 +3,7 @@ from ice.llutil import test
 from ice.llutil.collections import Dict, ConfigDict
 from ice.llutil.argparser import args, as_dict, as_list, isa, get_hostname
 from ice.llutil.config import (clone, configurable, Configurable, freeze, is_configurable,
-                               make_configurable)
+                               make_configurable, frozen)
 from ice.llutil.debug import set_trace
 from ice.llutil.launcher import ElasticLauncher
 from ice.llutil.print import _print as print
