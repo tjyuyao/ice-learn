@@ -276,7 +276,7 @@ class HyperGraph:
         tags = as_list(tags)
         assert is_list_of(tags, str)
         uid = _tags_to_uid(tags, name)
-        assert uid not in self.nodes, f"duplicate node [name={name}] and [tags={tags}]"
+        assert uid not in self.nodes, f"duplicate node (name={name}, tags={tags})"
         self.nodes[uid] = [name, node, tags]
 
         if isa(node, Configurable) and not frozen(node) and "num_workers" in node:

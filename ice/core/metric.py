@@ -169,7 +169,7 @@ class SummationMeter(Meter):
         return self.summation
     
     def sync(self):
-        if self.unsync_summation == 0: return
+        if isa(self.unsync_summation, int) and self.unsync_summation == 0: return
         dist.all_reduce(self.unsync_summation, op=dist.ReduceOp.SUM)
         self.summation += self.unsync_summation
         self.unsync_summation = torch.zeros_like(self.summation)

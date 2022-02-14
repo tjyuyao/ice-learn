@@ -428,7 +428,7 @@ class Configurable:
         if objattr(self, "_frozen"):
             raise AttributeError(f"\"{self._cls.__name__}\" does not have attribute \"{attrname}\".")
         else:
-            raise AttributeError(f"Configurable \"{str(self)}\" is not frozen, which may be the reason of not having attribute \"{attrname}\".")
+            raise AttributeError(f"Configurable \"{self._cls.__name__}\" is not frozen, which may be the reason of not having attribute \"{attrname}\".")
 
     def clone(self, deepcopy=True):
         return self._cls(

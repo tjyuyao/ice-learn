@@ -1,11 +1,13 @@
 from typing import Type
 
 import torch
+import torch.nn.functional as F
 
 import ice
 from torch.optim import SGD
 
 from datasets.cityscapes import Cityscapes, eval_pipeline, train_aug_pipeline
+from ice.core.hypergraph import HyperGraph
 from ice.repro.y2020.HRNet_Semantic_Segmentation.modules.fcn_head import FCNHead
 from ice.repro.y2020.HRNet_Semantic_Segmentation.modules.hat import DensePrediction
 from ice.repro.y2020.HRNet_Semantic_Segmentation.modules.neck import ResizeConcat
@@ -51,7 +53,7 @@ ice.add(name="backbone",
         node=ice.ModuleNode(
             module=HRNet18(UpsampleConv1x1),
             forward=lambda n, x: n.module(x["dataset"]["img"]),
-            optimizers=SGDPoly40k,
+            optimizers={"0.*":SGDPoly40k},
             weight_init_fn=lambda m: m.load_state_dict(torch.load(PATHS.HRNET18_PRETRAINED)),
         ),
         tags="hrnet18")
@@ -72,13 +74,62 @@ ice.add(name="head",
         ),
         tags=["hrnet18", "cityscapes"])
 
-ice.print_forward_output("head", every=1)
+def resize_cross_entropy(seg_logit, seg_gt):
+    seg_logit = F.interpolate(
+        seg_logit, 
+        size=seg_gt.shape[-2:],
+        mode="bilinear",
+        align_corners=False,
+    )
+    loss = F.cross_entropy(
+        seg_logit,
+        seg_gt,
+        ignore_index=255,
+    )
+    return loss
 
-common_tasks = ["hrnet18", "cityscapes"]
-run_id = '_'.join(common_tasks)
+ice.add(name="loss",
+    node=ice.LossNode(
+        forward= lambda n, x: (
+            resize_cross_entropy(x["head"]["soft_region"], x["dataset"]["seg"]) * 0.4 +
+            resize_cross_entropy(x["head"]["pred"], x["dataset"]["seg"])
+        ),
+    )
+)
+
+def report(n: ice.MetricNode):
+    iou = n.metric.evaluate()
+    miou = torch.mean(iou)
+    if n.launcher.local_rank == 0:
+        print("iou =", iou.cpu().numpy().tolist(), ",")
+        print("miou =", miou.item(), ",", flush=True)
+
+ice.add(name="miou",
+    node=ice.MetricNode(
+        metric=SemsegIoUMetric(num_classes=Cityscapes.NUM_CLASSES, ignore_index=Cityscapes.IGNORE_INDEX),
+        forward = lambda n, x: [x["head"]["pred"], x["dataset"]["seg"]],
+        epoch_end=report
+    )
+)
+
+ice.print_forward_output("loss", every=1)
+
+common_tags = ["hrnet18", "cityscapes"]
+run_id = '_'.join(common_tags)
 
 ice.run(
     run_id=run_id,
-    tasks=ice.Task(train=True, steps=1, tags=["train", *common_tasks]),
-    devices="cuda:0",
+    tasks=[
+        # lambda g: g.load_checkpoint("out/hrnet18_cityscapes_gsgacu_j/ckpts/E0S114.pth"),
+        ice.Repeat(
+            [
+                ice.Task(train=True, steps=4000, tags=["train", *common_tags]),
+                ice.Task(train=False, epochs=1, tags=["val", *common_tags]),
+            ],
+            times=10
+        ),
+        lambda g: g.save_checkpoint()
+        ],
+    devices="cuda:0-3",
+    tee="3"
 )
