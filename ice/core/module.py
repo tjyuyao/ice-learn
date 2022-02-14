@@ -37,6 +37,7 @@ class ModuleNode(Node):
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
                    weight_init_fn: Callable[[nn.Module], None] = None,
+                   static_graph=False,
                    find_unused_parameters=False,
                    ):        ...
 
@@ -46,6 +47,7 @@ class ModuleNode(Node):
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
                    weight_init_fn: Callable[[nn.Module], None] = None,
+                   static_graph=False,
                    find_unused_parameters=False,
                    broadcast_buffers=True,
                    bucket_cap_mb=25,
@@ -60,6 +62,7 @@ class ModuleNode(Node):
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
                    weight_init_fn: Callable[[nn.Module], None] = None,
+                   static_graph=False,
                    find_unused_parameters=False,
                    broadcast_buffers=True,
                    bucket_cap_mb=25,
@@ -70,12 +73,6 @@ class ModuleNode(Node):
         if weight_init_fn is not None: weight_init_fn(module)
         self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
         self.move(self.module)
-        self._ddp_module = DistributedDataParallel(
-            _ModuleProxy(self, module, forward),
-            broadcast_buffers=broadcast_buffers,
-            bucket_cap_mb=bucket_cap_mb,
-            find_unused_parameters=find_unused_parameters,
-            gradient_as_bucket_view=gradient_as_bucket_view)
 
         optim_cfgs = as_dict(optimizers, "*") if optimizers is not None else {}
         for param in self.module.parameters():
@@ -87,15 +84,16 @@ class ModuleNode(Node):
         for patterns, optimizer in optim_cfgs.items():
             optimizers_keys.append(patterns)
             matched_params = []  # ! this should not be a set(), which will cause DDP error.
-            for param_uri, param in self.module.named_parameters():
-                for pattern in as_list(patterns):
+            for pattern in as_list(patterns):
+                pattern_matched = False
+                for param_uri, param in self.module.named_parameters():
                     if fnmatch(param_uri, pattern):
                         matched_params.append(param)
                         param.requires_grad = True
                         trainable_params.add(param)
-                        break
-                else:
-                    get_logger().warning(f"pattern `{pattern}` does not match any parameters in `{module}`.")
+                        pattern_matched = True
+                if not pattern_matched:
+                    get_logger().warning(f"pattern `{pattern}` does not match any parameters in `{module.__class__.__name__}`.")
             optimizer = optimizer(params=matched_params)
             optimizers.append(optimizer.freeze())
 
@@ -111,6 +109,15 @@ class ModuleNode(Node):
         self.untrainable_params = untrainable_params
 
         self.optim_counter = Counter()
+
+        self._ddp_module = DistributedDataParallel(
+            _ModuleProxy(self, module, forward),
+            broadcast_buffers=broadcast_buffers,
+            bucket_cap_mb=bucket_cap_mb,
+            find_unused_parameters=find_unused_parameters,
+            gradient_as_bucket_view=gradient_as_bucket_view)
+        if static_graph:
+            self._ddp_module._set_static_graph()
 
         return self
 
