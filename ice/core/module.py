@@ -111,7 +111,7 @@ class ModuleNode(Node):
         self.optim_counter = Counter()
 
         self._ddp_module = DistributedDataParallel(
-            _ModuleProxy(self, module, forward),
+            _ModuleProxy(self, self.module, forward),
             broadcast_buffers=broadcast_buffers,
             bucket_cap_mb=bucket_cap_mb,
             find_unused_parameters=find_unused_parameters,
