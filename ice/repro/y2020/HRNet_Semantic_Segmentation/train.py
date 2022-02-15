@@ -1,20 +1,21 @@
 from typing import Type
 
-import torch
-import torch.nn.functional as F
-
 import ice
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from ice.core.hypergraph import HyperGraph
 from torch.optim import SGD
 
 from datasets.cityscapes import Cityscapes, eval_pipeline, train_aug_pipeline
-from ice.core.hypergraph import HyperGraph
-from ice.repro.y2020.HRNet_Semantic_Segmentation.modules.fcn_head import FCNHead
-from ice.repro.y2020.HRNet_Semantic_Segmentation.modules.hat import DensePrediction
-from ice.repro.y2020.HRNet_Semantic_Segmentation.modules.neck import ResizeConcat
 from lr_updators import Poly
 from metrics.semseg import SemsegIoUMetric
-from modules.hrnet import HRNet18, UpsampleConv1x1
+from modules.fcn_head import FCNHead
 from modules.fcn_ocr_head import FCNOCRHead
+from modules.hat import DensePrediction
+from modules.hrnet import HRNet18, UpsampleConv1x1
+from modules.neck import ResizeConcat
+from modules.weight_init import kaiming_init
 
 HOSTNAME = ice.get_hostname()
 assert HOSTNAME in ("2080x8-1",), f"unknown host {HOSTNAME}"
@@ -53,10 +54,21 @@ ice.add(name="backbone",
         node=ice.ModuleNode(
             module=HRNet18(UpsampleConv1x1),
             forward=lambda n, x: n.module(x["dataset"]["img"]),
-            optimizers={"0.*":SGDPoly40k},
+            optimizers=SGDPoly40k,
             weight_init_fn=lambda m: m.load_state_dict(torch.load(PATHS.HRNET18_PRETRAINED)),
         ),
         tags="hrnet18")
+
+def weight_init_fcn_ocr_head(m: nn.Module):
+    def _init(m:nn.Module):
+        if isinstance(m, nn.Conv2d):
+            kaiming_init(m)
+    m.apply(_init)
+
+    def _init(m:nn.Module):
+        if hasattr(m, "init_weights"):
+            m.init_weights()
+    m.apply(_init)
 
 ice.add(name="head",
         node=ice.ModuleNode(
@@ -71,6 +83,7 @@ ice.add(name="head",
             ),
             forward=lambda n, x: n.module(x["backbone"]),
             optimizers=SGDPoly40k,
+            weight_init_fn=weight_init_fcn_ocr_head,
         ),
         tags=["hrnet18", "cityscapes"])
 
@@ -112,7 +125,7 @@ ice.add(name="miou",
     )
 )
 
-ice.print_forward_output("loss", every=1)
+ice.print_forward_output("loss", every=100)
 
 common_tags = ["hrnet18", "cityscapes"]
 run_id = '_'.join(common_tags)
