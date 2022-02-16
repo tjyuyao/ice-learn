@@ -167,7 +167,7 @@ class UpsampleConv1x1(nn.Module):
 @ice.configurable
 class TransformFunction(nn.Sequential):
 
-    def __init__(self, inplanes, planes, r_in, r_out, upsampler) -> None:
+    def __init__(self, inplanes:int, planes:int, r_in:int, r_out:int, upsampler) -> None:
         super().__init__()
         # `r` (0-indexed) means [2^(r+1) - 1] times downsample of raw size (after stem downsampling).
         if r_in == r_out:
@@ -244,24 +244,39 @@ class MultiResolutionFusion(nn.Module):
 
 
 @ice.configurable
+class ParallelConv(nn.ModuleList):
+
+    def __init__(self, inplanes, planes, block_type, num_blocks) -> None:
+        super().__init__([
+            ResLayer(c_in, c_out, block_type, num_blocks)
+            for c_in, c_out in zip(as_list(inplanes), as_list(planes))
+        ])
+    
+    def forward(self, branches):
+        out = []
+        for conv, branch in zip(self, as_list(branches)):
+            out.append(conv(branch))
+        return out
+    
+    @property
+    def out_channels(self):
+        return [res_layer.out_channels for res_layer in self]
+
+
+@ice.configurable
 class HRNetModule(nn.Module):
 
     def __init__(self, inplanes:List[int], planes:List[int], block_type, num_blocks, upsampler) -> None:
         super().__init__()
-        self.parallel_convs = nn.ModuleList([
-            ResLayer(c_in, c_in, block_type, num_blocks)
-            for c_in in as_list(inplanes)
-        ])
-        inplanes = [res_layer.out_channels for res_layer in self.parallel_convs]
-        self.fusion = MultiResolutionFusion(inplanes, inplanes, upsampler) \
-            if len(inplanes) > 1 else nn.Identity()
-        self.transition = BranchingNewResolution(inplanes, planes, upsampler) \
-            if len(planes) != len(inplanes) else nn.Identity()
+        self.parallel_convs = ParallelConv(inplanes, inplanes, block_type, num_blocks)
+        inplanes1 = self.parallel_convs.out_channels
+        self.fusion = MultiResolutionFusion(inplanes1, inplanes1, upsampler) \
+            if len(inplanes1) > 1 else nn.Identity()
+        self.transition = BranchingNewResolution(inplanes1, planes, upsampler) \
+            if len(planes) != len(inplanes1) else nn.Identity()
     
     def forward(self, branches):
-        out = []
-        for conv, branch in zip(self.parallel_convs, as_list(branches)):
-            out.append(conv(branch))
+        out = self.parallel_convs(branches)
         out = self.fusion(out)
         out = self.transition(out)
         return out

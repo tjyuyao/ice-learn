@@ -4,7 +4,6 @@ import ice
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ice.core.hypergraph import HyperGraph
 from torch.optim import SGD
 
 from datasets.cityscapes import Cityscapes, eval_pipeline, train_aug_pipeline
