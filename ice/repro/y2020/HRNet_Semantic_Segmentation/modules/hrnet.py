@@ -7,11 +7,14 @@ import torch.nn.functional as F
 import torch.utils.checkpoint as ckpt
 
 from ice.llutil.argparser import as_list
+from .upcatconv1x1 import UpCatConv1x1
+from .local_attn_2d import local_attn_2d
 
 ice.make_configurable(nn.Conv2d, nn.BatchNorm2d, nn.Sequential)
 
 Conv3x3 = nn.Conv2d(kernel_size=3, padding=1, bias=False)
 Conv1x1 = nn.Conv2d(kernel_size=1, bias=False)
+UpCatConv1x1_:Type[UpCatConv1x1] = UpCatConv1x1(bias=False)
 
 
 @ice.configurable
@@ -157,7 +160,7 @@ class UpsampleConv1x1(nn.Module):
         self.conv1x1 = Conv1x1(inplanes, planes)
         self.bn = nn.BatchNorm2d(planes)
 
-    def forward(self, x):
+    def forward(self, x, _ = None):
         out = self.conv1x1(x)
         out = self.bn(out)
         out = F.interpolate(out, **self.upskwds)
@@ -165,10 +168,60 @@ class UpsampleConv1x1(nn.Module):
 
 
 @ice.configurable
-class TransformFunction(nn.Sequential):
-
-    def __init__(self, inplanes:int, planes:int, r_in:int, r_out:int, upsampler) -> None:
+class GuidedUpsampleConv1x1(nn.Module):
+    """Local Attention based guided upsampling module as an alternative of the basic UpsampleConv1x1 upsampler."""
+    def __init__(self,
+        inplanes,
+        planes,
+        guide_channels,
+        window_size=3,
+        window_dilation=1,
+    ) -> None:
         super().__init__()
+        self.upskwds = dict(
+            window_size=window_size,
+            window_dilation=window_dilation
+        )
+        self.conv1x1 = Conv1x1(inplanes, planes)
+        self.bn = nn.BatchNorm2d(planes)
+
+    def forward(self, x, guide):
+        xv = self.conv1x1(x)
+        out = self.bn(out)
+        out = F.interpolate(out, **self.upskwds)
+        out = local_attn_2d(guide, guide, xv, **self.upskwds)
+        return out
+
+
+@ice.configurable
+class GuidedUpCatConv1x1(nn.Module):
+    """Local Attention based guided upsampling module as an alternative of the basic UpsampleConv1x1 upsampler."""
+    def __init__(self,
+        inplanes,
+        planes,
+        guide_channels,
+        window_size=3,
+        window_dilation=1,
+    ) -> None:
+        super().__init__()
+        self.upskwds = dict(
+            window_size=window_size,
+            window_dilation=window_dilation
+        )
+        self.upcatconv1x1:UpCatConv1x1 = UpCatConv1x1_(inplanes, guide_channels, planes)
+        self.bn = nn.BatchNorm2d(planes)
+
+    def forward(self, x, guide):
+        xv = self.upcatconv1x1(x, guide)
+        out = local_attn_2d(guide, guide, xv, **self.upskwds)
+        out = self.bn(out)
+        return out
+
+
+@ice.configurable
+class TransformFunction(nn.ModuleList):
+
+    def __init__(self, inplanes:int, planes:int, r_in:int, r_out:int, upsampler=None, guide_channels=None) -> None:
         # `r` (0-indexed) means [2^(r+1) - 1] times downsample of raw size (after stem downsampling).
         if r_in == r_out:
             if inplanes == planes:
@@ -195,21 +248,36 @@ class TransformFunction(nn.Sequential):
             ]
             super().__init__(*conv_downsamples)
         else:
-            super().__init__(
-                upsampler(inplanes, planes, scale_factor=2**(r_in - r_out))
-            )
-
+            if "guide_channels" in upsampler:
+                upsampler = upsampler(inplanes, planes, guide_channels)
+            elif "scale_factor" in upsampler:
+                upsampler = upsampler(inplanes, planes, scale_factor=2**(r_in - r_out))
+            else:
+                raise NotImplementedError()
+            super().__init__(upsampler)
+        
+        self.is_upsample = (r_in > r_out)
+    
+    def forward(self, x, guide=None):
+        if self.is_upsample:
+            out = self[0](x, guide)
+        else:
+            out = self[0](x)
+        for module in self[1:]:
+            out = module[out]
+        return out
+            
 
 @ice.configurable
 class BranchingNewResolution(nn.Module):
 
-    def __init__(self, inplanes:List[int], planes:List[int], upsampler):
+    def __init__(self, inplanes:List[int], planes:List[int]):
         super().__init__()
         modules = []
         for r, (c_in, c_out) in enumerate(zip(as_list(inplanes), planes)):
-            modules.append(TransformFunction(c_in, c_out, r, r, upsampler))
+            modules.append(TransformFunction(c_in, c_out, r, r))
         for r_out in range(r+1, len(planes)):
-            modules.append(TransformFunction(c_in, planes[r_out], r, r_out, upsampler))
+            modules.append(TransformFunction(c_in, planes[r_out], r, r_out))
         self.layers = nn.ModuleList(modules)
 
     def forward(self, branches):
@@ -228,18 +296,24 @@ class MultiResolutionFusion(nn.Module):
         super().__init__()
         fuse_layers = []
         for r_out, c_out in enumerate(as_list(planes)):
+            # each fuse_layer correspopnds to one target resolution.
             fuse_layer = []
             for r_in, c_in in enumerate(as_list(inplanes)):
                 fuse_layer.append(
-                    TransformFunction(c_in, c_out, r_in, r_out, upsampler)
+                    TransformFunction(c_in, c_out, r_in, r_out, upsampler, guide_channels=inplanes[r_out])
                 )
             fuse_layers.append(nn.ModuleList(fuse_layer))
-        self.fuse_layers = nn.ModuleList(fuse_layers)
+        self.fuse_targets = nn.ModuleList(fuse_layers)
 
     def forward(self, branches):
         out = []
-        for fuse_layers in self.fuse_layers:
-            out.append(sum(layer(branch) for layer, branch in zip(fuse_layers, branches)))
+        for r_out, transform_fns in enumerate(self.fuse_targets):
+            collection = []
+                
+            tf:TransformFunction
+            for tf, r_in in zip(transform_fns, range(len(branches))):
+                collection.append(tf(branches[r_in], branches[r_out]))
+            out.append(sum(collection))
         return out
 
 

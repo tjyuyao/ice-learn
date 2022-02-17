@@ -64,7 +64,7 @@ class _Tensor(cuda.PointerHolderBase):
         cuda.memcpy_htod(int(self.gpudata) + 16, memoryview(numpy.uintp(int(self.stride.data_ptr()))))
 
 
-class CUDAModule(Configurable):
+class CUDAModule(object):
     """Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
     
     ``ice.CUDAModule`` works differently compared to pycuda's ``SourceModule`` in following ways:
@@ -95,7 +95,7 @@ class CUDAModule(Configurable):
     >>>     }
     >>>     (*c)[m][n] = v;
     >>> }
-    >>> \"\"\", float_bits=32).freeze()
+    >>> \"\"\", float_bits=32)
     >>> 
     >>> kernels.matmul(a, b, c, M, N, K, grid=(N // 32 + 1, M // 32 + 1), block=(32, 32, 1))
     >>> 
@@ -104,7 +104,7 @@ class CUDAModule(Configurable):
 
     """
     
-    def __freeze__(self, source, float_bits, int_bits=32, include_dirs=[], boundscheck=True, **kwds):
+    def __init__(self, source, float_bits, int_bits=32, include_dirs=[], boundscheck=True, **kwds):
         """Setup the parameters for compiling a CUDA source.
 
         Args:
