@@ -23,7 +23,7 @@ def test_pycuda():
     }
     """, float_bits=32)
 
-    kernels.freeze()
+    # kernels.freeze()
     kernels.matmul(a, b, c, M, N, K, grid=(N // 32 + 1, M // 32 + 1), block=(32, 32, 1))
 
     torch.cuda.synchronize()
