@@ -62,7 +62,7 @@ ice.add(name="backbone",
 
 ice.add(name="backbone",
         node=ice.ModuleNode(
-            module=HRNet18(GuidedUpsampleConv1x1(), checkpoint_enabled=True),
+            module=HRNet18(GuidedUpsampleConv1x1(window_size=5), checkpoint_enabled=True),
             forward=lambda n, x: n.module(x["dataset"]["img"]),
             optimizers=SGDPoly40k,
             weight_init_fn=lambda m: m.load_state_dict(torch.load(PATHS.HRNET18_CRELA_PRETRAINED)),
@@ -166,11 +166,12 @@ ice.run(
             [
                 ice.Task(train=True, steps=4000, tags=["train", *common_tags]),
                 ice.Task(train=False, epochs=1, tags=["val", *common_tags]),
+                lambda g: g.save_checkpoint()
             ],
             times=10
         ),
-        lambda g: g.save_checkpoint()
-        ],
+    ],
     devices="cuda:0-3",
-    tee="3"
+    tee="3",
+    master_port=9000
 )
