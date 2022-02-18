@@ -12,7 +12,8 @@ from metrics.semseg import SemsegIoUMetric
 from modules.fcn_head import FCNHead
 from modules.fcn_ocr_head import FCNOCRHead
 from modules.hat import DensePrediction
-from modules.hrnet import HRNet18, UpsampleConv1x1
+from modules.hrnet import GuidedUpsampleConv1x1, HRNet18, UpsampleConv1x1
+from modules.local_attn_2d import local_attn_2d
 from modules.neck import ResizeConcat
 from modules.weight_init import kaiming_init
 
@@ -22,6 +23,7 @@ assert HOSTNAME in ("2080x8-1",), f"unknown host {HOSTNAME}"
 PATHS = ice.ConfigDict()
 PATHS["2080x8-1"].CITYSCAPES_ROOT = "/mnt/sdc/hyuyao/cityscapes_mmseg"
 PATHS["2080x8-1"].HRNET18_PRETRAINED = "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006_cvt.pth"
+PATHS["2080x8-1"].HRNET18_CRELA_PRETRAINED = "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006_crela.pth"
 PATHS = PATHS[HOSTNAME]
 
 DatasetNode:Type[ice.DatasetNode] = ice.DatasetNode(num_workers=4, pin_memory=True)
@@ -51,12 +53,21 @@ ice.add(name="dataset",
 
 ice.add(name="backbone",
         node=ice.ModuleNode(
-            module=HRNet18(UpsampleConv1x1),
+            module=HRNet18(UpsampleConv1x1()),
             forward=lambda n, x: n.module(x["dataset"]["img"]),
             optimizers=SGDPoly40k,
             weight_init_fn=lambda m: m.load_state_dict(torch.load(PATHS.HRNET18_PRETRAINED)),
         ),
-        tags="hrnet18")
+        tags=["hrnet18", "bilinear"])
+
+ice.add(name="backbone",
+        node=ice.ModuleNode(
+            module=HRNet18(GuidedUpsampleConv1x1(), checkpoint_enabled=True),
+            forward=lambda n, x: n.module(x["dataset"]["img"]),
+            optimizers=SGDPoly40k,
+            weight_init_fn=lambda m: m.load_state_dict(torch.load(PATHS.HRNET18_CRELA_PRETRAINED)),
+        ),
+        tags=["hrnet18", "crela"])
 
 def weight_init_fcn_ocr_head(m: nn.Module):
     def _init(m:nn.Module):
@@ -86,13 +97,20 @@ ice.add(name="head",
         ),
         tags=["hrnet18", "cityscapes"])
 
-def resize_cross_entropy(seg_logit, seg_gt):
-    seg_logit = F.interpolate(
-        seg_logit, 
-        size=seg_gt.shape[-2:],
+def bilinear(x, guide):
+    return F.interpolate(
+        x, 
+        size=guide.shape[-2:],
         mode="bilinear",
         align_corners=False,
     )
+
+def crela(x, guide, kernel_size, dilation):
+    return local_attn_2d(
+        guide, guide, bilinear(x, guide), kernel_size=kernel_size, dilation=dilation
+    )
+
+def cross_entropy(seg_logit, seg_gt):
     loss = F.cross_entropy(
         seg_logit,
         seg_gt,
@@ -103,10 +121,21 @@ def resize_cross_entropy(seg_logit, seg_gt):
 ice.add(name="loss",
     node=ice.LossNode(
         forward= lambda n, x: (
-            resize_cross_entropy(x["head"]["soft_region"], x["dataset"]["seg"]) * 0.4 +
-            resize_cross_entropy(x["head"]["pred"], x["dataset"]["seg"])
+            cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
+            cross_entropy(bilinear(x["head"]["pred"], x["dataset"]["img"]), x["dataset"]["seg"])
         ),
-    )
+    ),
+    tags="bilinear"
+)
+
+ice.add(name="loss",
+    node=ice.LossNode(
+        forward= lambda n, x: (
+            cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
+            cross_entropy(crela(x["head"]["pred"], x["dataset"]["img"], 7, 2), x["dataset"]["seg"])
+        ),
+    ),
+    tags="crela"
 )
 
 def report(n: ice.MetricNode):
@@ -126,7 +155,7 @@ ice.add(name="miou",
 
 ice.print_forward_output("loss", every=100)
 
-common_tags = ["hrnet18", "cityscapes"]
+common_tags = ["hrnet18", "cityscapes", "crela"]
 run_id = '_'.join(common_tags)
 
 ice.run(

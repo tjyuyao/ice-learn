@@ -7,8 +7,8 @@ import torch.nn.functional as F
 import torch.utils.checkpoint as ckpt
 
 from ice.llutil.argparser import as_list
-from upcatconv1x1 import UpCatConv1x1
-from local_attn_2d import local_attn_2d
+from .upcatconv1x1 import UpCatConv1x1
+from .local_attn_2d import local_attn_2d
 
 ice.make_configurable(nn.Conv2d, nn.BatchNorm2d, nn.Sequential)
 
@@ -178,18 +178,18 @@ class GuidedUpsampleConv1x1(nn.Module):
         window_dilation=1,
     ) -> None:
         super().__init__()
-        self.upskwds = dict(
-            window_size=window_size,
-            window_dilation=window_dilation
+        self.attnkwds = dict(
+            kernel_size=window_size,
+            dilation=window_dilation
         )
         self.conv1x1 = Conv1x1(inplanes, planes)
         self.bn = nn.BatchNorm2d(planes)
 
     def forward(self, x, guide):
         xv = self.conv1x1(x)
-        out = self.bn(out)
-        out = F.interpolate(out, **self.upskwds)
-        out = local_attn_2d(guide, guide, xv, **self.upskwds)
+        xv = self.bn(xv)
+        xv = F.interpolate(xv, guide.shape[-2:], mode="bilinear", align_corners=False)
+        out = local_attn_2d(guide, guide, xv, **self.attnkwds)
         return out
 
 
@@ -204,16 +204,16 @@ class GuidedUpCatConv1x1(nn.Module):
         window_dilation=1,
     ) -> None:
         super().__init__()
-        self.upskwds = dict(
-            window_size=window_size,
-            window_dilation=window_dilation
+        self.attnkwds = dict(
+            kernel_size=window_size,
+            dilation=window_dilation
         )
         self.upcatconv1x1:UpCatConv1x1 = UpCatConv1x1_(inplanes, guide_channels, planes)
         self.bn = nn.BatchNorm2d(planes)
 
     def forward(self, x, guide):
         xv = self.upcatconv1x1(x, guide)
-        out = local_attn_2d(guide, guide, xv, **self.upskwds)
+        out = local_attn_2d(guide, guide, xv, **self.attnkwds)
         out = self.bn(out)
         return out
 
@@ -261,9 +261,9 @@ class TransformFunction(nn.Module):
     
     def forward(self, x, guide=None):
         if self.is_upsample:
-            out = self(x, guide)
+            out = self.module_impl(x, guide)
         else:
-            out = self(x)
+            out = self.module_impl(x)
         return out
             
 
@@ -393,15 +393,16 @@ class HRNet18(nn.Sequential):
 
     out_channels = [18, 36, 72, 144]
     
-    def __init__(self, upsampler=UpsampleConv1x1()):
+    def __init__(self, upsampler=UpsampleConv1x1(), checkpoint_enabled=False):
 
         _HRNetStage:Type[HRNetStage] = HRNetStage(upsampler=upsampler)
         NC = self.out_channels
+        blkkwds = dict(checkpoint_enabled=checkpoint_enabled)
 
         super().__init__(
             StemDownsample(3, 64, r=2),
-            _HRNetStage([64],   NC[:2], BottleNeckResBlock, num_blocks=4, num_modules=1),
-            _HRNetStage(NC[:2], NC[:3],      BasicResBlock, num_blocks=4, num_modules=1),
-            _HRNetStage(NC[:3], NC[:4],      BasicResBlock, num_blocks=4, num_modules=4),
-            _HRNetStage(NC[:4], NC[:4],      BasicResBlock, num_blocks=4, num_modules=3),
+            _HRNetStage([64],   NC[:2], BottleNeckResBlock(**blkkwds), num_blocks=4, num_modules=1),
+            _HRNetStage(NC[:2], NC[:3],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=1),
+            _HRNetStage(NC[:3], NC[:4],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=4),
+            _HRNetStage(NC[:4], NC[:4],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=3),
         )
