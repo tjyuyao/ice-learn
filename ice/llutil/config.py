@@ -371,14 +371,14 @@ class Configurable:
         else:
             if isinstance(key, int):
                 if key < 0:
-                    raise KeyError(key)
+                    raise KeyError(key, value)
                 elif key < self._args_only_count:
                     self._args_only[key] = value
                 elif key < self._all_args_count:
                     key = self._argnames[key - self._args_only_count]
                     self._args_or_kwds[key] = value
                 else:
-                    raise KeyError(key)
+                    raise KeyError(key, value)
             else:
                 if key in self._args_or_kwds:
                     self._args_or_kwds[key] = value

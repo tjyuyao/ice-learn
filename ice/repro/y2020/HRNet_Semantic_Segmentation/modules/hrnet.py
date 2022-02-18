@@ -7,8 +7,8 @@ import torch.nn.functional as F
 import torch.utils.checkpoint as ckpt
 
 from ice.llutil.argparser import as_list
-from .upcatconv1x1 import UpCatConv1x1
-from .local_attn_2d import local_attn_2d
+from upcatconv1x1 import UpCatConv1x1
+from local_attn_2d import local_attn_2d
 
 ice.make_configurable(nn.Conv2d, nn.BatchNorm2d, nn.Sequential)
 
@@ -219,15 +219,16 @@ class GuidedUpCatConv1x1(nn.Module):
 
 
 @ice.configurable
-class TransformFunction(nn.ModuleList):
+class TransformFunction(nn.Module):
 
     def __init__(self, inplanes:int, planes:int, r_in:int, r_out:int, upsampler=None, guide_channels=None) -> None:
+        super().__init__()
         # `r` (0-indexed) means [2^(r+1) - 1] times downsample of raw size (after stem downsampling).
         if r_in == r_out:
             if inplanes == planes:
-                super().__init__(nn.Identity())
+                self.module_impl = nn.Identity()
             else:
-                super().__init__(
+                self.module_impl = nn.Sequential(
                     Conv3x3(inplanes, planes),
                     nn.BatchNorm2d(planes),
                     nn.ReLU(True),
@@ -246,7 +247,7 @@ class TransformFunction(nn.ModuleList):
                 nn.BatchNorm2d(planes),
                 nn.ReLU(True),
             ]
-            super().__init__(*conv_downsamples)
+            self.module_impl = nn.Sequential(*conv_downsamples)
         else:
             if "guide_channels" in upsampler:
                 upsampler = upsampler(inplanes, planes, guide_channels)
@@ -254,17 +255,15 @@ class TransformFunction(nn.ModuleList):
                 upsampler = upsampler(inplanes, planes, scale_factor=2**(r_in - r_out))
             else:
                 raise NotImplementedError()
-            super().__init__(upsampler)
+            self.module_impl = upsampler
         
         self.is_upsample = (r_in > r_out)
     
     def forward(self, x, guide=None):
         if self.is_upsample:
-            out = self[0](x, guide)
+            out = self(x, guide)
         else:
-            out = self[0](x)
-        for module in self[1:]:
-            out = module[out]
+            out = self(x)
         return out
             
 
@@ -346,7 +345,7 @@ class HRNetModule(nn.Module):
         inplanes1 = self.parallel_convs.out_channels
         self.fusion = MultiResolutionFusion(inplanes1, inplanes1, upsampler) \
             if len(inplanes1) > 1 else nn.Identity()
-        self.transition = BranchingNewResolution(inplanes1, planes, upsampler) \
+        self.transition = BranchingNewResolution(inplanes1, planes) \
             if len(planes) != len(inplanes1) else nn.Identity()
     
     def forward(self, branches):
@@ -394,7 +393,7 @@ class HRNet18(nn.Sequential):
 
     out_channels = [18, 36, 72, 144]
     
-    def __init__(self, upsampler=UpsampleConv1x1):
+    def __init__(self, upsampler=UpsampleConv1x1()):
 
         _HRNetStage:Type[HRNetStage] = HRNetStage(upsampler=upsampler)
         NC = self.out_channels
