@@ -1,6 +1,8 @@
 import os
 
-if "DEBUG_ICE" not in os.environ:
+DEBUG_ICE = bool(os.environ.get("DEBUG_ICE", 0))
+
+if DEBUG_ICE:
     SHADOW_PATTERNS = (
         'torch/nn/modules/',
         'pickle.py',
