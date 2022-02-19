@@ -173,7 +173,6 @@ class GuidedUpsampleConv1x1(nn.Module):
     def __init__(self,
         inplanes,
         planes,
-        guide_channels,
         window_size=3,
         window_dilation=1,
     ) -> None:
@@ -254,7 +253,8 @@ class TransformFunction(nn.Module):
             elif "scale_factor" in upsampler:
                 upsampler = upsampler(inplanes, planes, scale_factor=2**(r_in - r_out))
             else:
-                raise NotImplementedError()
+                upsampler = upsampler(inplanes, planes)
+            assert ice.frozen(upsampler)
             self.module_impl = upsampler
         
         self.is_upsample = (r_in > r_out)
