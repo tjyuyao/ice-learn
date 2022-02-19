@@ -1,5 +1,7 @@
 from torch import optim
 from typing import List, Type, Dict, overload
+
+import torch
 from ice.llutil.config import Configurable
 from ice.llutil.dictprocess import DictProcessor
 from torch.distributed.optim.zero_redundancy_optimizer import ZeroRedundancyOptimizer
@@ -68,10 +70,15 @@ class Optimizer(Configurable):
                 updator(dict(param_group=group,
                              trigger="step",
                              steps=steps, epochs=epochs))
+                # scale gradients according to gradient accumulate steps. (assuming mean reduce of loss in batch dimension.)
+                if self.every != 1:
+                    with torch.no_grad():
+                        for p in group['params']:
+                            p.grad = p.grad / self.every
 
         # update the network parameters and clear gradients
         self.optimizer.step()
-        self.optimizer.zero_grad()
+        self.optimizer.zero_grad(set_to_none=True)
         
     def state_dict(self, rank):
         self.optimizer.consolidate_state_dict()
