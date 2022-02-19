@@ -95,7 +95,7 @@ reference = "aliyun"
 name = "colorama"
 version = "0.4.4"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -731,6 +731,27 @@ url = "https://mirrors.aliyun.com/pypi/simple"
 reference = "aliyun"
 
 [[package]]
+name = "tqdm"
+version = "4.62.3"
+description = "Fast, Extensible Progress Meter"
+category = "main"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
+
+[package.dependencies]
+colorama = {version = "*", markers = "platform_system == \"Windows\""}
+
+[package.extras]
+dev = ["py-make (>=0.1.0)", "twine", "wheel"]
+notebook = ["ipywidgets (>=6)"]
+telegram = ["requests"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
+
+[[package]]
 name = "varname"
 version = "0.8.1"
 description = "Dark magics about variable names in python."
@@ -839,7 +860,7 @@ pycuda = ["pycuda"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "4453ad40e48872dd4199cbeaac9a2f8614c257e9a93609af0ce8d785e497e69a"
+content-hash = "53b7e25f6d72f68978fd236d73bc458519d8b5c8362eceb6197f59a11cd52980"
 
 [metadata.files]
 appdirs = [
@@ -1122,6 +1143,10 @@ toml = [
 tomli = [
     {file = "tomli-1.2.3-py3-none-any.whl", hash = "sha256:e3069e4be3ead9668e21cb9b074cd948f7b3113fd9c8bba083f48247aab8b11c"},
     {file = "tomli-1.2.3.tar.gz", hash = "sha256:05b6166bff487dc068d322585c7ea4ef78deed501cc124060e0f238e89a9231f"},
+]
+tqdm = [
+    {file = "tqdm-4.62.3-py2.py3-none-any.whl", hash = "sha256:8dd278a422499cd6b727e6ae4061c40b48fce8b76d1ccbf5d34fca9b7f925b0c"},
+    {file = "tqdm-4.62.3.tar.gz", hash = "sha256:d359de7217506c9851b7869f3708d8ee53ed70a1b8edbba4dbcb47442592920d"},
 ]
 varname = [
     {file = "varname-0.8.1-py3-none-any.whl", hash = "sha256:344f6e9a38d338aad30bb953bc68e1dc5645e0b0f45e7b3171b3ca3edfd3c490"},

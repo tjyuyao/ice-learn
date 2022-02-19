@@ -25,7 +25,7 @@ IMAGENET_ROOT = "/root/autodl-nas/imagenet"
 IMAGENET_NORMALIZE = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 DATASETNODE:Type[ice.DatasetNode] = ice.DatasetNode(
-    num_workers=128//4,
+    num_workers=128//6,
     batch_size=128,
     pin_memory=True,
 )
@@ -71,7 +71,7 @@ from modules.cls_head import ClassificationHead
 from lars import LARS
 
 BATCHNORM = nn.BatchNorm2d(momentum=0.05)
-OPTIMIZER = ice.Optimizer(LARS, dict(lr=0.1))
+OPTIMIZER = ice.Optimizer(LARS, dict(lr=0.01))
 
 def weight_init(m: nn.Module):
     def _init(m:nn.Module):
@@ -156,18 +156,19 @@ ice.print_forward_output("loss", every=100)
 
 import datetime
 
-ice.run(
-    run_id="imagenet",
-    tasks=[
-        lambda : print(datetime.datetime.today()),
-        ice.Task(train=True, epochs=1, tags=["train", "hrnet18", "crela"]),
-        ice.Task(train=False, epochs=1, tags=["val", "hrnet18", "crela"]),
-        lambda : print(datetime.datetime.today()),
-        lambda g: g.save_checkpoint(tags=["hrnet18", "crela"])
-    ],
-    devices="cuda:0-5",
-    tee='3',
-)
+if __name__ == "__main__":
+    ice.run(
+        run_id="imagenet",
+        tasks=[
+            lambda : print(datetime.datetime.today()),
+            ice.Task(train=True, epochs=1, tags=["train", "hrnet18", "crela"]),
+            ice.Task(train=False, epochs=1, tags=["val", "hrnet18", "crela"]),
+            lambda : print(datetime.datetime.today()),
+            lambda g: g.save_checkpoint(tags=["hrnet18", "crela"])
+        ],
+        devices="cuda:0",
+        tee='3',
+    )
 
-import os
-os.system("shutdown")
+    # import os
+    # os.system("shutdown")

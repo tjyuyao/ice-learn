@@ -83,8 +83,9 @@ class ResumableDistributedSampler(DistributedSampler):
         
     def set_start_batch_idx(self, i):
         self.start_batch_idx = i
-    
-    def __iter__(self) -> Iterator:
+
+    @property
+    def indices(self) -> List:
         if self.shuffle:
             # deterministically shuffle based on epoch and seed
             g = torch.Generator()
@@ -114,8 +115,14 @@ class ResumableDistributedSampler(DistributedSampler):
 
         if self.num_iters is not None:
             indices = indices[:self.num_iters]
-
-        return iter(indices)
+        
+        return indices
+    
+    def __iter__(self) -> Iterator:
+        return iter(self.indices)
+    
+    def __len__(self) -> int:
+        return len(self.indices)
 
 
 class _DatasetProxy(Dataset):
@@ -195,6 +202,8 @@ class DatasetNode(Node):
         self.internal_epoch = 0
         self.internal_steps = 0
         self.iterator = None
+        
+        self.actual_num_iters_per_epoch = int(len(self.sampler) / batch_size + 0.5)
     
     def forward_impl(self, _):
         
@@ -231,3 +240,6 @@ class DatasetNode(Node):
         self.sampler.set_epoch(epoch=self.internal_epoch)
         self.sampler.set_start_batch_idx(self.internal_steps)
         self.iterator = iter(self.loader)
+    
+    def __len__(self):
+        return self.actual_num_iters_per_epoch

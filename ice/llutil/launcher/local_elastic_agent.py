@@ -23,9 +23,9 @@ from torch.distributed.elastic.agent.server.api import (
     WorkerState,
 )
 from torch.distributed.elastic.metrics.api import prof, put_metric
-from torch.distributed.elastic.multiprocessing import PContext, start_processes, SignalException
 from torch.distributed.elastic.utils import macros
 from torch.distributed.elastic.utils.logging import get_logger
+from .elastic_multiprocessing import PContext, start_processes, SignalException
 
 from .events import Events
 
