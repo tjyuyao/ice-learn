@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as ckpt
 
+from torch.nn.modules.batchnorm import _NormBase
 from ice.llutil.argparser import as_list
 from .upcatconv1x1 import UpCatConv1x1
 from .local_attn_2d import local_attn_2d
@@ -388,12 +389,31 @@ class StemDownsample(nn.Sequential):
         super().__init__(*modules)
 
 
+class _HRNetBase(nn.Sequential):
+
+    def __init__(self, *modules, norm_eval=False) -> None:
+        super().__init__(*modules)
+        self._norm_eval = norm_eval
+
+    def norm_eval(self, mode:bool=None):
+        if mode is not None:
+            self._norm_eval = mode
+        return self._norm_eval
+
+    def train(self, mode:bool=True):
+        nn.Module.train(self, mode)
+        if self._norm_eval:
+            for m in self.modules():
+                if isinstance(m, _NormBase):
+                    m.eval()
+
+
 @ice.configurable
-class HRNet18(nn.Sequential):
+class HRNet18(_HRNetBase):
 
     out_channels = [18, 36, 72, 144]
     
-    def __init__(self, upsampler=UpsampleConv1x1(), checkpoint_enabled=False):
+    def __init__(self, upsampler=UpsampleConv1x1(), checkpoint_enabled=False, norm_eval=False):
 
         _HRNetStage:Type[HRNetStage] = HRNetStage(upsampler=upsampler)
         NC = self.out_channels
@@ -405,4 +425,5 @@ class HRNet18(nn.Sequential):
             _HRNetStage(NC[:2], NC[:3],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=1),
             _HRNetStage(NC[:3], NC[:4],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=4),
             _HRNetStage(NC[:4], NC[:4],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=3),
+            norm_eval=norm_eval
         )
