@@ -28,6 +28,7 @@ class FCNHead(nn.Sequential):
         num_convs=2,
         kernel_size=3,
         dilation=1,
+        norm_cfg=nn.BatchNorm2d(),
     ):
 
         padding = (kernel_size // 2) * dilation
@@ -42,9 +43,9 @@ class FCNHead(nn.Sequential):
             convs = []
             convs.append(
                 nn.Sequential(ConvModule(inplanes, planes),
-                              nn.BatchNorm2d(planes), nn.ReLU(True)))
+                              norm_cfg(planes), nn.ReLU(True)))
             for _ in range(1, num_convs):
                 convs.append(
                     nn.Sequential(ConvModule(inplanes, planes),
-                                  nn.BatchNorm2d(planes), nn.ReLU(True)))
+                                  norm_cfg(planes), nn.ReLU(True)))
             super().__init__(*convs)

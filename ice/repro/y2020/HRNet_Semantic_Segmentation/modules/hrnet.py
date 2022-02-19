@@ -30,6 +30,7 @@ class ResBlock(nn.Module):
         expansion:int = 1,
         identity: Optional[nn.Module]=None,
         checkpoint_enabled=False,
+        norm_cfg=nn.BatchNorm2d(),
     ) -> None:
         super().__init__()
         self.branch = branch
@@ -41,7 +42,7 @@ class ResBlock(nn.Module):
             if stride != 1 or inplanes != out_planes:
                 identity = nn.Sequential(
                     Conv1x1(inplanes, out_planes, stride=stride),
-                    nn.BatchNorm2d(out_planes)
+                    norm_cfg(out_planes)
                 )
             else:
                 identity = nn.Identity()
@@ -79,17 +80,18 @@ class BasicResBlock(ResBlock):
         expansion=1,
         identity: Optional[nn.Module]=None,
         checkpoint_enabled=False,
+        norm_cfg=nn.BatchNorm2d(),
         ) -> None:
 
         branch = nn.Sequential(
             Conv3x3(inplanes, planes, stride=stride, padding=dilation, dilation=dilation),
-            nn.BatchNorm2d(planes),
+            norm_cfg(planes),
             nn.ReLU(True),
             Conv3x3(planes, planes),
-            nn.BatchNorm2d(planes),
+            norm_cfg(planes),
         )
 
-        super().__init__(branch, inplanes, planes, stride, expansion, identity, checkpoint_enabled)
+        super().__init__(branch, inplanes, planes, stride, expansion, identity, checkpoint_enabled, norm_cfg=norm_cfg)
 
 
 @ice.configurable
@@ -104,20 +106,21 @@ class BottleNeckResBlock(ResBlock):
         expansion=4,
         identity: Optional[nn.Module]=None,
         checkpoint_enabled=False,
+        norm_cfg=nn.BatchNorm2d(),
         ) -> None:
 
         branch = nn.Sequential(
             Conv1x1(inplanes, planes),
-            nn.BatchNorm2d(planes),
+            norm_cfg(planes),
             nn.ReLU(True),
             Conv3x3(planes, planes, stride=stride, padding=dilation, dilation=dilation),
-            nn.BatchNorm2d(planes),
+            norm_cfg(planes),
             nn.ReLU(True),
             Conv1x1(planes, planes * expansion),
-            nn.BatchNorm2d(planes * expansion),
+            norm_cfg(planes * expansion),
         )
 
-        super().__init__(branch, inplanes, planes, stride, expansion, identity, checkpoint_enabled)
+        super().__init__(branch, inplanes, planes, stride, expansion, identity, checkpoint_enabled, norm_cfg=norm_cfg)
 
 
 @ice.configurable
@@ -151,6 +154,7 @@ class UpsampleConv1x1(nn.Module):
         scale_factor,
         align_corners=False,
         mode='bilinear',
+        norm_cfg=nn.BatchNorm2d(),
     ) -> None:
         super().__init__()
         self.upskwds = dict(
@@ -159,7 +163,7 @@ class UpsampleConv1x1(nn.Module):
             mode=mode
         )
         self.conv1x1 = Conv1x1(inplanes, planes)
-        self.bn = nn.BatchNorm2d(planes)
+        self.bn = norm_cfg(planes)
 
     def forward(self, x, _ = None):
         out = self.conv1x1(x)
@@ -176,6 +180,7 @@ class GuidedUpsampleConv1x1(nn.Module):
         planes,
         window_size=3,
         window_dilation=1,
+        norm_cfg=nn.BatchNorm2d(),
     ) -> None:
         super().__init__()
         self.attnkwds = dict(
@@ -183,7 +188,7 @@ class GuidedUpsampleConv1x1(nn.Module):
             dilation=window_dilation
         )
         self.conv1x1 = Conv1x1(inplanes, planes)
-        self.bn = nn.BatchNorm2d(planes)
+        self.bn = norm_cfg(planes)
 
     def forward(self, x, guide):
         xv = self.conv1x1(x)
@@ -202,6 +207,7 @@ class GuidedUpCatConv1x1(nn.Module):
         guide_channels,
         window_size=3,
         window_dilation=1,
+        norm_cfg=nn.BatchNorm2d(),
     ) -> None:
         super().__init__()
         self.attnkwds = dict(
@@ -209,7 +215,7 @@ class GuidedUpCatConv1x1(nn.Module):
             dilation=window_dilation
         )
         self.upcatconv1x1:UpCatConv1x1 = UpCatConv1x1_(inplanes, guide_channels, planes)
-        self.bn = nn.BatchNorm2d(planes)
+        self.bn = norm_cfg(planes)
 
     def forward(self, x, guide):
         xv = self.upcatconv1x1(x, guide)
@@ -221,7 +227,7 @@ class GuidedUpCatConv1x1(nn.Module):
 @ice.configurable
 class TransformFunction(nn.Module):
 
-    def __init__(self, inplanes:int, planes:int, r_in:int, r_out:int, upsampler=None, guide_channels=None) -> None:
+    def __init__(self, inplanes:int, planes:int, r_in:int, r_out:int, upsampler=None, guide_channels=None, norm_cfg=nn.BatchNorm2d()) -> None:
         super().__init__()
         # `r` (0-indexed) means [2^(r+1) - 1] times downsample of raw size (after stem downsampling).
         if r_in == r_out:
@@ -230,7 +236,7 @@ class TransformFunction(nn.Module):
             else:
                 self.module_impl = nn.Sequential(
                     Conv3x3(inplanes, planes),
-                    nn.BatchNorm2d(planes),
+                    norm_cfg(planes),
                     nn.ReLU(True),
                 )
         elif r_in < r_out:
@@ -239,12 +245,12 @@ class TransformFunction(nn.Module):
             for _ in range(num_layers - 1):
                 conv_downsamples += [
                     Conv3x3(inplanes, inplanes, stride=2),
-                    nn.BatchNorm2d(inplanes),
+                    norm_cfg(inplanes),
                     nn.ReLU(True),
                 ]
             conv_downsamples += [
                 Conv3x3(inplanes, planes, stride=2),
-                nn.BatchNorm2d(planes),
+                norm_cfg(planes),
                 nn.ReLU(True),
             ]
             self.module_impl = nn.Sequential(*conv_downsamples)
@@ -271,13 +277,13 @@ class TransformFunction(nn.Module):
 @ice.configurable
 class BranchingNewResolution(nn.Module):
 
-    def __init__(self, inplanes:List[int], planes:List[int]):
+    def __init__(self, inplanes:List[int], planes:List[int], norm_cfg=nn.BatchNorm2d()):
         super().__init__()
         modules = []
         for r, (c_in, c_out) in enumerate(zip(as_list(inplanes), planes)):
-            modules.append(TransformFunction(c_in, c_out, r, r))
+            modules.append(TransformFunction(c_in, c_out, r, r, norm_cfg=norm_cfg))
         for r_out in range(r+1, len(planes)):
-            modules.append(TransformFunction(c_in, planes[r_out], r, r_out))
+            modules.append(TransformFunction(c_in, planes[r_out], r, r_out, norm_cfg=norm_cfg))
         self.layers = nn.ModuleList(modules)
 
     def forward(self, branches):
@@ -292,7 +298,7 @@ class BranchingNewResolution(nn.Module):
 @ice.configurable
 class MultiResolutionFusion(nn.Module):
 
-    def __init__(self, inplanes, planes, upsampler) -> None:
+    def __init__(self, inplanes, planes, upsampler, norm_cfg=nn.BatchNorm2d()) -> None:
         super().__init__()
         fuse_layers = []
         for r_out, c_out in enumerate(as_list(planes)):
@@ -300,7 +306,7 @@ class MultiResolutionFusion(nn.Module):
             fuse_layer = []
             for r_in, c_in in enumerate(as_list(inplanes)):
                 fuse_layer.append(
-                    TransformFunction(c_in, c_out, r_in, r_out, upsampler, guide_channels=inplanes[r_out])
+                    TransformFunction(c_in, c_out, r_in, r_out, upsampler, guide_channels=inplanes[r_out], norm_cfg=norm_cfg)
                 )
             fuse_layers.append(nn.ModuleList(fuse_layer))
         self.fuse_targets = nn.ModuleList(fuse_layers)
@@ -340,13 +346,13 @@ class ParallelConv(nn.ModuleList):
 @ice.configurable
 class HRNetModule(nn.Module):
 
-    def __init__(self, inplanes:List[int], planes:List[int], block_type, num_blocks, upsampler) -> None:
+    def __init__(self, inplanes:List[int], planes:List[int], block_type, num_blocks, upsampler, norm_cfg=nn.BatchNorm2d()) -> None:
         super().__init__()
         self.parallel_convs = ParallelConv(inplanes, inplanes, block_type, num_blocks)
         inplanes1 = self.parallel_convs.out_channels
-        self.fusion = MultiResolutionFusion(inplanes1, inplanes1, upsampler) \
+        self.fusion = MultiResolutionFusion(inplanes1, inplanes1, upsampler, norm_cfg=norm_cfg) \
             if len(inplanes1) > 1 else nn.Identity()
-        self.transition = BranchingNewResolution(inplanes1, planes) \
+        self.transition = BranchingNewResolution(inplanes1, planes, norm_cfg=norm_cfg) \
             if len(planes) != len(inplanes1) else nn.Identity()
     
     def forward(self, branches):
@@ -359,14 +365,14 @@ class HRNetModule(nn.Module):
 @ice.configurable
 class HRNetStage(nn.Sequential):
 
-    def __init__(self, inplanes:List[int], planes:List[int], block_type, num_blocks, num_modules, upsampler) -> None:
+    def __init__(self, inplanes:List[int], planes:List[int], block_type, num_blocks, num_modules, upsampler, norm_cfg=nn.BatchNorm2d) -> None:
         super().__init__()
         modules = [
-            HRNetModule(inplanes, inplanes, block_type, num_blocks, upsampler)
+            HRNetModule(inplanes, inplanes, block_type, num_blocks, upsampler, norm_cfg=norm_cfg)
             for _ in range(num_modules - 1)
         ]
         modules.append(
-            HRNetModule(inplanes, planes, block_type, num_blocks, upsampler)
+            HRNetModule(inplanes, planes, block_type, num_blocks, upsampler, norm_cfg=norm_cfg)
         )
         super().__init__(*modules)
 
@@ -374,16 +380,16 @@ class HRNetStage(nn.Sequential):
 @ice.configurable
 class StemDownsample(nn.Sequential):
 
-    def __init__(self, inplanes, planes, r=2):
+    def __init__(self, inplanes, planes, r=2, norm_cfg=nn.BatchNorm2d):
         modules = [
             Conv3x3(inplanes, planes, stride=2),
-            nn.BatchNorm2d(planes),
+            norm_cfg(planes),
             nn.ReLU(inplace=True),
         ]
         for _ in range(1, r):
             modules += [
                 Conv3x3(planes, planes, stride=2),
-                nn.BatchNorm2d(planes),
+                norm_cfg(planes),
                 nn.ReLU(inplace=True),
             ]
         super().__init__(*modules)
@@ -413,14 +419,15 @@ class HRNet18(_HRNetBase):
 
     out_channels = [18, 36, 72, 144]
     
-    def __init__(self, upsampler=UpsampleConv1x1(), checkpoint_enabled=False, norm_eval=False):
+    def __init__(self, upsampler=UpsampleConv1x1(), checkpoint_enabled=False, norm_eval=False, norm_cfg=nn.BatchNorm2d()):
 
-        _HRNetStage:Type[HRNetStage] = HRNetStage(upsampler=upsampler)
+        upsampler = upsampler(norm_cfg=norm_cfg)
+        _HRNetStage:Type[HRNetStage] = HRNetStage(upsampler=upsampler, norm_cfg=norm_cfg)
         NC = self.out_channels
         blkkwds = dict(checkpoint_enabled=checkpoint_enabled)
 
         super().__init__(
-            StemDownsample(3, 64, r=2),
+            StemDownsample(3, 64, r=2, norm_cfg=norm_cfg),
             _HRNetStage([64],   NC[:2], BottleNeckResBlock(**blkkwds), num_blocks=4, num_modules=1),
             _HRNetStage(NC[:2], NC[:3],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=1),
             _HRNetStage(NC[:3], NC[:4],      BasicResBlock(**blkkwds), num_blocks=4, num_modules=4),

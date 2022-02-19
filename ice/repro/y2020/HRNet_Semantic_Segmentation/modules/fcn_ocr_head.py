@@ -21,16 +21,17 @@ class FCNOCRHead(nn.Module):
         fcn_head:Type[FCNHead]=FCNHead(num_convs=1, kernel_size=1),
         soft_region_pred:Type[DensePrediction]=DensePrediction(dropout_ratio=-1),
         final_pred:Type[DensePrediction]=DensePrediction(dropout_ratio=-1),
+        norm_cfg=nn.BatchNorm2d(),
     ) -> None:
         super().__init__()
 
         self.neck = neck_cfg(inplanes)
 
         fcn_planes = self.neck.out_channels
-        self.fcn_head = fcn_head(fcn_planes, fcn_planes)
+        self.fcn_head = fcn_head(fcn_planes, fcn_planes, norm_cfg=norm_cfg)
         self.sr_hat = soft_region_pred(fcn_planes, num_classes)
 
-        self.ocr_head:OCRContext = OCRContext(fcn_planes, ocr_planes)
+        self.ocr_head:OCRContext = OCRContext(fcn_planes, ocr_planes, norm_cfg=norm_cfg)
         self.final_hat = final_pred(self.ocr_head.out_channels, num_classes)
     
     def forward(self, branches):
