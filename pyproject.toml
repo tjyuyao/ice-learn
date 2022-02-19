@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ice-learn"
-version = "0.1.0"
+version = "0.2.0"
 description = "A high-level Deep Learning framework that extends PyTorch and PyCUDA."
 authors = ["Yuyao Huang <yycv.simon@protonmail.com>"]
 license = "MIT"
@@ -39,3 +39,8 @@ wait_process = 'ice.api.scripts.wait_process:_cli'
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true

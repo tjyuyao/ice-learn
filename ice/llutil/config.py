@@ -3,7 +3,7 @@ from functools import partial
 from inspect import Parameter, signature
 from multiprocessing import get_logger
 import traceback
-from typing import Any
+from typing import Any, Tuple
 
 import torch
 from ice.llutil.argparser import as_list, isa
@@ -482,7 +482,7 @@ class _Builder(Configurable):
         if not in_main_process():
             self.auto_freeze()
 
-    def __reduce__(self) -> tuple[Any, ...]:
+    def __reduce__(self) -> Tuple[Any, ...]:
         assert not self._frozen, f"{self}"
         return (partial(self._cls, *self._args_only, *self._args_or_kwds.values(), *self._var_args, **self._kwds_only, **self._var_kwds), ())
     

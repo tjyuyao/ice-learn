@@ -416,7 +416,7 @@ class HyperGraph:
         self.run_info.ckpt_dir = ckpt_dir
         self.run_info.log_dir = log_dir
 
-    def run(self, tasks, launcher:ElasticLauncher=None, run_id:str="unnamed", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
+    def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="unnamed", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
         
         self._set_initial_rng_state(seed)
 
