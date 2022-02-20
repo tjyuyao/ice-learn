@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-def upcatconv1x1_nearest(input_coarser, input_finer, weight, bias=None):
+def upcatconv1x1(input_coarser, input_finer, weight, bias=None, mode="nearest"):
     xv, xq = input_coarser, input_finer
     BS = xq.size(0)
     Cy, Cv, Ck = weight.size(0), xv.size(1), xq.size(1)
@@ -13,26 +13,14 @@ def upcatconv1x1_nearest(input_coarser, input_finer, weight, bias=None):
 
     Wxv = torch.matmul(weight[:, :Cv].view((1, Cy, Cv)),
                        xv.view((BS, Cv, Hv * Wv)))  # (BS, Cy, Hv*Wv)
-    Wxv = Wxv.view((BS * Cy * Hv, 1, Wv, 1))
-    Wxv = Wxv.expand((-1, dey, Wv, dex))
-    Wxv = Wxv.reshape((BS, Cy, Hq * Wq))
-    y = torch.baddbmm(Wxv, weight[:, Cv:].view((1, Cy, Ck)).expand(
-        (BS, Cy, Ck)), xq.view((BS, Ck, Hq * Wq))).view((BS, Cy, Hq, Wq))
-    if bias is not None:
-        y = y + bias.view(1, -1, 1, 1)
-    return y
-
-def upcatconv1x1_bilinear(input_coarser, input_finer, weight, bias=None):
-    xv, xq = input_coarser, input_finer
-    BS = xq.size(0)
-    Cy, Cv, Ck = weight.size(0), xv.size(1), xq.size(1)
-    Hv, Wv, Hq, Wq = xv.size(2), xv.size(3), xq.size(2), xq.size(3)
-    dey, dex = Hq // Hv, Wq // Wv
-
-    Wxv = torch.matmul(weight[:, :Cv].view((1, Cy, Cv)),
-                       xv.view((BS, Cv, Hv * Wv)))  # (BS, Cy, Hv*Wv)
-    Wxv = Wxv.view((BS, Cy, Hv, Wv))
-    Wxv = F.interpolate(Wxv, size=(Hq, Wq), mode="bilinear", align_corners=False)
+    if mode == "nearest":
+        Wxv = Wxv.view((BS * Cy * Hv, 1, Wv, 1))
+        Wxv = Wxv.expand((-1, dey, Wv, dex))
+    elif mode == "bilinear":
+        Wxv = Wxv.view(BS, Cy, Hv, Wv)
+        Wxv = F.interpolate(Wxv, (Hq, Wq), mode="bilinear", align_corners=False)
+    else:
+        assert False
     Wxv = Wxv.reshape((BS, Cy, Hq * Wq))
     y = torch.baddbmm(Wxv, weight[:, Cv:].view((1, Cy, Ck)).expand(
         (BS, Cy, Ck)), xq.view((BS, Ck, Hq * Wq))).view((BS, Cy, Hq, Wq))
@@ -43,16 +31,14 @@ def upcatconv1x1_bilinear(input_coarser, input_finer, weight, bias=None):
 
 @ice.configurable
 class UpCatConv1x1(nn.Conv2d):
-    
     def __init__(self,
                  in_coarser_channels,
                  in_finer_channels,
                  out_channels,
+                 mode="nearest",
                  bias=True,
                  device=None,
-                 dtype=None,
-                 mode="nearest",
-                 ) -> None:
+                 dtype=None) -> None:
         """Upsample coarser map, concatentate it with a finer map, then apply 1x1 convolution on it, in an memory-efficient way.
 
         Args:
@@ -85,12 +71,8 @@ class UpCatConv1x1(nn.Conv2d):
     def forward(self, input_coarser: Tensor, input_finer: Tensor) -> Tensor:
         assert input_coarser.size(1) == self.in_coarser_channels, f"Expecting {self.in_coarser_channels}, got {input_coarser.size(1)} for coarser map channels"
         assert input_finer.size(1) == self.in_finer_channels, f"Expecting {self.in_finer_channels}, got {input_finer.size(1)} for finer map channels"
-        if self.mode == "nearest":
-            return upcatconv1x1_nearest(input_coarser, input_finer, self.weight, self.bias)
-        elif self.mode == "bilinear":
-            return upcatconv1x1_bilinear(input_coarser, input_finer, self.weight, self.bias)
-        else:
-            raise NotImplementedError()
+        return upcatconv1x1(input_coarser, input_finer, self.weight, bias=self.bias, mode=self.mode)
+
 
 
 if __name__ == "__main__":

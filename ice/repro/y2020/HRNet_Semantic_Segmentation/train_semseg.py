@@ -217,7 +217,7 @@ ice.add(name="loss",
     node=ice.LossNode(
         forward= lambda n, x: (
             cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
-            cross_entropy(bilinear(x["hat"], x["dataset"]["img"]), x["dataset"]["seg"])
+            cross_entropy(bilinear(x["hat"]["pred"], x["dataset"]["img"]), x["dataset"]["seg"])
         ),
     ),
     tags=["bilinear", "train"]
@@ -227,8 +227,8 @@ ice.add(name="loss",
     node=ice.LossNode(
         forward= lambda n, x: (
             cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
-            cross_entropy(x["hat"]["pred"], x["dataset"]["seg"]) +
-            ((1 - x["hat"]["non_edge"]) - x["dataset"]["edge"]).abs().mean()
+            cross_entropy(x["hat"]["pred"], x["dataset"]["seg"])
+            # + ((1 - x["hat"]["non_edge"]) - x["dataset"]["edge"]).abs().mean()
         ),
     ),
     tags=["crela", "train"]
@@ -251,7 +251,7 @@ ice.add(name="miou",
 
 ice.print_forward_output("loss", every=100)
 
-common_tags = ["hrnet18", "cityscapes", "crela"]
+common_tags = ["hrnet18", "cityscapes", ice.args["model"]]
 run_id = '_'.join(common_tags) + "_maskloss"
 
 ice.run(
