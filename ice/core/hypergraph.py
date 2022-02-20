@@ -398,11 +398,10 @@ class HyperGraph:
         self.run_info.launcher = launcher
         self.run_info._task_resumed = True
         
-        if launcher.local_rank == 0:
-            self.add(
-                name="__progress__",
-                node=ProgressBar().freeze(),
-            )
+        self.add(
+            name="__progress__",
+            node=ProgressBar().freeze(),
+        )
         
         global_shared_events["debugger_start"] = launcher.events.debugger_start
         global_shared_events["debugger_end"] = launcher.events.debugger_end

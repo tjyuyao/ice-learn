@@ -18,7 +18,7 @@ from torch.distributed.elastic.multiprocessing.errors import record, ChildFailed
 from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
 from .launch_agent import LaunchConfig, launch_agent
 from .events import Events
-from ice.llutil.shadow_tb import shadow
+import ice.llutil.shadow_tb as shadow_tb
 
 log = get_logger()
 
@@ -108,7 +108,9 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
         entrypoint(*args)
     except Exception as e:
         if launcher.local_rank == 0:
-            shadow(type(e), e, e.__traceback__)
+            shadow_tb.shadow(type(e), e, e.__traceback__)
+        if shadow_tb.DEBUG_ICE:
+            raise
     time.sleep(0.5)
     _current_launcher = None
     # dist.destroy_process_group()
@@ -310,7 +312,8 @@ class ElasticLauncher(Configurable):
         try:
             launch_agent(self.config, _wrap, list(args), self.events)
         except ChildFailedError as e:
-            pass
+            if shadow_tb.DEBUG_ICE:
+                raise
 
     @property
     def devices(self) -> List[torch.device]:
