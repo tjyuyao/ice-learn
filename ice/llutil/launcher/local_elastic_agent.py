@@ -281,7 +281,7 @@ class LocalElasticAgent(SimpleElasticAgent):
                 result = self._invoke_monitor_once(role)
                 
                 if result is not None:
-                    bar.close()
+                    if bar is not None: bar.close()
                     break
             self._total_execution_time = int(time.monotonic() - start_time)
             self._record_metrics(result)

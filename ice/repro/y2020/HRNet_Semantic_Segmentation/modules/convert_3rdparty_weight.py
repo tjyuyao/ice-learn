@@ -41,9 +41,9 @@ ice.run(
     )
 )
 
-# ice.run(
-#     lambda : convert_pretrained(
-#         HRNet18,
-#         "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006.pth"
-#     )
-# )
+ice.run(
+    lambda : convert_pretrained(
+        HRNet18(),
+        "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006.pth"
+    )
+)
