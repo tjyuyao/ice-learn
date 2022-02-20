@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-def upcatconv1x1(input_coarser, input_finer, weight, bias=None):
+def upcatconv1x1_nearest(input_coarser, input_finer, weight, bias=None):
     xv, xq = input_coarser, input_finer
     BS = xq.size(0)
     Cy, Cv, Ck = weight.size(0), xv.size(1), xq.size(1)
@@ -22,6 +22,24 @@ def upcatconv1x1(input_coarser, input_finer, weight, bias=None):
         y = y + bias.view(1, -1, 1, 1)
     return y
 
+def upcatconv1x1_bilinear(input_coarser, input_finer, weight, bias=None):
+    xv, xq = input_coarser, input_finer
+    BS = xq.size(0)
+    Cy, Cv, Ck = weight.size(0), xv.size(1), xq.size(1)
+    Hv, Wv, Hq, Wq = xv.size(2), xv.size(3), xq.size(2), xq.size(3)
+    dey, dex = Hq // Hv, Wq // Wv
+
+    Wxv = torch.matmul(weight[:, :Cv].view((1, Cy, Cv)),
+                       xv.view((BS, Cv, Hv * Wv)))  # (BS, Cy, Hv*Wv)
+    Wxv = Wxv.view((BS, Cy, Hv, Wv))
+    Wxv = F.interpolate(Wxv, size=(Hq, Wq), mode="bilinear", align_corners=False)
+    Wxv = Wxv.reshape((BS, Cy, Hq * Wq))
+    y = torch.baddbmm(Wxv, weight[:, Cv:].view((1, Cy, Ck)).expand(
+        (BS, Cy, Ck)), xq.view((BS, Ck, Hq * Wq))).view((BS, Cy, Hq, Wq))
+    if bias is not None:
+        y = y + bias.view(1, -1, 1, 1)
+    return y
+
 
 @ice.configurable
 class UpCatConv1x1(nn.Conv2d):
@@ -32,7 +50,9 @@ class UpCatConv1x1(nn.Conv2d):
                  out_channels,
                  bias=True,
                  device=None,
-                 dtype=None) -> None:
+                 dtype=None,
+                 mode="nearest",
+                 ) -> None:
         """Upsample coarser map, concatentate it with a finer map, then apply 1x1 convolution on it, in an memory-efficient way.
 
         Args:
@@ -60,11 +80,17 @@ class UpCatConv1x1(nn.Conv2d):
                          dtype=dtype)
         self.in_coarser_channels = in_coarser_channels
         self.in_finer_channels = in_finer_channels
+        self.mode = mode
     
     def forward(self, input_coarser: Tensor, input_finer: Tensor) -> Tensor:
         assert input_coarser.size(1) == self.in_coarser_channels, f"Expecting {self.in_coarser_channels}, got {input_coarser.size(1)} for coarser map channels"
         assert input_finer.size(1) == self.in_finer_channels, f"Expecting {self.in_finer_channels}, got {input_finer.size(1)} for finer map channels"
-        return upcatconv1x1(input_coarser, input_finer, self.weight, self.bias)
+        if self.mode == "nearest":
+            return upcatconv1x1_nearest(input_coarser, input_finer, self.weight, self.bias)
+        elif self.mode == "bilinear":
+            return upcatconv1x1_bilinear(input_coarser, input_finer, self.weight, self.bias)
+        else:
+            raise NotImplementedError()
 
 
 if __name__ == "__main__":

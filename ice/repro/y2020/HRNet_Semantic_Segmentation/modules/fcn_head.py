@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 
-ice.make_configurable(nn.Conv2d)
+ice.make_configurable(nn.Conv2d, nn.BatchNorm2d)
 
 
 @ice.configurable

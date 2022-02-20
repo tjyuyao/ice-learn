@@ -163,7 +163,7 @@ __global__ void local_attn_2d_gd_xq_xk(
 //!cuda
 """
 
-cuda_kernel = ice.CUDAModule(KERNEL_SOURCE, int_bits=32, float_bits=FLOAT_BITS)
+cuda_kernel = ice.CUDAModule(KERNEL_SOURCE, int_bits=32, float_bits=FLOAT_BITS, boundscheck=False)
 
 
 class _local_attn_2d(Function):
