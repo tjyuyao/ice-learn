@@ -8,6 +8,7 @@ from torchvision.transforms import Compose, Normalize, ToTensor
 
 from ice.core.loss import LossNode
 from ice.llutil.launcher import ElasticLauncher
+from tqdm import tqdm
 
 @ice.configurable
 class Net(nn.Module):
@@ -62,12 +63,13 @@ def report(g: ice.HyperGraph, launcher: ElasticLauncher):
         "train_steps": g.global_counters.steps.train,
         "avg_nll_loss": g['val/avg_nll_loss'].metric.evaluate().item(),
     }
-    if launcher.rank == 0: print(data, end=',\n')
+    if launcher.rank == 0:
+        tqdm.write(repr(data), end=',\n')
 
 
 _C.GRAPHS.G1.run(
     [
-        lambda g: g.load_checkpoint("out/unnamed_prbki3b2/ckpts/E3S758.pth"),
+        # lambda g: g.load_checkpoint("out/unnamed_prbki3b2/ckpts/E3S758.pth"),
         ice.Repeat([
             ice.Task(train=True, epochs=1, tags="train"),
             lambda g: g.save_checkpoint(),
@@ -78,4 +80,5 @@ _C.GRAPHS.G1.run(
     devices="cuda:0,0",
     omp_num_threads=4,
     monitor_interval=1,
+    tee="3",
 )

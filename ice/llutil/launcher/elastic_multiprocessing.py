@@ -1,11 +1,15 @@
 import logging
 import os
+import threading
 import time
 from concurrent.futures._base import Future
 from concurrent.futures.thread import ThreadPoolExecutor
 from threading import Event
+import traceback
 from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 from torch.distributed.elastic.utils.logging import get_logger
+from ice.llutil.launcher import events
+from tqdm import tqdm
 
 import torch.multiprocessing as mp
 from torch.distributed.elastic.multiprocessing.api import (  # noqa: F401
@@ -22,9 +26,10 @@ log = get_logger()
 
 
 def tail_logfile(
-    header: str, file: str, dst: TextIO, finished: Event, interval_sec: float
+    header: str, file: str, dst: TextIO, finished: Event, interval_sec: float,
+    lock: threading.Lock, progbar_events: Dict[str, threading.Event]
 ):
-
+    
     while not os.path.exists(file):
         if finished.is_set():
             return
@@ -32,11 +37,16 @@ def tail_logfile(
 
     with open(file, "r") as fp:
         while True:
-            line = fp.readline()
+            line = fp.readline()[:-1]
 
             if line:
-                dst.write(f"{line}")
-                # dst.write(f"{header}{line}")
+                    lock.acquire(True)
+                    progbar_events["trigger_clear"].set()
+                    progbar_events["cleared"].wait()
+                    dst.write(f"\r{line}\033[K\n")
+                    progbar_events["trigger_clear"].clear()
+                    lock.release()
+                    
             else:  # reached EOF
                 if finished.is_set():
                     # log line producer is finished
@@ -45,6 +55,8 @@ def tail_logfile(
                     # log line producer is still going
                     # wait for a bit before looping again
                     time.sleep(interval_sec)
+
+        
 
 
 class TailLog:
@@ -90,6 +102,7 @@ class TailLog:
         log_files: Dict[int, str],
         dst: TextIO,
         interval_sec: float = 0.1,
+        progbar_events = None,
     ):
         n = len(log_files)
         self._threadpool = None
@@ -105,6 +118,8 @@ class TailLog:
         self._finished_events: Dict[int, Event] = {
             local_rank: Event() for local_rank in log_files.keys()
         }
+        self._progbar_lock = threading.Lock()
+        self._progbar_events = progbar_events
         self._futs: List[Future] = []
         self._interval_sec = interval_sec
         self._stopped = False
@@ -123,6 +138,8 @@ class TailLog:
                     dst=self._dst,
                     finished=self._finished_events[local_rank],
                     interval_sec=self._interval_sec,
+                    lock=self._progbar_lock,
+                    progbar_events=self._progbar_events,
                 )
             )
         return self
@@ -139,6 +156,7 @@ class TailLog:
                     f"error in log tailor for {self._name}{local_rank}."
                     f" {e.__class__.__qualname__}: {e}",
                 )
+                traceback.print_tb(e.__traceback__)
 
         if self._threadpool:
             self._threadpool.shutdown(wait=True)
@@ -184,6 +202,7 @@ class PContext(abc.ABC):
         tee_stdouts: Dict[int, str],
         tee_stderrs: Dict[int, str],
         error_files: Dict[int, str],
+        progbar_events: Dict[str, threading.Event],
     ):
         self.name = name
         # validate that all mappings have the same number of keys and
@@ -200,8 +219,8 @@ class PContext(abc.ABC):
         self.error_files = error_files
         self.nprocs = nprocs
         
-        self._stdout_tail = TailLog(name, tee_stdouts, sys.stdout)
-        self._stderr_tail = TailLog(name, tee_stderrs, sys.stderr)
+        self._stdout_tail = TailLog(name, tee_stdouts, sys.stdout, progbar_events=progbar_events)
+        self._stderr_tail = TailLog(name, tee_stderrs, sys.stderr, progbar_events=progbar_events)
 
     def start(self) -> None:
         """
@@ -328,6 +347,7 @@ class MultiprocessContext(PContext):
         tee_stderrs: Dict[int, str],
         error_files: Dict[int, str],
         start_method: str,
+        progbar_events,
     ):
         super().__init__(
             name,
@@ -339,6 +359,7 @@ class MultiprocessContext(PContext):
             tee_stdouts,
             tee_stderrs,
             error_files,
+            progbar_events,
         )
 
         self.start_method = start_method
@@ -495,6 +516,7 @@ def start_processes(
     start_method: str = "spawn",
     redirects: Union[Std, Dict[int, Std]] = Std.NONE,
     tee: Union[Std, Dict[int, Std]] = Std.NONE,
+    progbar_events: Dict[str, threading.Event] = None,
 ) -> PContext:
     """
     Starts ``n`` copies of ``entrypoint`` processes with the provided options.
@@ -645,31 +667,19 @@ def start_processes(
         envs[local_rank]["TORCHELASTIC_ERROR_FILE"] = error_file
 
     context: PContext
-    if isinstance(entrypoint, str):
-        context = SubprocessContext(
-            name=name,
-            entrypoint=entrypoint,
-            args=args,
-            envs=envs,
-            stdouts=stdouts,
-            stderrs=stderrs,
-            tee_stdouts=tee_stdouts,
-            tee_stderrs=tee_stderrs,
-            error_files=error_files,
-        )
-    else:
-        context = MultiprocessContext(
-            name=name,
-            entrypoint=entrypoint,
-            args=args,
-            envs=envs,
-            stdouts=stdouts,
-            stderrs=stderrs,
-            tee_stdouts=tee_stdouts,
-            tee_stderrs=tee_stderrs,
-            error_files=error_files,
-            start_method=start_method,
-        )
+    context = MultiprocessContext(
+        name=name,
+        entrypoint=entrypoint,
+        args=args,
+        envs=envs,
+        stdouts=stdouts,
+        stderrs=stderrs,
+        tee_stdouts=tee_stdouts,
+        tee_stderrs=tee_stderrs,
+        error_files=error_files,
+        start_method=start_method,
+        progbar_events=progbar_events,
+    )
 
     try:
         context.start()

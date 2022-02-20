@@ -11,6 +11,7 @@ import os
 import shutil
 import signal
 import sys
+import threading
 import time
 import tempfile
 from typing import Any, Dict, Optional, Tuple
@@ -25,9 +26,11 @@ from torch.distributed.elastic.agent.server.api import (
 from torch.distributed.elastic.metrics.api import prof, put_metric
 from torch.distributed.elastic.utils import macros
 from torch.distributed.elastic.utils.logging import get_logger
+from tqdm import tqdm
 from .elastic_multiprocessing import PContext, start_processes, SignalException
 
 from .events import Events
+import ice.llutil.shadow_tb as shadow_tb
 
 
 DEFAULT_ROLE = "default"
@@ -117,6 +120,10 @@ class LocalElasticAgent(SimpleElasticAgent):
         rdzv_run_id = spec.rdzv_handler.get_run_id()
         self._log_dir = self._make_log_dir(log_dir, rdzv_run_id)
         self.events: Events = events
+        self.progbar_events = {
+            "trigger_clear" : threading.Event(),
+            "cleared" : threading.Event(),
+        }
 
     def _make_log_dir(self, log_dir: Optional[str], rdzv_run_id: str):
         dir = log_dir or tempfile.mkdtemp(prefix=f"{rdzv_run_id}_")
@@ -187,6 +194,7 @@ class LocalElasticAgent(SimpleElasticAgent):
             start_method=self._start_method,
             redirects=spec.redirects,
             tee=spec.tee,
+            progbar_events=self.progbar_events,
         )
 
         return self._pcontext.pids()
@@ -240,20 +248,48 @@ class LocalElasticAgent(SimpleElasticAgent):
         start_time = time.monotonic()
         shutdown_called: bool = False
         spec = self._worker_group.spec
+        monitor_interval = spec.monitor_interval
         role = spec.role
         log.info(f"[{role}] starting workers for entrypoint: {spec.get_entrypoint_name()}")
         self._initialize_workers(self._worker_group)
 
         try:
+            prog_iter = 0
+            prog_total = -1
+            bar:tqdm = None
             while True:
+                self.progbar_events["cleared"].clear()
+                if self.progbar_events["trigger_clear"].is_set():
+                    if bar is not None: bar.clear()
+                    self.progbar_events["cleared"].set()
+                    while self.progbar_events["trigger_clear"].is_set():
+                        time.sleep(0.001)
+                if prog_total != self.events.progress_bar_total.value:
+                    prog_total = self.events.progress_bar_total.value
+                    if bar is not None:
+                        bar.clear()
+                        bar.close()
+                    bar = tqdm(total=prog_total, leave=False, position=0)
+                if prog_iter != self.events.progress_bar_iter.value:
+                    prog_iter = self.events.progress_bar_iter.value
+                    if bar is not None:
+                        bar.n = prog_iter
+                        bar.refresh()
+            
+                time.sleep(monitor_interval)
+
                 result = self._invoke_monitor_once(role)
+                
                 if result is not None:
+                    bar.close()
                     break
             self._total_execution_time = int(time.monotonic() - start_time)
             self._record_metrics(result)
             self._record_worker_events(result)
             return result
         except SignalException as e:
+            if shadow_tb.DEBUG_ICE:
+                raise
             self.events.resume.clear()
             self.events.pause.set()
             self.events.paused.wait()
@@ -293,11 +329,9 @@ class LocalElasticAgent(SimpleElasticAgent):
         spec = self._worker_group.spec
         role = spec.role
 
-        monitor_interval = spec.monitor_interval
         rdzv_handler = spec.rdzv_handler
 
         assert self._worker_group.state != WorkerState.INIT
-        time.sleep(monitor_interval)
         run_result = self._monitor_workers(self._worker_group)
         state = run_result.state
         self._worker_group.state = state
