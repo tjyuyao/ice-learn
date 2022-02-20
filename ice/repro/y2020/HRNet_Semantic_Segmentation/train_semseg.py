@@ -33,19 +33,22 @@ if REPRODUCABLE_TRAINING:
 ice.make_configurable(nn.BatchNorm2d)
 
 HOSTNAME = ice.get_hostname()
-assert HOSTNAME in ("2080x8-1",), f"unknown host {HOSTNAME}"
+assert HOSTNAME in ("2080x8-1", "3090x4-2"), f"unknown host {HOSTNAME}"
 
 PATHS = ice.ConfigDict()
 PATHS["2080x8-1"].CITYSCAPES_ROOT = "/mnt/sdc/hyuyao/cityscapes_mmseg"
 PATHS["2080x8-1"].HRNET18_PRETRAINED = "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006_cvt.pth"
 PATHS["2080x8-1"].HRNET18_CRELA_PRETRAINED = "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006_crela.pth"
+PATHS["3090x4-2"].CITYSCAPES_ROOT = "/home/hyuyao/2021/data/CityScapes/basic"
+PATHS["3090x4-2"].HRNET18_PRETRAINED = "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006_cvt.pth"
+PATHS["3090x4-2"].HRNET18_CRELA_PRETRAINED = "/home/hyuyao/.cache/torch/hub/checkpoints/hrnetv2_w18-00eb2006_crela.pth"
 PATHS = PATHS[HOSTNAME]
 
-DatasetNode:Type[ice.DatasetNode] = ice.DatasetNode(num_workers=4, pin_memory=True)
+DatasetNode:Type[ice.DatasetNode] = ice.DatasetNode(num_workers=12, pin_memory=True)
 
 SGDPoly40k = ice.Optimizer(
     SGD, dict(lr=0.01, momentum=0.9, weight_decay=0.0005),
-    updators_per_step=[Poly(power=0.9, min_lr=1e-4, max_updates=40000)]
+    updators_per_step=[Poly(power=float(ice.args["power"]), min_lr=1e-4, max_updates=40000)]
 )
 
 ice.add(name="dataset",
@@ -108,7 +111,7 @@ def train_aug_pipeline_with_edge(
 ice.add(name="dataset",
         node=DatasetNode(
             dataset=Cityscapes(PATHS.CITYSCAPES_ROOT, "train"),
-            batch_size=2,
+            batch_size=4,
             shuffle=True,
             pipeline=train_aug_pipeline_with_edge(),
         ),
@@ -264,7 +267,7 @@ ice.run(
             times=10
         ),
     ],
-    devices="cuda:0-4,6-7",
+    devices="cuda:0-3",
     tee="3",
     master_port=9000
 )
