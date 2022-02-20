@@ -17,7 +17,7 @@ from modules.local_attn_2d import local_attn_2d
 from modules.neck import ResizeConcat
 from modules.weight_init import kaiming_init
 
-FASTER_TRAINING = True
+FASTER_TRAINING = False
 if FASTER_TRAINING:
     # 设置 torch.backends.cudnn.benchmark=True 将会让程序在开始时花费一点额外时间，为整个网络的每个卷积层搜索最适合它的卷积实现算法，进而实现网络的加速。适用场景是网络结构固定（不是动态变化的），网络的输入形状（包括 batch size，图片大小，输入的通道）是不变的，其实也就是一般情况下都比较适用。反之，如果卷积层的设置一直变化，将会导致程序不停地做优化，反而会耗费更多的时间。
     torch.backends.cudnn.benchmark = True
@@ -217,7 +217,7 @@ ice.add(name="loss",
     node=ice.LossNode(
         forward= lambda n, x: (
             cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
-            cross_entropy(bilinear(x["hat"], x["dataset"]["img"]), x["dataset"]["seg"])
+            cross_entropy(bilinear(x["hat"]["pred"], x["dataset"]["img"]), x["dataset"]["seg"])
         ),
     ),
     tags=["bilinear", "train"]
@@ -227,8 +227,8 @@ ice.add(name="loss",
     node=ice.LossNode(
         forward= lambda n, x: (
             cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
-            cross_entropy(x["hat"]["pred"], x["dataset"]["seg"]) +
-            ((1 - x["hat"]["non_edge"]) - x["dataset"]["edge"]).abs().mean()
+            cross_entropy(x["hat"]["pred"], x["dataset"]["seg"])
+            # + ((1 - x["hat"]["non_edge"]) - x["dataset"]["edge"]).abs().mean()
         ),
     ),
     tags=["crela", "train"]
@@ -251,7 +251,7 @@ ice.add(name="miou",
 
 ice.print_forward_output("loss", every=100)
 
-common_tags = ["hrnet18", "cityscapes", "crela"]
+common_tags = ["hrnet18", "cityscapes", ice.args["model"]]
 run_id = '_'.join(common_tags) + "_maskloss"
 
 ice.run(
