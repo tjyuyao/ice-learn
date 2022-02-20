@@ -1,11 +1,11 @@
+import sys
 import types
 from argparse import Namespace
-from typing import Optional
 
 import numpy as np
 import torch
-from torch._six import inf
 from ice.llutil.collections import ConfigDict
+from tqdm import tqdm
 from varname import argname
 
 torch.set_printoptions(threshold=4, linewidth=120, precision=2, sci_mode=False)
@@ -68,7 +68,6 @@ def _print(data,
            edgeitems=None,
            linewidth=None,
            sci_mode=None,
-           **print_kwds,
            ):
 
     if threshold or threshold or edgeitems or linewidth or sci_mode:
@@ -121,4 +120,4 @@ def _print(data,
         brief = data
     if uri != "" and not uri.endswith(": "):
         uri = uri + ": "
-    print(f"{prefix}{uri}{brief}\n", end="", flush=True, **print_kwds)
+    tqdm.write(f"{prefix}{uri}{brief}\n", end="")
