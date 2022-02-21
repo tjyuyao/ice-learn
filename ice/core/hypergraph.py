@@ -16,7 +16,7 @@ from ice.core.graph import (ExecutableGraph, GraphOutputCache, InvalidURIError,
                             Node, StopAllTasks, StopTask)
 from ice.llutil.argparser import as_list, is_list_of, isa
 from ice.llutil.collections import Dict as iDict
-from ice.llutil.config import Configurable, frozen, is_configurable
+from ice.llutil.config import Configurable, freeze, frozen, is_configurable
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
 from ice.llutil.logging import get_logger
 from ice.llutil.multiprocessing import in_main_process
@@ -396,6 +396,7 @@ class HyperGraph:
         np.random.seed(seed)
 
     def _run_impl(self, tasks, launcher:ElasticLauncher, resume_from):
+        tasks = freeze(tasks)
         self.run_info.tasks = tasks
         self.run_info.launcher = launcher
         self.run_info._task_resumed = True
@@ -485,7 +486,7 @@ class HyperGraph:
 
         try: # resuming task progress
             _tasks:List[Task] = [task for task in self.run_info.tasks if isa(task, _Task)]
-            if len(_tasks) != len(_checkpoint["tasks"]): raise ResumeTaskFailed()
+            if strict and len(_tasks) != len(_checkpoint["tasks"]): raise ResumeTaskFailed()
             for t, s in zip(_tasks, _checkpoint["tasks"]):
                 t.freeze().load_state_dict(s, dry_run=True)
         except ResumeTaskFailed:
