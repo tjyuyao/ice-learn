@@ -111,7 +111,7 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
             shadow_tb.shadow(type(e), e, e.__traceback__)
         if shadow_tb.DEBUG_ICE:
             raise
-    time.sleep(0.5)
+    time.sleep(launcher.config.monitor_interval + 1.)
     _current_launcher = None
     # dist.destroy_process_group()
 
@@ -273,7 +273,7 @@ class ElasticLauncher(Configurable):
             rdzv_configs["rank"] = node_rank
 
         if master_port is None:
-            seed = time.time_ns() if rdzv_id == "none" else rdzv_id
+            seed = time.time_ns() if max_nodes == 1 else rdzv_id
             master_port = random.Random(seed).randint(16894, 17194)
 
         if rdzv_backend == "static" and not rdzv_endpoint:
