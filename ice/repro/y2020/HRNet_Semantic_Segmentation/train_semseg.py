@@ -46,11 +46,14 @@ ice.args.setdefault("grad_acc", 1, int)
 ice.args.setdefault("checkpoint", False, bool)
 
 DatasetNode:Type[ice.DatasetNode] = ice.DatasetNode(num_workers=12, pin_memory=True)
-
 SGDPoly40k = ice.Optimizer(
     SGD, dict(lr=0.01*ice.args.lr_scale, momentum=0.9, weight_decay=0.0005),
     updators_per_step=[Poly(power=ice.args.power, min_lr=1e-4*ice.args.lr_scale, max_updates=40000 * ice.args.step_scale)],
     gradient_accumulation_steps=ice.args.grad_acc
+)
+ModuleNode:Type[ice.ModuleNode] = ice.ModuleNode(
+    optimizers=SGDPoly40k,
+    autocast_enabled=True,
 )
 
 ice.add(name="dataset",
@@ -73,19 +76,17 @@ ice.add(name="dataset",
         tags=["val", "cityscapes"])
 
 ice.add(name="backbone",
-        node=ice.ModuleNode(
+        node=ModuleNode(
             module=HRNet18(UpsampleConv1x1()),
             forward=lambda n, x: n.module(x["dataset"]["img"]),
-            optimizers=SGDPoly40k,
             weight_init_fn=lambda m: m.load_state_dict(torch.load(PATHS.HRNET18_PRETRAINED)),
         ),
         tags=["hrnet18", "bilinear"])
 
 ice.add(name="backbone",
-        node=ice.ModuleNode(
+        node=ModuleNode(
             module=HRNet18(GuidedUpsampleConv1x1(window_size=5), checkpoint_enabled=ice.args.checkpoint),
             forward=lambda n, x: n.module(x["dataset"]["img"]),
-            optimizers=SGDPoly40k,
             weight_init_fn=lambda m: m.load_state_dict(torch.load(PATHS.HRNET18_CRELA_PRETRAINED)),
         ),
         tags=["hrnet18", "crela"])
@@ -102,7 +103,7 @@ def weight_init_fcn_ocr_head(m: nn.Module):
     m.apply(_init)
 
 ice.add(name="head",
-        node=ice.ModuleNode(
+        node=ModuleNode(
             module=FCNOCRHead(
                 inplanes=HRNet18.out_channels,
                 ocr_planes=256,
@@ -112,22 +113,20 @@ ice.add(name="head",
                 soft_region_pred=DensePrediction(dropout_ratio=-1),
             ),
             forward=lambda n, x: n.module(x["backbone"]),
-            optimizers=SGDPoly40k,
             weight_init_fn=weight_init_fcn_ocr_head,
         ),
         tags=["hrnet18", "cityscapes"])
 
 ice.add(name="hat",
-        node=ice.ModuleNode(
+        node=ModuleNode(
             module=DensePrediction(512, Cityscapes.NUM_CLASSES, dropout_ratio=-1),
             forward=lambda n, x: {"pred":n.module(x["head"]["feat"])},
-            optimizers=SGDPoly40k,
             weight_init_fn=weight_init_fcn_ocr_head,
         ),
         tags=["hrnet18", "cityscapes", "bilinear"])
 
 ice.add(name="hat",
-        node=ice.ModuleNode(
+        node=ModuleNode(
             module=LAHead18a(
                 in_coarser_channels=512,
                 out_channels=Cityscapes.NUM_CLASSES, 
@@ -138,7 +137,6 @@ ice.add(name="hat",
                 upsample_mode="bilinear",
             ),
             forward=lambda n, x: n.module(x["head"]["feat"], x["dataset"]["img"]),
-            optimizers=SGDPoly40k,
             weight_init_fn=weight_init_fcn_ocr_head,
         ),
         tags=["hrnet18", "cityscapes", "crela"])

@@ -9,18 +9,21 @@ from ice.llutil.argparser import as_dict, as_list
 from ice.llutil.collections import Counter
 from ice.llutil.logging import get_logger
 from torch.nn.parallel import DistributedDataParallel
+from torch import autocast
 
 
 class _ModuleProxy(nn.Module):
 
-    def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any]) -> None:
+    def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any], autocast_kwds) -> None:
         super().__init__()
         self.node = node
         self._module = module
         self.forward_override = forward
+        self.autocast_kwds = autocast_kwds
 
     def forward(self, cache):
-        return self.forward_override(self.node, cache)
+        with autocast(self.node.launcher.assigned_device.type, **self.autocast_kwds):
+            return self.forward_override(self.node, cache)
 
 
 class ModuleNode(Node):
@@ -32,27 +35,34 @@ class ModuleNode(Node):
     """
 
     @overload
-    def __init__(self,
-                   module: nn.Module,
-                   forward: Callable[["ModuleNode", GraphOutputCache], Any],
-                   optimizers: Dict[Tuple[str], Optimizer] = None,
-                   weight_init_fn: Callable[[nn.Module], None] = None,
-                   static_graph=False,
-                   find_unused_parameters=False,
-                   ):        ...
+    def __init__(
+        self,
+        module: nn.Module,
+        forward: Callable[["ModuleNode", GraphOutputCache], Any],
+        optimizers: Dict[Tuple[str], Optimizer] = None,
+        weight_init_fn: Callable[[nn.Module], None] = None,
+        autocast_enabled: bool = False,
+        static_graph=False,
+        find_unused_parameters=False,
+    ):
+        ...
 
     @overload
-    def __init__(self,
-                   module: nn.Module,
-                   forward: Callable[["ModuleNode", GraphOutputCache], Any],
-                   optimizers: Dict[Tuple[str], Optimizer] = None,
-                   weight_init_fn: Callable[[nn.Module], None] = None,
-                   static_graph=False,
-                   find_unused_parameters=False,
-                   broadcast_buffers=True,
-                   bucket_cap_mb=25,
-                   gradient_as_bucket_view=False,
-                   ):        ...
+    def __init__(
+        self,
+        module: nn.Module,
+        forward: Callable[["ModuleNode", GraphOutputCache], Any],
+        optimizers: Dict[Tuple[str], Optimizer] = None,
+        weight_init_fn: Callable[[nn.Module], None] = None,
+        autocast_enabled: bool = False,
+        autocast_dtype=torch.bfloat16,
+        static_graph=False,
+        find_unused_parameters=False,
+        broadcast_buffers=True,
+        bucket_cap_mb=25,
+        gradient_as_bucket_view=False,
+    ):
+        ...
 
     def __init__(self, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
@@ -62,6 +72,8 @@ class ModuleNode(Node):
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
                    weight_init_fn: Callable[[nn.Module], None] = None,
+                   autocast_enabled:bool=False,
+                   autocast_dtype=torch.bfloat16,
                    static_graph=False,
                    find_unused_parameters=False,
                    broadcast_buffers=True,
@@ -110,8 +122,9 @@ class ModuleNode(Node):
 
         self.optim_counter = Counter()
 
+        autocast_kwds = dict(enabled=autocast_enabled, dtype=autocast_dtype)
         self._ddp_module = DistributedDataParallel(
-            _ModuleProxy(self, self.module, forward),
+            _ModuleProxy(self, self.module, forward, autocast_kwds),
             broadcast_buffers=broadcast_buffers,
             bucket_cap_mb=bucket_cap_mb,
             find_unused_parameters=find_unused_parameters,
@@ -208,7 +221,7 @@ class ModuleNode(Node):
                         loaded_from_backup.add(key)
                     else:
                         missing_keys.add(key)
-                        
+
                 warn_flag = False
                 warn_msgs = [f"optimizers_keys does not match for {self.module.__class__.__name__}.\n"]
                 if len(missing_keys) > 0:
@@ -232,7 +245,7 @@ class ModuleNode(Node):
                     warn_flag = True
                 if warn_flag:
                     get_logger().warn(''.join(warn_msgs))
-                
+
                 # update backup states
                 _new_backup_states = {
                     "optimizers_keys": {},
