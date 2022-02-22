@@ -52,6 +52,7 @@ class LossNode(Node):
         self.egraph.losses_counter -= 1
         if self.loss_mode == LossMode.MANUAL:
             loss = self.forward() * self.weight
+            loss = self.grad_scaler.scale(loss)
             if self.egraph.losses_counter > 0:
                 loss.backward(retain_graph=True)
             else:

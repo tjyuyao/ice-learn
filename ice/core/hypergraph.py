@@ -8,7 +8,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from inspect import signature
 import time
-from typing import Any, Callable, Dict, List, Optional, overload
+from typing import Any, Callable, Dict, List, Optional, Union, overload
 from ice.core.dataset import DatasetNode
 import numpy as np
 
@@ -23,6 +23,7 @@ from ice.llutil.logging import get_logger
 from ice.llutil.multiprocessing import in_main_process
 from ice.llutil.print import _print
 from torch.autograd.grad_mode import set_grad_enabled
+from torch.cuda.amp.grad_scaler import GradScaler
 from tqdm import tqdm
 
 
@@ -63,7 +64,7 @@ class Task(_Task):
         self.task_epochs = 0
         self.finished = False
         return self
-    
+
     def __call__(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
         if self.finished: return  # for resuming progress
         with set_grad_enabled(self.training):
@@ -90,7 +91,7 @@ class Task(_Task):
         # run epochs: assert self.total_epochs == 0 or self.total_steps == 0
         if self.total_epochs:
             if self.task_steps != 0: self.global_epochs -= 1  # already started before last interruption
-            
+
             if launcher.local_rank == 0:
                 # update progress bar total
                 total = None
@@ -100,7 +101,7 @@ class Task(_Task):
                         if total is None or total > len_node:
                             total = len_node
                 launcher.events.progress_bar_total.value = total
-            
+
             for self.task_epochs in range(self.task_epochs, self.total_epochs):
                 self.egraph.apply("epoch_start")
                 self.global_epochs += 1
@@ -127,7 +128,7 @@ class Task(_Task):
         self.egraph.iterate()
         self.launcher.events.progress_bar_iter.value = self.task_steps  # notify progressbar in main process.
         self._process_events()
-        
+
     def _process_events(self):
         events:Events = self.launcher.events
         if events.pause.is_set():
@@ -155,12 +156,12 @@ class Task(_Task):
         return _state_dict
 
     def load_state_dict(self, _state_dict, dry_run=False):
-        
+
         if  isa(_state_dict, list) or \
             self.total_epochs != _state_dict["total_epochs"] or \
             self.total_steps != _state_dict["total_steps"]:
             raise ResumeTaskFailed()
-        
+
         if not dry_run:
             self.task_steps = _state_dict["task_steps"]
             self.task_epochs = _state_dict["task_epochs"]
@@ -219,7 +220,7 @@ class Repeat(_Task):
         reprstr = ",".join([repr(subtask) for subtask in self.tasks])
         reprstr = f"[{reprstr}] * {self.repeat}"
         return reprstr
-    
+
     def state_dict(self):
         _state_dict = [t.state_dict() for t in self.etasks if isa(t, _Task)]
         return _state_dict
@@ -278,7 +279,7 @@ class HyperGraph:
     """HyperGraph is the container for all nodes.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, grad_scaler:Union[bool, GradScaler] = False) -> None:
         self.nodes = {}
         self.global_counters = GlobalCounters()
         self.run_info = iDict()
@@ -286,7 +287,37 @@ class HyperGraph:
         self._shortcuts:Dict[str, ExecutableGraph] = {}
         self._last_executed_egraph = None
         self._num_workers = 0
-    
+
+        self.init_grad_scaler(grad_scaler)
+
+    @overload
+    def init_grad_scaler(self,
+                         grad_scaler: Union[bool, GradScaler] = False,
+                         *,
+                         init_scale=2.**16,
+                         growth_factor=2.0,
+                         backoff_factor=0.5,
+                         growth_interval=2000,
+                         enabled=True):
+        ...
+        
+    def init_grad_scaler(self, grad_scaler:Union[bool, GradScaler] = False, **kwds):
+        if isa(grad_scaler, bool):
+            if grad_scaler:
+                self._grad_scaler = GradScaler(**kwds)
+            else:
+                self._grad_scaler = GradScaler(enabled=False)
+        elif isa(grad_scaler, grad_scaler):
+            if len(kwds):
+                get_logger().warn("when grad_scaler is a GradScaler, you should not specify other keywords parameters for `init_grad_scaler()`")
+            self._grad_scaler = grad_scaler
+        else:
+            get_logger().warn("not supported argument type for `init_grad_scaler()`, disabling.")
+            self._grad_scaler = GradScaler(enabled=False)
+
+    def get_grad_scaler_enabled(self):
+        return self._grad_scaler.is_enabled()
+
     @property
     def launcher(self) -> ElasticLauncher:
         return self.run_info.launcher
@@ -300,7 +331,7 @@ class HyperGraph:
 
         if isa(node, Configurable) and not frozen(node) and "num_workers" in node:
             self._num_workers = max(self._num_workers, node["num_workers"])
-    
+
     def remove(self, query):
         raise NotImplementedError()
 
@@ -329,12 +360,12 @@ class HyperGraph:
         if len(nodes) != 1:
             raise RuntimeError(f"fail to parse node uid '{uid}'")
         return nodes[0]
-    
+
     def select_nodes(self, *query):
         keys = self._select_keys(query)
         out = { key:self.nodes[key][1] for key in keys }
         return out
-    
+
     def _select_keys(self, *query) -> List[str]:
         query = as_list(query)
         if "*" in query: return list(self.nodes.keys())
@@ -382,7 +413,7 @@ class HyperGraph:
         node_rank=0, master_addr="127.0.0.1", master_port=None,
         redirects="0", tee="0", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
-    ): ...
+    ):        ...
 
     @overload
     def run(
@@ -390,7 +421,7 @@ class HyperGraph:
         rdzv_endpoint="", rdzv_backend="static", rdzv_configs="", standalone=False,
         redirects="0", tee="0", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
-    ): ...
+    ):        ...
 
     def _set_initial_rng_state(self, seed):
         torch.manual_seed(seed)
@@ -402,7 +433,7 @@ class HyperGraph:
         self.run_info.tasks = tasks
         self.run_info.launcher = launcher
         self.run_info._task_resumed = True
-        
+
         global_shared_events["debugger_start"] = launcher.events.debugger_start
         global_shared_events["debugger_end"] = launcher.events.debugger_end
         try:
@@ -440,12 +471,12 @@ class HyperGraph:
         self.run_info.log_dir = log_dir
 
     def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
-        
+
         self._set_initial_rng_state(seed)
 
         if in_main_process():
             self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
-            
+
             kwds["rdzv_id"] = run_id
             kwds["log_dir"] = self.run_info.log_dir
             kwds["start_method"] = start_method
@@ -465,20 +496,20 @@ class HyperGraph:
         if save_to is None:
             fname = f"E{self.global_counters.epochs.train}S{self.global_counters.steps.train}.pth"
             save_to = os.path.join(self.run_info.ckpt_dir, fname)
-        
+
         # handle repeated saving.
         _last_save_to = getattr(self, "_last_ckpt_save_to", None)
         setattr(self, "_last_ckpt_save_to", save_to)
-        if _last_save_to == save_to: return  
-        
+        if _last_save_to == save_to: return
+
         keys = self._select_keys(tags)
-        
+
         _checkpoint = {
             "tasks":[task.state_dict() for task in self.run_info.tasks if isa(task, _Task)],
             "nodes":{key:self.nodes[key][1].freeze().state_dict() for key in keys},
             "counters": self.global_counters,
         }
-        
+
         if self.launcher.rank == 0:
             tqdm.write(f"Saving checkpoint to \"{save_to}\".")
             torch.save(_checkpoint, save_to)
@@ -509,10 +540,10 @@ class HyperGraph:
         for key, node_state in _checkpoint["nodes"].items():
             if key not in keys: continue
             self.nodes[key][1].freeze().load_state_dict(node_state, strict=strict)
-            
+
         self.global_counters = _checkpoint["counters"]
 
-        
+
     def exec_tasks(self, tasks, launcher:ElasticLauncher):
 
         for task in as_list(tasks):

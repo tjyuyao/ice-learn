@@ -7,6 +7,7 @@ import torch
 from ice.llutil.argparser import as_list
 from ice.llutil.config import Configurable
 from ice.llutil.launcher.launcher import get_current_launcher
+from torch.cuda.amp.grad_scaler import GradScaler
 
 
 class InvalidURIError(Exception):
@@ -116,6 +117,10 @@ class Node(Configurable):
     @property
     def run_id(self) -> str:
         return self.egraph.hypergraph.run_info.full_run_id
+
+    @property
+    def grad_scaler(self) -> GradScaler:
+        return self.egraph.grad_scaler
 
     def forward(self):
         """retrieves forward output in cache or calculates it using `forward_impl` and save the output to the cache. Subclasses should not override this method."""
@@ -233,6 +238,10 @@ class ExecutableGraph:
         
     def clean_up_nodes(self):
         self.apply("clean_up")
+    
+    @property
+    def grad_scaler(self) -> GradScaler:
+        return self.hypergraph._grad_scaler
 
     def iterate(self):
         self.cache.clear()
@@ -241,6 +250,7 @@ class ExecutableGraph:
             self.apply("forward")
             self.apply("backward")
             self.apply("update")
+            self.grad_scaler.update()
         else: # eval
             self.apply("forward")
             self.apply("update")
