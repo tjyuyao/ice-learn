@@ -120,4 +120,4 @@ def _print(data,
         brief = data
     if uri != "" and not uri.endswith(": "):
         uri = uri + ": "
-    tqdm.write(f"{prefix}{uri}{brief}\n", end="")
+    tqdm.write(f"\r{prefix}{uri}{brief}\033[K\n", end="")
