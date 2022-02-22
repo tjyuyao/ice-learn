@@ -1,4 +1,5 @@
 from argparse import Namespace
+from datetime import datetime
 import os
 import random
 import sys
@@ -63,28 +64,28 @@ class Task(_Task):
         self.finished = False
         return self
     
-    def __call__(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
+    def __call__(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
         if self.finished: return  # for resuming progress
         with set_grad_enabled(self.training):
-            self.__call__impl(hyper_graph, launcher)
+            self.__call__impl(hypergraph, launcher)
         self.finished = True
 
-    def __call__impl(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
+    def __call__impl(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
         # maintain running progress.
-        self.hyper_graph = hyper_graph
+        self.hypergraph = hypergraph
 
         # prepare states.
         self.launcher = launcher
-        self.egraph: ExecutableGraph = hyper_graph.select_egraph(self.tags)
+        self.egraph: ExecutableGraph = hypergraph.select_egraph(self.tags)
         self.egraph.task = self
 
-        if self.egraph is not hyper_graph._last_executed_egraph:
-            if hyper_graph._last_executed_egraph is not None:
-                hyper_graph._last_executed_egraph.clean_up_nodes()
+        if self.egraph is not hypergraph._last_executed_egraph:
+            if hypergraph._last_executed_egraph is not None:
+                hypergraph._last_executed_egraph.clean_up_nodes()
             self.egraph.prepare_nodes()
             if self.launcher.assigned_device.type == "cuda":
                 torch.cuda.empty_cache() # result in more precise value in `nvidia-smi`.
-        hyper_graph._last_executed_egraph = self.egraph
+        hypergraph._last_executed_egraph = self.egraph
 
         # run epochs: assert self.total_epochs == 0 or self.total_steps == 0
         if self.total_epochs:
@@ -134,7 +135,7 @@ class Task(_Task):
             events.resume.wait()
             events.paused.clear()
         if events.trigger_save_checkpoint.is_set():
-            self.hyper_graph.save_checkpoint()
+            self.hypergraph.save_checkpoint()
             if self.launcher.rank == 0:
                 events.trigger_save_checkpoint.clear()
                 events.finished_save_checkpoint.set()
@@ -155,7 +156,8 @@ class Task(_Task):
 
     def load_state_dict(self, _state_dict, dry_run=False):
         
-        if self.total_epochs != _state_dict["total_epochs"] or \
+        if  isa(_state_dict, list) or \
+            self.total_epochs != _state_dict["total_epochs"] or \
             self.total_steps != _state_dict["total_steps"]:
             raise ResumeTaskFailed()
         
@@ -170,20 +172,20 @@ class Task(_Task):
 
     @property
     def global_epochs(self):
-        return self.hyper_graph.global_counters.epochs[self._train_str]
+        return self.hypergraph.global_counters.epochs[self._train_str]
 
     @global_epochs.setter
     def global_epochs(self, value):
-        self.hyper_graph.global_counters.epochs[self._train_str] = value
+        self.hypergraph.global_counters.epochs[self._train_str] = value
         return value
 
     @property
     def global_steps(self):
-        return self.hyper_graph.global_counters.steps[self._train_str]
+        return self.hypergraph.global_counters.steps[self._train_str]
 
     @global_steps.setter
     def global_steps(self, value):
-        self.hyper_graph.global_counters.steps[self._train_str] = value
+        self.hypergraph.global_counters.steps[self._train_str] = value
         return value
 
 class Repeat(_Task):
@@ -210,8 +212,8 @@ class Repeat(_Task):
         self.tags = list(set(_tags))
         return self
 
-    def __call__(self, hyper_graph: "HyperGraph", launcher: ElasticLauncher):
-        hyper_graph.exec_tasks(self.etasks, launcher)
+    def __call__(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
+        hypergraph.exec_tasks(self.etasks, launcher)
 
     def __repr__(self) -> str:
         reprstr = ",".join([repr(subtask) for subtask in self.tasks])
@@ -306,7 +308,7 @@ class HyperGraph:
         query = as_list(query)
         keys = self._select_keys(query)
         shortcut_query = hash(tuple(query))
-        egraph = ExecutableGraph()
+        egraph = ExecutableGraph(self)
         if shortcut_query not in self._shortcuts:
             for key in keys:
                 name, node, tags = self.nodes[key]
@@ -424,17 +426,19 @@ class HyperGraph:
         """
         base_out_dir = out_dir or "out"
         os.makedirs(base_out_dir, exist_ok=True)
-        run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_", dir=base_out_dir)
+        today = datetime.today()
+        run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_{today.month:02d}{today.day:02d}{today.hour:02d}{today.minute:02d}_", dir=base_out_dir)
         ckpt_dir = os.path.join(run_id_dir, "ckpts")
         os.makedirs(ckpt_dir, exist_ok=True)
         log_dir = os.path.join(run_id_dir, "logs")
 
-        self.run_info.id = run_id
+        self.run_info.run_id = run_id
+        self.run_info.full_run_id = os.path.basename(run_id_dir)
         self.run_info.out_dir = run_id_dir
         self.run_info.ckpt_dir = ckpt_dir
         self.run_info.log_dir = log_dir
 
-    def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="unnamed", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
+    def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
         
         self._set_initial_rng_state(seed)
 
@@ -498,6 +502,7 @@ class HyperGraph:
         else:
             for t, s in zip(_tasks, _checkpoint["tasks"]):
                 t.load_state_dict(s, dry_run=False)
+            self.run_info._task_resumed = False
 
         keys = self._select_keys(tags)
         for key, node_state in _checkpoint["nodes"].items():
@@ -505,8 +510,6 @@ class HyperGraph:
             self.nodes[key][1].freeze().load_state_dict(node_state, strict=strict)
             
         self.global_counters = _checkpoint["counters"]
-
-        self.run_info._task_resumed = False
 
         
     def exec_tasks(self, tasks, launcher:ElasticLauncher):

@@ -94,20 +94,28 @@ class Node(Configurable):
         return get_current_launcher()
     
     @property
-    def global_steps(self):
+    def global_steps(self) -> int:
         return self.egraph.task.global_steps
 
     @property
-    def global_epochs(self):
+    def global_epochs(self) -> int:
         return self.egraph.task.global_epochs
 
     @property
-    def task_steps(self):
+    def task_steps(self) -> int:
         return self.egraph.task.task_steps
 
     @property
-    def task_epochs(self):
+    def task_epochs(self) -> int:
         return self.egraph.task.task_epochs
+    
+    @property
+    def out_dir(self) -> str:
+        return self.egraph.hypergraph.run_info.out_dir
+    
+    @property
+    def run_id(self) -> str:
+        return self.egraph.hypergraph.run_info.full_run_id
 
     def forward(self):
         """retrieves forward output in cache or calculates it using `forward_impl` and save the output to the cache. Subclasses should not override this method."""
@@ -182,7 +190,8 @@ class GraphOutputCache:
 
 class ExecutableGraph:
 
-    def __init__(self) -> None:
+    def __init__(self, hypergraph) -> None:
+        self.hypergraph = hypergraph
         self.nodes:Dict[str, Node] = {}
         self.node_tags:Dict[Node, List[str]] = {}
         self.node_names:Dict[Node, str] = {}
