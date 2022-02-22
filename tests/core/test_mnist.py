@@ -1,6 +1,6 @@
 import ice
 import torch
-from torch import nn
+from torch import autocast, nn
 from torch.nn import functional as F
 from torch.optim import SGD
 from torchvision.datasets import MNIST
@@ -22,6 +22,7 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(320, 50)
         self.fc2 = nn.Linear(50, 10)
 
+    @autocast("cuda")
     def forward(self, x):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
         x = self.bn(x)
@@ -49,7 +50,7 @@ _C.MODULES.NET_NODE = ice.ModuleNode(
 _C.LOSSES.NLL_NODE = LossNode(forward=lambda n, x: F.nll_loss(x["net"], x["mnist"][1]))
 
 
-_C.GRAPHS.G1 = ice.HyperGraph()
+_C.GRAPHS.G1 = ice.HyperGraph(grad_scaler=True)
 _C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.TRAIN_NODE, tags="train")
 _C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.VAL_NODE, tags="val")
 _C.GRAPHS.G1.add("net", _C.MODULES.NET_NODE)

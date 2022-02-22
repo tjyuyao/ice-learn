@@ -154,7 +154,8 @@ class ModuleNode(Node):
         if not self.training: return
         for optimizer in self.optimizers:
             optimizer.update(self.optim_counter.epochs,
-                             self.optim_counter.steps)
+                             self.optim_counter.steps,
+                             self.grad_scaler)
             self.optim_counter.steps += 1
 
     def state_dict(self):

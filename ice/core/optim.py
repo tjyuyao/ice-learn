@@ -5,6 +5,7 @@ import torch
 from ice.llutil.config import Configurable
 from ice.llutil.dictprocess import DictProcessor
 from torch.distributed.optim.zero_redundancy_optimizer import ZeroRedundancyOptimizer
+from torch.cuda.amp.grad_scaler import GradScaler
 
 
 class Optimizer(Configurable):
@@ -60,7 +61,7 @@ class Optimizer(Configurable):
                              trigger="epoch_start",
                              steps=steps, epochs=epochs))
 
-    def update(self, epochs, steps):
+    def update(self, epochs, steps, grad_scaler:GradScaler):
         # gradient accumulation
         if steps % self.every: return
 
@@ -77,7 +78,7 @@ class Optimizer(Configurable):
                             p.grad = p.grad / self.every
 
         # update the network parameters and clear gradients
-        self.optimizer.step()
+        grad_scaler.step(self.optimizer)
         self.optimizer.zero_grad(set_to_none=True)
         
     def state_dict(self, rank):
