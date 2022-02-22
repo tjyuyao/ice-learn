@@ -1,4 +1,6 @@
 import os.path as osp
+import cv2
+import numpy as np
 from torch.utils.data import Dataset
 import ice
 
@@ -84,6 +86,12 @@ def train_aug_pipeline(
         IT.Collect("img", "seg")
     ]
 
+@ice.dictprocess
+def make_edge_gt(seg):
+    img_blur = cv2.GaussianBlur(seg, (3,3), 0)
+    edge = cv2.Canny(image=img_blur, threshold1=100, threshold2=200)
+    edge = edge.astype(np.float) / 255.
+    return edge
 
 def train_aug_pipeline(
     resize_ratio_low = .5,
@@ -110,6 +118,7 @@ def train_aug_pipeline(
         # Random Flip
         IT.random.RandomDo([IT.image.spatial.Flip(src="img", dst="img"),
                             IT.image.spatial.Flip(src="seg", dst="seg")], prob=random_flip_prob),
+        make_edge_gt(seg="seg", dst="edge"),
         # Photometric Augmentation
         IT.image.photometric.PhotoMetricDistortion(img="img", dst="img"),
         # Normalize & ToTensor
@@ -118,7 +127,7 @@ def train_aug_pipeline(
             std=normalize_std, to_rgb=True),
         IT.image.ToTensor(img="img", dst="img"),
         IT.semseg.LabelToTensor(src="seg", dst="seg"),
-        IT.Collect("img", "seg")
+        IT.Collect("img", "seg", "edge")
     ]
 
 def eval_pipeline(
@@ -127,13 +136,14 @@ def eval_pipeline(
 ):
     return [
         # Load
-        IT.image.Load(img_path="img_path", dst="img"),
+        IT.image.Load(img_path="img_path", dst="raw_img"),
         IT.semseg.LoadAnnotation(seg_path="seg_path", dst="seg"),
+        make_edge_gt(seg="seg", dst="edge"),
         # Normalize & ToTensor
         IT.image.Normalize(
-            img="img", dst="img", mean=normalize_mean,
+            img="raw_img", dst="img", mean=normalize_mean,
             std=normalize_std, to_rgb=True),
         IT.image.ToTensor(img="img", dst="img"),
         IT.semseg.LabelToTensor(src="seg", dst="seg"),
-        IT.Collect("img", "seg")
+        IT.Collect("img", "seg", "raw_img", "img_path", "edge")
     ]
