@@ -1,8 +1,12 @@
 import os
 
+from ice.llutil.logging import get_logger
+
+
 DEBUG_ICE = bool(os.environ.get("DEBUG_ICE", 0))
 
 if DEBUG_ICE:
+    get_logger().warn("DEBUG_ICE mode enabled.")
     SHADOW_PATTERNS = (
         'torch/nn/modules/',
         'pickle.py',
