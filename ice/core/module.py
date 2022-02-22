@@ -14,15 +14,14 @@ from torch import autocast
 
 class _ModuleProxy(nn.Module):
 
-    def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any], autocast_kwds) -> None:
+    def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any]) -> None:
         super().__init__()
         self.node = node
         self._module = module
         self.forward_override = forward
-        self.autocast_kwds = autocast_kwds
 
     def forward(self, cache):
-        with autocast(self.node.launcher.assigned_device.type, **self.autocast_kwds):
+        with autocast(self.node.launcher.assigned_device.type, **self.node.egraph.hypergraph.autocast_kwds):
             return self.forward_override(self.node, cache)
 
 
@@ -41,7 +40,6 @@ class ModuleNode(Node):
         forward: Callable[["ModuleNode", GraphOutputCache], Any],
         optimizers: Dict[Tuple[str], Optimizer] = None,
         weight_init_fn: Callable[[nn.Module], None] = None,
-        autocast_enabled: bool = False,
         static_graph=False,
         find_unused_parameters=False,
     ):
@@ -54,8 +52,6 @@ class ModuleNode(Node):
         forward: Callable[["ModuleNode", GraphOutputCache], Any],
         optimizers: Dict[Tuple[str], Optimizer] = None,
         weight_init_fn: Callable[[nn.Module], None] = None,
-        autocast_enabled: bool = False,
-        autocast_dtype=torch.bfloat16,
         static_graph=False,
         find_unused_parameters=False,
         broadcast_buffers=True,
@@ -72,8 +68,6 @@ class ModuleNode(Node):
                    forward: Callable[["ModuleNode", GraphOutputCache], Any],
                    optimizers: Dict[Tuple[str], Optimizer] = None,
                    weight_init_fn: Callable[[nn.Module], None] = None,
-                   autocast_enabled:bool=False,
-                   autocast_dtype=torch.bfloat16,
                    static_graph=False,
                    find_unused_parameters=False,
                    broadcast_buffers=True,
@@ -122,9 +116,8 @@ class ModuleNode(Node):
 
         self.optim_counter = Counter()
 
-        autocast_kwds = dict(enabled=autocast_enabled, dtype=autocast_dtype)
         self._ddp_module = DistributedDataParallel(
-            _ModuleProxy(self, self.module, forward, autocast_kwds),
+            _ModuleProxy(self, self.module, forward),
             broadcast_buffers=broadcast_buffers,
             bucket_cap_mb=bucket_cap_mb,
             find_unused_parameters=find_unused_parameters,

@@ -12,7 +12,7 @@ from torch.optim import SGD
 
 from datasets.cityscapes import Cityscapes, eval_pipeline, train_aug_pipeline
 from ice.core.graph import GraphOutputCache, StopAllTasks
-from lr_updators import Poly
+from lr_updators import Poly, PolyWarmUp
 from metrics.semseg import SemsegIoUMetric
 from modules.fcn_head import FCNHead
 from modules.fcn_ocr_head import FCNOCRHead
@@ -48,13 +48,14 @@ ice.args.setdefault("checkpoint", False, bool)
 DatasetNode:Type[ice.DatasetNode] = ice.DatasetNode(num_workers=12, pin_memory=True)
 SGDPoly40k = ice.Optimizer(
     SGD, dict(lr=0.01*ice.args.lr_scale, momentum=0.9, weight_decay=0.0005),
-    updators_per_step=[Poly(power=ice.args.power, min_lr=1e-4*ice.args.lr_scale, max_updates=40000 * ice.args.step_scale)],
+    updators_per_step=[PolyWarmUp(power=ice.args.power, min_lr=1e-4*ice.args.lr_scale, max_updates=40000 * ice.args.step_scale)],
     gradient_accumulation_steps=ice.args.grad_acc
 )
 ModuleNode:Type[ice.ModuleNode] = ice.ModuleNode(
     optimizers=SGDPoly40k,
-    autocast_enabled=True,
 )
+
+ice.init_autocast()
 
 ice.add(name="dataset",
         node=DatasetNode(
@@ -157,6 +158,7 @@ def cross_entropy(seg_logit, seg_gt):
     )
     return loss
 
+
 ice.add(name="loss",
     node=ice.LossNode(
         forward= lambda n, x: (
@@ -172,7 +174,7 @@ ice.add(name="loss",
         forward= lambda n, x: (
             cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
             cross_entropy(x["hat"]["pred"], x["dataset"]["seg"])
-            + (x["hat"]["non_edge"]).abs().mean() * 0.1
+            # + (x["hat"]["non_edge"]).abs().mean() * 0.1
         ),
     ),
     tags=["crela", "train"]
@@ -193,10 +195,11 @@ ice.add(name="miou",
     )
 )
 
-ice.print_forward_output("loss", every=100)
+# ice.print_forward_output(["backbone", "head", "hat", "loss"], every=10)
+ice.print_forward_output(["loss"], every=100)
 
 common_tags = ["hrnet18", "cityscapes", ice.args["model"]]
-run_id = '_'.join(common_tags) + "_maskloss"
+run_id = '_'.join(common_tags)
 
 if ice.args["run"] == "train":
 
@@ -215,7 +218,8 @@ if ice.args["run"] == "train":
         ],
         devices=ice.args.devices,
         tee="3",
-        master_port=9000
+        master_port=9000,
+        # monitor_interval=0.05,
     )
 
 elif ice.args["run"] == "viz":

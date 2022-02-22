@@ -1,6 +1,7 @@
 from typing import List, Union, overload
 
 from torch import Node
+import torch
 from ice.core.hypergraph import HyperGraph
 from ice.llutil.launcher import ElasticLauncher
 from torch.cuda.amp.grad_scaler import GradScaler
@@ -47,7 +48,7 @@ def print_forward_output(*args, **kwds):
 
 
 @overload
-def init_grad_scaler(grad_scaler: Union[bool, GradScaler] = False,
+def init_grad_scaler(grad_scaler: Union[bool, GradScaler] = True,
                      *,
                      init_scale=2.**16,
                      growth_factor=2.0,
@@ -58,3 +59,13 @@ def init_grad_scaler(grad_scaler: Union[bool, GradScaler] = False,
 
 def init_grad_scaler(*args, **kwds):
     default_graph.init_grad_scaler(*args, **kwds)
+
+
+@overload
+def init_autocast(autocast_enabled=True,
+                  autocast_dtype=torch.float16,
+                  grad_scaler: Union[bool, GradScaler] = None):
+    ...
+
+def init_autocast(*args, **kwds):
+    default_graph.init_autocast(*args, **kwds)

@@ -316,9 +316,7 @@ class LocalElasticAgent(SimpleElasticAgent):
             else:
                 self.events.pause.clear()
                 self.events.resume.set()                
-            result = self._invoke_monitor_once(role)
-            self._shutdown(e.sigval)
-            return result
+            raise
         finally:
             if not shutdown_called:
                 self._shutdown()

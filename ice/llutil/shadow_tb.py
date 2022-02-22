@@ -15,6 +15,8 @@ if DEBUG_ICE:
         'torch/distributed/elastic/',
         'ice/llutil/',
         'ice/core/',
+        'multiprocessing/',
+        'threading.py',
         )
 else:
     SHADOW_PATTERNS = ()

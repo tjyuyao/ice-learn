@@ -6,6 +6,8 @@ from functools import wraps
 
 import numpy
 
+from ice.llutil.logging import get_logger
+
 # According to [this link](https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated),
 # `np.bool` is a deprecated alias for the builtin `bool`. This deprecation will cause `/site-packages/pycuda/compyte/dtypes.py:122`  with code
 # `reg.get_or_register_dtype("bool", np.bool)` throwing a DeprecationWarning. We choose to use the old behavior.
@@ -19,11 +21,12 @@ from pycuda.compiler import SourceModule
 from .config import Configurable, configurable
 
 
-_int_regex = re.compile(r'\\bint\\b')
-_float_regex = re.compile(r'\\bfloat\\b')
+_int_regex = re.compile(r'\bint\b')
+_float_regex = re.compile(r'\bfloat\b')
 _extern_c_regex = re.compile(r'extern[ ]+"C"')
 _kernel_cu_regex = re.compile(r'kernel.cu\((?P<lineno>[0-9]+)\).*')
 
+# https://nw.tsuda.ac.jp/lec/cuda/doc_v9_0/pdf/CUDA_Math_API.pdf
 
 _MEMCHECK_ENABLER = '#define _ICE_MEMCHECK_ 1 \n'
 _EXTRA_HEADERS ='#include "PyCUDATensorAccessor.cuh" \n'
@@ -124,7 +127,10 @@ class CUDAModule(object):
         source = self._replace_data_type(source, int_bits, float_bits)
         if not self._find_extern_C(source):
             source = 'extern "C" {\n' + source +'\n}'
-        source = _EXTRA_HEADERS + source
+        if float_bits == 16:
+            source = "# include <cuda_fp16.h>\n" + _EXTRA_HEADERS + source
+        else:
+            source = _EXTRA_HEADERS + source
         if boundscheck:
             source = _MEMCHECK_ENABLER + source
         include_dirs.append(os.path.join(os.path.dirname(__file__), "include"))
@@ -136,9 +142,10 @@ class CUDAModule(object):
         self.mod = None
         self.compile_kwds = kwds
         self.numpy_int_type = {16: numpy.int16, 32: numpy.int32, 64: numpy.int64}[int_bits]
-        self.numpy_float_type = {16: numpy.float16, 32: numpy.float32, 64: numpy.float64}[float_bits]
+        self.numpy_float_type = {16: numpy.float32, 32: numpy.float32, 64: numpy.float64}[float_bits]
         self.torch_int_types = [torch.int16, torch.int32, torch.int64]
         self.torch_float_type = {16: torch.float16, 32: torch.float32, 64: torch.float64}[float_bits]
+        self.float_bits = float_bits
     
     def __getattr__(self, name):
         @wraps(cuda.Function.__call__)
@@ -148,7 +155,8 @@ class CUDAModule(object):
                 for arg in args:
                     if isinstance(arg, torch.Tensor):
                         if arg.dtype != self.torch_float_type:
-                            raise TypeError(f"This CUDAModule expects {self.torch_float_type} but you passed in a {arg.dtype} Tensor.")
+                            arg = arg.to(dtype=self.torch_float_type)
+                            # raise TypeError(f"This CUDAModule expects {self.torch_float_type} but you passed in a {arg.dtype} Tensor.")
                         arg = _Tensor(arg)
                     elif isinstance(arg, int):
                         arg = self.numpy_int_type(arg)

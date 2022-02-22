@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from inspect import signature
 import time
 from typing import Any, Callable, Dict, List, Optional, Union, overload
+
+from torch import autocast
 from ice.core.dataset import DatasetNode
 import numpy as np
 
@@ -279,7 +281,7 @@ class HyperGraph:
     """HyperGraph is the container for all nodes.
     """
 
-    def __init__(self, grad_scaler:Union[bool, GradScaler] = False) -> None:
+    def __init__(self, autocast_enabled=False, autocast_dtype=torch.float16, grad_scaler:Union[bool, GradScaler] = None) -> None:
         self.nodes = {}
         self.global_counters = GlobalCounters()
         self.run_info = iDict()
@@ -288,7 +290,14 @@ class HyperGraph:
         self._last_executed_egraph = None
         self._num_workers = 0
 
-        self.init_grad_scaler(grad_scaler)
+        self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
+
+    def init_autocast(self, autocast_enabled=True, autocast_dtype=torch.float16, grad_scaler:Union[bool, GradScaler] = None):
+        self.autocast_kwds = dict(enabled=autocast_enabled, dtype=autocast_dtype)
+        self.init_grad_scaler(grad_scaler if grad_scaler is not None else autocast_enabled)
+    
+    def is_autocast_enabled(self) -> bool:
+        return self.autocast_kwds["enabled"]
 
     @overload
     def init_grad_scaler(self,
@@ -301,7 +310,7 @@ class HyperGraph:
                          enabled=True):
         ...
         
-    def init_grad_scaler(self, grad_scaler:Union[bool, GradScaler] = False, **kwds):
+    def init_grad_scaler(self, grad_scaler:Union[bool, GradScaler] = True, **kwds):
         if isa(grad_scaler, bool):
             if grad_scaler:
                 self._grad_scaler = GradScaler(**kwds)
@@ -315,7 +324,7 @@ class HyperGraph:
             get_logger().warn("not supported argument type for `init_grad_scaler()`, disabling.")
             self._grad_scaler = GradScaler(enabled=False)
 
-    def get_grad_scaler_enabled(self):
+    def is_grad_scaler_enabled(self) -> bool:
         return self._grad_scaler.is_enabled()
 
     @property

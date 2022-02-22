@@ -1,5 +1,7 @@
 from enum import Enum, auto
 from typing import Any, Callable, Type, overload
+
+from torch import autocast
 from ice.core.graph import GraphOutputCache, Node
 from ice.llutil.argparser import isa
 
@@ -45,7 +47,8 @@ class LossNode(Node):
     def forward_impl(self, cache: "GraphOutputCache"):
         if self.training:
             self.egraph.losses_counter += 1
-        return self.loss_fn(self, cache)
+        with autocast(self.launcher.assigned_device.type, **self.egraph.hypergraph.autocast_kwds):
+            return self.loss_fn(self, cache)
 
     def backward(self):
         assert self.training
