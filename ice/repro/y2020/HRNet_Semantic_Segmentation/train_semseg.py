@@ -12,6 +12,7 @@ from torch.optim import SGD
 
 from datasets.cityscapes import Cityscapes, eval_pipeline, train_aug_pipeline
 from ice.core.graph import GraphOutputCache, StopAllTasks
+from modules.local_attn_2d import local_attn_2d
 from lr_updators import Poly, PolyWarmUp
 from metrics.semseg import SemsegIoUMetric
 from modules.fcn_head import FCNHead
@@ -48,14 +49,14 @@ ice.args.setdefault("checkpoint", False, bool)
 DatasetNode:Type[ice.DatasetNode] = ice.DatasetNode(num_workers=12, pin_memory=True)
 SGDPoly40k = ice.Optimizer(
     SGD, dict(lr=0.01*ice.args.lr_scale, momentum=0.9, weight_decay=0.0005),
-    updators_per_step=[PolyWarmUp(power=ice.args.power, min_lr=1e-4*ice.args.lr_scale, max_updates=40000 * ice.args.step_scale)],
+    updators_per_step=[Poly(power=ice.args.power, min_lr=1e-4*ice.args.lr_scale, max_updates=40000 * ice.args.step_scale)],
     gradient_accumulation_steps=ice.args.grad_acc
 )
 ModuleNode:Type[ice.ModuleNode] = ice.ModuleNode(
     optimizers=SGDPoly40k,
 )
 
-ice.init_autocast()
+# ice.init_autocast()
 
 ice.add(name="dataset",
         node=DatasetNode(
@@ -124,23 +125,23 @@ ice.add(name="hat",
             forward=lambda n, x: {"pred":n.module(x["head"]["feat"])},
             weight_init_fn=weight_init_fcn_ocr_head,
         ),
-        tags=["hrnet18", "cityscapes", "bilinear"])
+        tags=["hrnet18", "cityscapes"])
 
-ice.add(name="hat",
-        node=ModuleNode(
-            module=LAHead18a(
-                in_coarser_channels=512,
-                out_channels=Cityscapes.NUM_CLASSES, 
-                in_finer_channels=3,
-                hidden_channels=32,
-                kernel_size=7,
-                dilation=2,
-                upsample_mode="bilinear",
-            ),
-            forward=lambda n, x: n.module(x["head"]["feat"], x["dataset"]["img"]),
-            weight_init_fn=weight_init_fcn_ocr_head,
-        ),
-        tags=["hrnet18", "cityscapes", "crela"])
+# ice.add(name="hat",
+#         node=ModuleNode(
+#             module=LAHead18a(
+#                 in_coarser_channels=512,
+#                 out_channels=Cityscapes.NUM_CLASSES, 
+#                 in_finer_channels=3,
+#                 hidden_channels=32,
+#                 kernel_size=7,
+#                 dilation=2,
+#                 upsample_mode="bilinear",
+#             ),
+#             forward=lambda n, x: n.module(x["head"]["feat"], x["dataset"]["img"]),
+#             weight_init_fn=weight_init_fcn_ocr_head,
+#         ),
+#         tags=["hrnet18", "cityscapes", "crela"])
 
 def bilinear(x, guide):
     return F.interpolate(
@@ -166,19 +167,21 @@ ice.add(name="loss",
             cross_entropy(bilinear(x["hat"]["pred"], x["dataset"]["img"]), x["dataset"]["seg"])
         ),
     ),
-    tags=["bilinear", "train"]
+    # tags=["bilinear", "train"]
+    tags=["train"]
 )
 
-ice.add(name="loss",
-    node=ice.LossNode(
-        forward= lambda n, x: (
-            cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
-            cross_entropy(x["hat"]["pred"], x["dataset"]["seg"])
-            # + (x["hat"]["non_edge"]).abs().mean() * 0.1
-        ),
-    ),
-    tags=["crela", "train"]
-)
+# ice.add(name="loss",
+#     node=ice.LossNode(
+#         forward= lambda n, x: (
+#             cross_entropy(bilinear(x["head"]["soft_region"], x["dataset"]["img"]), x["dataset"]["seg"]) * 0.4 +
+#             cross_entropy(x["hat"]["pred"], x["dataset"]["seg"])
+#             # + (x["hat"]["non_edge"]).abs().mean() * 0.1
+#             + (x["hat"]["non_edge"] + x["dataset"]["edge"]).abs().mean()
+#         ),
+#     ),
+#     tags=["crela", "train"]
+# )
 
 def report(n: ice.MetricNode):
     iou = n.metric.evaluate()
@@ -206,7 +209,6 @@ if ice.args["run"] == "train":
     ice.run(
         run_id=run_id,
         tasks=[
-            # lambda g: g.load_checkpoint("out/hrnet18_cityscapes_gsgacu_j/ckpts/E0S114.pth"),
             ice.Repeat(
                 [
                     ice.Task(train=True, steps=4000 * ice.args.step_scale, tags=["train", *common_tags]),
@@ -218,7 +220,6 @@ if ice.args["run"] == "train":
         ],
         devices=ice.args.devices,
         tee="3",
-        master_port=9000,
         # monitor_interval=0.05,
     )
 
