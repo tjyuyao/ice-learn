@@ -209,7 +209,7 @@ class FlexibleArgParser:
     def __setattr__(self, attr, item):
         return self.__setitem__(attr, item)
 
-    def setdefault(self, key, default, type=None, help=""):
+    def setdefault(self, key, default, _type=None, help=""):
         """Set argument value under `key` as `value`, only if original entry does not exists.
 
         Args:
@@ -219,10 +219,14 @@ class FlexibleArgParser:
         Returns:
             original or updated value.
         """
+
+        if _type is not None:
+            assert isinstance(_type, type), f"{repr(_type)} is not a type."
+
         if default is REQUIRED:
             raise ArgumentTypeError(key, help)
         elif key in self:
-            try: self[key] = type(self[key])
+            try: self[key] = _type(self[key])
             except Exception: raise ArgumentTypeError(key, default, help)
         else:
             self[key] = default

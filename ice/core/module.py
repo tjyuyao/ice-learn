@@ -1,5 +1,6 @@
 from fnmatch import fnmatch
 from typing import Any, Callable, Dict, List, Set, Tuple, overload
+from ice.llutil.config import freeze
 
 import torch
 import torch.nn as nn
@@ -75,7 +76,7 @@ class ModuleNode(Node):
                    gradient_as_bucket_view=False,
                    ):
         super().__freeze__()
-        module.freeze()
+        module = freeze(module)
         if weight_init_fn is not None: weight_init_fn(module)
         self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
         self.move(self.module)
