@@ -102,7 +102,11 @@ class Task(_Task):
                         len_node = len(node)
                         if total is None or total > len_node:
                             total = len_node
-                launcher.events.progress_bar_total.value = total
+                if total is None:
+                    get_logger().error("No DatasetNode selected for current task!")
+                    raise StopTask("No DatasetNode selected")
+                else:
+                    launcher.events.progress_bar_total.value = total
 
             for self.task_epochs in range(self.task_epochs, self.total_epochs):
                 self.egraph.apply("epoch_start")
