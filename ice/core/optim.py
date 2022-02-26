@@ -1,3 +1,4 @@
+from ice.llutil.argparser import as_list
 from torch import optim
 from typing import List, Type, Dict, overload
 
@@ -51,8 +52,8 @@ class Optimizer(Configurable):
         for group in self.optimizer.param_groups:
             group.setdefault('initial_lr', group['lr'])
         self.every = gradient_accumulation_steps
-        self.updators_at_epoch_start = updators_at_epoch_start
-        self.updators_per_step = updators_per_step
+        self.updators_at_epoch_start = as_list(updators_at_epoch_start)
+        self.updators_per_step = as_list(updators_per_step)
 
     def epoch_start(self, epochs, steps):
         for updator in self.updators_at_epoch_start:
