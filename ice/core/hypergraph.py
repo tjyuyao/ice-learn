@@ -515,7 +515,7 @@ class HyperGraph:
 
         _checkpoint = {
             "tasks":[task.state_dict() for task in self.run_info.tasks if isa(task, _Task)],
-            "nodes":{key:self.nodes[key][1].freeze().state_dict() for key in keys},
+            "nodes":{key:self.nodes[key][1].state_dict() for key in keys if frozen(self.nodes[key][1])},
             "counters": self.global_counters,
         }
 
