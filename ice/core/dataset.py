@@ -239,7 +239,6 @@ class DatasetNode(Node):
         self.internal_steps = _state_dict["internal_steps"]
         self.sampler.set_epoch(epoch=self.internal_epoch)
         self.sampler.set_start_batch_idx(self.internal_steps)
-        self.iterator = iter(self.loader)
     
     def __len__(self):
         return self.actual_num_iters_per_epoch
