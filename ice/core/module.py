@@ -77,7 +77,12 @@ class ModuleNode(Node):
                    ):
         super().__freeze__()
         module = freeze(module)
-        if weight_init_fn is not None: weight_init_fn(module)
+        if weight_init_fn is not None:
+            with torch.no_grad():
+                weight_init_fn(module)
+        has_nan:List[str] = [k for k, w in module.named_parameters() if torch.isnan(w.data).any().item()]
+        if has_nan: get_logger().warn(f"initialized weight might has nan: {has_nan}")
+        
         self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
         self.move(self.module)
 
