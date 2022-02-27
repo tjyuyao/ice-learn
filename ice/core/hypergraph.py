@@ -64,6 +64,7 @@ class Task(_Task):
         self.step_mode = self.total_epochs == 0
         self.task_steps = 0
         self.task_epochs = 0
+        self.epoch_size = 0
         self.finished = False
         return self
 
@@ -94,19 +95,20 @@ class Task(_Task):
         if self.total_epochs:
             if self.task_steps != 0: self.global_epochs -= 1  # already started before last interruption
 
-            if launcher.local_rank == 0:
+            epoch_size = None
+            for node in self.egraph.nodes.values():
+                if isa(node, DatasetNode):
+                    len_node = len(node)
+                    if epoch_size is None or epoch_size > len_node:
+                        epoch_size = len_node
+            if epoch_size is None:
+                get_logger().error("No DatasetNode selected for current task!")
+                raise StopTask("No DatasetNode selected")
+            else:
+                self.epoch_size = epoch_size
                 # update progress bar total
-                total = None
-                for node in self.egraph.nodes.values():
-                    if isa(node, DatasetNode):
-                        len_node = len(node)
-                        if total is None or total > len_node:
-                            total = len_node
-                if total is None:
-                    get_logger().error("No DatasetNode selected for current task!")
-                    raise StopTask("No DatasetNode selected")
-                else:
-                    launcher.events.progress_bar_total.value = total
+                if launcher.local_rank == 0:
+                    launcher.events.progress_bar_total.value = epoch_size
 
             for self.task_epochs in range(self.task_epochs, self.total_epochs):
                 self.egraph.apply("epoch_start")

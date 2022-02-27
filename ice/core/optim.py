@@ -29,8 +29,7 @@ class Optimizer(Configurable):
         self,
         optimizer: Type[optim.Optimizer],
         optimizer_kwds: Dict,
-        updators_per_step: List[DictProcessor] = [],
-        updators_at_epoch_start: List[DictProcessor] = [],
+        updators: List[DictProcessor] = [],
         gradient_accumulation_steps: int = 1,
     ): ...
     
@@ -41,8 +40,7 @@ class Optimizer(Configurable):
         self,
         optimizer_class: Type[optim.Optimizer],
         optimizer_kwds: Dict,
-        updators_per_step: List[DictProcessor] = [],
-        updators_at_epoch_start: List[DictProcessor] = [],
+        updators: List[DictProcessor] = [],
         gradient_accumulation_steps: int = 1,
         *,
         params
@@ -52,26 +50,19 @@ class Optimizer(Configurable):
         for group in self.optimizer.param_groups:
             group.setdefault('initial_lr', group['lr'])
         self.every = gradient_accumulation_steps
-        self.updators_at_epoch_start = as_list(updators_at_epoch_start)
-        self.updators_per_step = as_list(updators_per_step)
+        self.updators = as_list(updators)
+        
+    @overload
+    def update(self, grad_scaler:GradScaler, *, current_epoch, epoch_steps, global_steps, epoch_size): ...
 
-    def epoch_start(self, epochs, steps):
-        for updator in self.updators_at_epoch_start:
-            for group in self.optimizer.param_groups:
-                updator(dict(param_group=group,
-                             trigger="epoch_start",
-                             steps=steps, epochs=epochs))
-
-    def update(self, epochs, steps, grad_scaler:GradScaler):
+    def update(self, grad_scaler:GradScaler, global_steps, **kwds):
         # gradient accumulation
-        if steps % self.every: return
+        if global_steps % self.every: return
 
         # update the learning rate
-        for updator in self.updators_per_step:
+        for updator in self.updators:
             for group in self.optimizer.param_groups:
-                updator(dict(param_group=group,
-                             trigger="step",
-                             steps=steps, epochs=epochs))
+                updator(dict(param_group=group, global_steps=global_steps, **kwds))
                 # scale gradients according to gradient accumulate steps. (assuming mean reduce of loss in batch dimension.)
                 if self.every != 1:
                     with torch.no_grad():

@@ -148,10 +148,9 @@ class ModuleNode(Node):
             self._ddp_module.eval()
 
     def epoch_start(self):
-        for optimizer in self.optimizers:
-            optimizer.epoch_start(self.optim_counter.epochs,
-                                  self.optim_counter.steps)
-
+        if self.training:
+            self.optim_counter.epoch_steps = 0
+    
     def epoch_end(self):
         if self.training:
             self.optim_counter.epochs += 1
@@ -165,10 +164,14 @@ class ModuleNode(Node):
     def update(self):
         if not self.training: return
         for optimizer in self.optimizers:
-            optimizer.update(self.optim_counter.epochs,
-                             self.optim_counter.steps,
-                             self.grad_scaler)
+            optimizer.update(self.grad_scaler, 
+                current_epoch=self.optim_counter.epochs,
+                epoch_size=self.task.epoch_size,
+                global_steps=self.optim_counter.steps,
+                epoch_steps=self.optim_counter.epoch_steps,
+            )
             self.optim_counter.steps += 1
+            self.optim_counter.epoch_steps += 1
 
     def state_dict(self):
         _state_dict = {
