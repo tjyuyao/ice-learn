@@ -96,7 +96,8 @@ def get_current_launcher() -> "ElasticLauncher":
 def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     global _current_launcher
     _current_launcher = launcher
-    signal.signal(signal.SIGINT, _ignore_sigint)
+    if not shadow_tb.DEBUG_ICE:
+        signal.signal(signal.SIGINT, _ignore_sigint)
     dist.init_process_group(
         backend=launcher.dist_backend,
         rank=launcher.rank,
@@ -311,6 +312,7 @@ class ElasticLauncher(Configurable):
         args = [self, entrypoint] + list(args)
         try:
             launch_agent(self.config, _wrap, list(args), self.events)
+            
         except ChildFailedError as e:
             if shadow_tb.DEBUG_ICE:
                 raise
