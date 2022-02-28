@@ -55,10 +55,10 @@ class LossNode(Node):
         self.egraph.losses_counter -= 1
         if self.loss_mode == LossMode.MANUAL:
             loss = self.forward() * self.weight
-            loss = self.grad_scaler.scale(loss)
-            if self.egraph.losses_counter > 0:
-                loss.backward(retain_graph=True)
-            else:
-                loss.backward()
+            self.egraph.total_loss = self.egraph.total_loss + loss
+            if self.egraph.losses_counter == 0:
+                scaled_total_loss = self.grad_scaler.scale(self.egraph.total_loss)
+                scaled_total_loss.backward()
+                self.egraph.total_loss = 0
         else:
             raise NotImplementedError(f"Unimplemented for LossMode `{self.loss_mode}`")

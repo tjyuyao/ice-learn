@@ -207,6 +207,7 @@ class ExecutableGraph:
         self.cache = GraphOutputCache(self)
         self.task = None
         self.losses_counter = 0
+        self.total_loss = 0
 
     def add_node(self, node_name, node, tags):
         if node_name in self.nodes.keys() and node is not self.nodes[node_name]:
