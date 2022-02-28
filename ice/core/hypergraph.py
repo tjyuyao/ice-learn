@@ -243,6 +243,15 @@ class Repeat(_Task):
         for t, s in zip(_etasks, _state_dict):
             t.load_state_dict(s, dry_run=dry_run)
 
+def LoadCheckpointTask(resume_from, strict=False, tags="*"):
+    def func(g: HyperGraph):
+        g.load_checkpoint(resume_from, strict=strict, tags=tags)
+    return func
+
+def SaveCheckpointTask(save_to=None, tags="*"):
+    def func(g: HyperGraph):
+        g.save_checkpoint(save_to=save_to, tags=tags)
+    return func
 
 class Counter:
 
@@ -580,7 +589,6 @@ class HyperGraph:
 
         self.global_counters = _checkpoint["counters"]
 
-
     def exec_tasks(self, tasks, launcher:ElasticLauncher):
 
         for task in as_list(tasks):
@@ -591,6 +599,8 @@ class HyperGraph:
                     self.run_info._task_resumed = True
                 task(self, launcher)
             elif isa(task, callable):
+                if task in (SaveCheckpointTask, LoadCheckpointTask):
+                    raise TypeError(f"Task {task} need to be called.")
                 if self.run_info._task_resumed:
                     args = [x for x, _ in zip(
                         [self, launcher],
