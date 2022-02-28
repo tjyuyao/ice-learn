@@ -1,4 +1,3 @@
-from argparse import Namespace
 from datetime import datetime
 import logging
 import os
@@ -12,14 +11,13 @@ import time
 from typing import Any, Callable, Dict, List, Optional, Union, overload
 from ice.llutil.backup_src import _backup_source_files_to
 
-from torch import autocast
 from ice.core.dataset import DatasetNode
 import numpy as np
 
 import torch.cuda
 from ice.core.graph import (ExecutableGraph, GraphOutputCache, InvalidURIError,
                             Node, StopAllTasks, StopTask)
-from ice.llutil.argparser import as_list, is_list_of, isa
+from ice.llutil.argparser import as_list, is_list_of, isa, args as ice_args
 from ice.llutil.collections import Dict as iDict
 from ice.llutil.config import Configurable, freeze, frozen, is_configurable
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
@@ -473,6 +471,7 @@ class HyperGraph:
         global_shared_events["debugger_start"] = launcher.events.debugger_start
         global_shared_events["debugger_end"] = launcher.events.debugger_end
         try:
+            get_logger().info(repr(ice_args))
             self.load_checkpoint(resume_from)
             self.exec_tasks(tasks, launcher)
         except StopAllTasks:

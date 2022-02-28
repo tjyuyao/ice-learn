@@ -2,7 +2,7 @@
 import logging
 import os
 from typing import Optional
-from torch.distributed.elastic.utils.logging import get_log_level, _derive_module_name
+from torch.distributed.elastic.utils.logging import _derive_module_name
 
 
 def get_logger(name: Optional[str] = None):
@@ -19,6 +19,6 @@ def get_logger(name: Optional[str] = None):
     # Derive the name of the caller, if none provided
     # Use depth=2 since this function takes up one level in the call stack
     log = logging.getLogger(name or _derive_module_name(depth=2))
-    log.setLevel(os.environ.get("LOGLEVEL", get_log_level()))
+    log.setLevel(logging.INFO)
     
     return log
