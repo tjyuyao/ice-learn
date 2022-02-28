@@ -12,7 +12,7 @@ from typing import List, overload
 import torch
 import torch.distributed as dist
 from ice.llutil.config import Configurable
-from ice.llutil.logging import get_logger
+from ice.llutil.logger import get_logger
 from torch.distributed.elastic.multiprocessing import Std
 from torch.distributed.elastic.multiprocessing.errors import record, ChildFailedError
 from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config

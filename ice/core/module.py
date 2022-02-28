@@ -1,4 +1,5 @@
 from fnmatch import fnmatch
+from time import sleep
 from typing import Any, Callable, Dict, List, Set, Tuple, overload
 from ice.llutil.config import freeze
 
@@ -8,7 +9,7 @@ from ice.core.graph import GraphOutputCache, Node
 from ice.core.optim import Optimizer
 from ice.llutil.argparser import as_dict, as_list
 from ice.llutil.collections import Counter
-from ice.llutil.logging import get_logger
+from ice.llutil.logger import get_logger
 from torch.nn.parallel import DistributedDataParallel
 from torch import autocast
 
@@ -80,6 +81,7 @@ class ModuleNode(Node):
         if weight_init_fn is not None:
             with torch.no_grad():
                 weight_init_fn(module)
+            sleep(0.2)
         has_nan:List[str] = [k for k, w in module.named_parameters() if torch.isnan(w.data).any().item()]
         if has_nan: get_logger().warn(f"initialized weight might has nan: {has_nan}")
         

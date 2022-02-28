@@ -1,5 +1,6 @@
 from argparse import Namespace
 from datetime import datetime
+import logging
 import os
 import random
 import sys
@@ -21,7 +22,7 @@ from ice.llutil.argparser import as_list, is_list_of, isa
 from ice.llutil.collections import Dict as iDict
 from ice.llutil.config import Configurable, freeze, frozen, is_configurable
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
-from ice.llutil.logging import get_logger
+from ice.llutil.logger import get_logger
 from ice.llutil.multiprocessing import in_main_process
 from ice.llutil.print import _print
 from torch.autograd.grad_mode import set_grad_enabled
@@ -62,7 +63,7 @@ class Task(_Task):
         self.training = train
         self.tags = as_list(tags)
         self.step_mode = self.total_epochs == 0
-        self.task_steps = 0
+        self.epoch_steps = 0
         self.task_epochs = 0
         self.epoch_size = 0
         self.finished = False
@@ -93,7 +94,7 @@ class Task(_Task):
 
         # run epochs: assert self.total_epochs == 0 or self.total_steps == 0
         if self.total_epochs:
-            if self.task_steps != 0: self.global_epochs -= 1  # already started before last interruption
+            if self.epoch_steps != 0: self.global_epochs -= 1  # already started before last interruption
 
             epoch_size = None
             for node in self.egraph.nodes.values():
@@ -115,10 +116,10 @@ class Task(_Task):
                 self.global_epochs += 1
                 while True:
                     try:
-                        self.task_steps += 1
+                        self.epoch_steps += 1
                         self._iterate()
                     except StopIteration:
-                        self.task_steps = 0
+                        self.epoch_steps = 0
                         break
                     except StopTask: return
                 self.egraph.apply("epoch_end")
@@ -126,7 +127,7 @@ class Task(_Task):
             if launcher.local_rank == 0:
                 # update progress bar total
                 launcher.events.progress_bar_total.value = self.total_steps
-            for self.task_steps in range(self.task_steps, self.total_steps):
+            for self.epoch_steps in range(self.epoch_steps, self.total_steps):
                 try:
                     self._iterate()
                 except StopTask: return
@@ -134,7 +135,7 @@ class Task(_Task):
 
     def _iterate(self):
         self.egraph.iterate()
-        self.launcher.events.progress_bar_iter.value = self.task_steps  # notify progressbar in main process.
+        self.launcher.events.progress_bar_iter.value = self.epoch_steps  # notify progressbar in main process.
         self._process_events()
 
     def _process_events(self):
@@ -157,7 +158,7 @@ class Task(_Task):
         _state_dict = {
             "total_steps" : self.total_steps,
             "total_epochs" : self.total_epochs,
-            "task_steps" : self.task_steps,
+            "task_steps" : self.epoch_steps,
             "task_epochs" : self.task_epochs,
             "finished" : self.finished,
         }
@@ -171,7 +172,7 @@ class Task(_Task):
             raise ResumeTaskFailed()
 
         if not dry_run:
-            self.task_steps = _state_dict["task_steps"]
+            self.epoch_steps = _state_dict["task_steps"]
             self.task_epochs = _state_dict["task_epochs"]
             self.finished = _state_dict["finished"]
 
@@ -479,6 +480,11 @@ class HyperGraph:
         ckpt_dir = os.path.join(run_id_dir, "ckpts")
         os.makedirs(ckpt_dir, exist_ok=True)
         log_dir = os.path.join(run_id_dir, "logs")
+        
+        # Setup the file handler for root logger. The submodule logger will automatically bubble up to it.
+        root_logger = logging.getLogger()
+        fh = logging.FileHandler(os.path.join(log_dir, "agent.log"))
+        root_logger.addHandler(fh)
 
         self.run_info.run_id = run_id
         self.run_info.full_run_id = os.path.basename(run_id_dir)

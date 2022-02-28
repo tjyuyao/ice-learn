@@ -6,7 +6,7 @@ from functools import wraps
 
 import numpy
 
-from ice.llutil.logging import get_logger
+from ice.llutil.logger import get_logger
 
 # According to [this link](https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated),
 # `np.bool` is a deprecated alias for the builtin `bool`. This deprecation will cause `/site-packages/pycuda/compyte/dtypes.py:122`  with code

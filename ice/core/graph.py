@@ -103,12 +103,12 @@ class Node(Configurable):
         return self.egraph.task.global_epochs
 
     @property
-    def task_steps(self) -> int:
-        return self.egraph.task.task_steps
+    def epoch_steps(self) -> int:
+        return self.egraph.task.epoch_steps
 
     @property
-    def task_epochs(self) -> int:
-        return self.egraph.task.task_epochs
+    def epoch_size(self) -> int:
+        return self.egraph.task.epoch_size
     
     @property
     def out_dir(self) -> str:

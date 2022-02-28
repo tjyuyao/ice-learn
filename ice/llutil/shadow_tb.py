@@ -1,6 +1,6 @@
 import os
 
-from ice.llutil.logging import get_logger
+from ice.llutil.logger import get_logger
 
 
 DEBUG_ICE = bool(os.environ.get("DEBUG_ICE", 0))

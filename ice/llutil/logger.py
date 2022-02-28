@@ -1,7 +1,8 @@
 """logging utilities."""
-
+import logging
+import os
 from typing import Optional
-from torch.distributed.elastic.utils.logging import _setup_logger, _derive_module_name
+from torch.distributed.elastic.utils.logging import get_log_level, _derive_module_name
 
 
 def get_logger(name: Optional[str] = None):
@@ -15,7 +16,9 @@ def get_logger(name: Optional[str] = None):
         name: Name of the logger. If no name provided, the name will
               be derived from the call stack.
     """
-    
     # Derive the name of the caller, if none provided
     # Use depth=2 since this function takes up one level in the call stack
-    return _setup_logger(name or _derive_module_name(depth=2))
+    log = logging.getLogger(name or _derive_module_name(depth=2))
+    log.setLevel(os.environ.get("LOGLEVEL", get_log_level()))
+    
+    return log

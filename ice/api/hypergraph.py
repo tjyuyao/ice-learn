@@ -1,7 +1,7 @@
 from typing import List, Union, overload
 
-from torch import Node
 import torch
+from ice.core.graph import Node
 from ice.core.hypergraph import HyperGraph
 from ice.llutil.launcher import ElasticLauncher
 from torch.cuda.amp.grad_scaler import GradScaler

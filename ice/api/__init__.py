@@ -12,7 +12,7 @@ from ice.llutil.pycuda import CUDAModule
 from ice.llutil.dictprocess import dictprocess
 from ice.llutil.multiprocessing import in_main_process
 
-from ice.core.graph import Node, ExecutableGraph
+from ice.core.graph import Node, ExecutableGraph, GraphOutputCache
 from ice.core.hypergraph import HyperGraph, Task, Repeat
 from ice.core.dataset import DatasetNode
 from ice.core.optim import Optimizer

@@ -7,7 +7,7 @@ import torch
 import torch.distributed as dist
 from ice.core.graph import GraphOutputCache, Node
 from ice.llutil.argparser import as_dict, as_list, isa
-from ice.llutil.logging import get_logger
+from ice.llutil.logger import get_logger
 
 
 class Meter:
