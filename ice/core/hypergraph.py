@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from inspect import signature
 import time
 from typing import Any, Callable, Dict, List, Optional, Union, overload
+from ice.llutil.backup_src import _backup_source_files_to
 
 from torch import autocast
 from ice.core.dataset import DatasetNode
@@ -297,6 +298,7 @@ class HyperGraph:
         self._last_executed_egraph = None
         self._num_workers = 0
 
+        self.entrypoint = None
         self.grad_acc_steps = 1
         self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
 
@@ -306,6 +308,9 @@ class HyperGraph:
     
     def is_autocast_enabled(self) -> bool:
         return self.autocast_kwds["enabled"]
+    
+    def backup_source_files(self, entrypoint:str):
+        self.entrypoint = entrypoint
 
     @overload
     def init_grad_scaler(self,
@@ -484,6 +489,11 @@ class HyperGraph:
         ckpt_dir = os.path.join(run_id_dir, "ckpts")
         os.makedirs(ckpt_dir, exist_ok=True)
         log_dir = os.path.join(run_id_dir, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        if self.entrypoint is not None:
+            src_dir = os.path.join(run_id_dir, "src")
+            os.makedirs(src_dir, exist_ok=True)
+            _backup_source_files_to(self.entrypoint, src_dir)
         
         # Setup the file handler for root logger. The submodule logger will automatically bubble up to it.
         root_logger = logging.getLogger()

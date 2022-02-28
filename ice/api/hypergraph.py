@@ -72,3 +72,6 @@ def init_autocast(*args, **kwds):
 
 def set_gradient_accumulate(every):
     default_graph.set_gradient_accumulate(every)
+    
+def backup_source_files(entrypoint:str):
+    default_graph.backup_source_files(entrypoint)
