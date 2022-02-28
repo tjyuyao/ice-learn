@@ -264,7 +264,8 @@ class LocalElasticAgent(SimpleElasticAgent):
                     self.progbar_events["cleared"].set()
                     while self.progbar_events["trigger_clear"].is_set():
                         time.sleep(0.001)
-                if prog_total != self.events.progress_bar_total.value:
+                if prog_total != self.events.progress_bar_total.value or \
+                    prog_iter > self.events.progress_bar_iter.value:
                     prog_total = self.events.progress_bar_total.value
                     if bar is not None:
                         bar.clear()
