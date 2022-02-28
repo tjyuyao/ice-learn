@@ -7,7 +7,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from threading import Event
 import traceback
 from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
-from torch.distributed.elastic.utils.logging import get_logger
+from ice.llutil.logger import get_logger
 from ice.llutil.launcher import events
 from tqdm import tqdm
 

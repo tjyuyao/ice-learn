@@ -25,7 +25,7 @@ from torch.distributed.elastic.agent.server.api import (
 )
 from torch.distributed.elastic.metrics.api import prof, put_metric
 from torch.distributed.elastic.utils import macros
-from torch.distributed.elastic.utils.logging import get_logger
+from ice.llutil.logger import get_logger
 from tqdm import tqdm
 from .elastic_multiprocessing import PContext, start_processes, SignalException
 

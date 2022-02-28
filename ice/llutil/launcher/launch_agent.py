@@ -17,7 +17,7 @@ from torch.distributed.elastic.multiprocessing import Std
 from torch.distributed.elastic.multiprocessing.errors import ChildFailedError
 from torch.distributed.elastic.rendezvous import RendezvousParameters
 from torch.distributed.elastic.rendezvous.utils import parse_rendezvous_endpoint
-from torch.distributed.elastic.utils.logging import get_logger
+from ice.llutil.logger import get_logger
 
 from .events import Events
 

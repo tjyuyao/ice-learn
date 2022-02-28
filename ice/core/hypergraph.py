@@ -506,6 +506,7 @@ class HyperGraph:
         
         # Setup the file handler for root logger. The submodule logger will automatically bubble up to it.
         root_logger = logging.getLogger()
+        root_logger.setLevel(logging.INFO)
         fh = logging.FileHandler(os.path.join(log_dir, "agent.log"))
         root_logger.addHandler(fh)
 
