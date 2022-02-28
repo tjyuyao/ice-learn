@@ -121,6 +121,10 @@ class Node(Configurable):
     @property
     def grad_scaler(self) -> GradScaler:
         return self.egraph.grad_scaler
+    
+    @property
+    def grad_acc_steps(self) -> int:
+        return self.egraph.hypergraph.grad_acc_steps
 
     def forward(self):
         """retrieves forward output in cache or calculates it using `forward_impl` and save the output to the cache. Subclasses should not override this method."""

@@ -30,7 +30,6 @@ class Optimizer(Configurable):
         optimizer: Type[optim.Optimizer],
         optimizer_kwds: Dict,
         updators: List[DictProcessor] = [],
-        gradient_accumulation_steps: int = 1,
     ): ...
     
     def __init__(self, *args, **kwds) -> None:
@@ -41,7 +40,6 @@ class Optimizer(Configurable):
         optimizer_class: Type[optim.Optimizer],
         optimizer_kwds: Dict,
         updators: List[DictProcessor] = [],
-        gradient_accumulation_steps: int = 1,
         *,
         params
     ):
@@ -49,25 +47,24 @@ class Optimizer(Configurable):
             params, optimizer_class=optimizer_class, **optimizer_kwds)
         for group in self.optimizer.param_groups:
             group.setdefault('initial_lr', group['lr'])
-        self.every = gradient_accumulation_steps
         self.updators = as_list(updators)
         
     @overload
-    def update(self, grad_scaler:GradScaler, *, current_epoch, epoch_steps, global_steps, epoch_size): ...
+    def update(self, grad_scaler:GradScaler, grad_acc_steps:int, *, current_epoch, epoch_steps, global_steps, epoch_size): ...
 
-    def update(self, grad_scaler:GradScaler, global_steps, **kwds):
+    def update(self, grad_scaler:GradScaler, grad_acc_steps:int, global_steps, **kwds):
         # gradient accumulation
-        if global_steps % self.every: return
+        if global_steps % grad_acc_steps: return
 
         # update the learning rate
         for updator in self.updators:
             for group in self.optimizer.param_groups:
                 updator(dict(param_group=group, global_steps=global_steps, **kwds))
                 # scale gradients according to gradient accumulate steps. (assuming mean reduce of loss in batch dimension.)
-                if self.every != 1:
+                if grad_acc_steps != 1:
                     with torch.no_grad():
                         for p in group['params']:
-                            p.grad = p.grad / self.every
+                            p.grad = p.grad / grad_acc_steps
 
         # update the network parameters and clear gradients
         grad_scaler.step(self.optimizer)

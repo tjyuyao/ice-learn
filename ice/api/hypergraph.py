@@ -69,3 +69,6 @@ def init_autocast(autocast_enabled=True,
 
 def init_autocast(*args, **kwds):
     default_graph.init_autocast(*args, **kwds)
+
+def set_gradient_accumulate(every):
+    default_graph.set_gradient_accumulate(every)

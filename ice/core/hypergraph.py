@@ -297,6 +297,7 @@ class HyperGraph:
         self._last_executed_egraph = None
         self._num_workers = 0
 
+        self.grad_acc_steps = 1
         self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
 
     def init_autocast(self, autocast_enabled=True, autocast_dtype=torch.float16, grad_scaler:Union[bool, GradScaler] = None):
@@ -333,6 +334,9 @@ class HyperGraph:
 
     def is_grad_scaler_enabled(self) -> bool:
         return self._grad_scaler.is_enabled()
+
+    def set_gradient_accumulate(self, every=1):
+        self.grad_acc_steps = every
 
     @property
     def launcher(self) -> ElasticLauncher:

@@ -166,7 +166,9 @@ class ModuleNode(Node):
     def update(self):
         if not self.training: return
         for optimizer in self.optimizers:
-            optimizer.update(self.grad_scaler, 
+            optimizer.update(
+                self.grad_scaler,
+                self.grad_acc_steps,
                 current_epoch=self.optim_counter.epochs,
                 epoch_size=self.task.epoch_size,
                 global_steps=self.optim_counter.steps,
