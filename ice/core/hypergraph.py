@@ -130,7 +130,8 @@ class Task(_Task):
                 launcher.events.progress_bar_total.value = self.total_steps
             for self.epoch_steps in range(self.epoch_steps, self.total_steps):
                 try:
-                    self._iterate()
+                    for _ in range(hypergraph.grad_acc_steps):
+                        self._iterate()
                 except StopTask: return
 
 
