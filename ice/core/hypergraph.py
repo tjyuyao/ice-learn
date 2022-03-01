@@ -12,6 +12,8 @@ from typing import Any, Callable, Dict, List, Optional, Union, overload
 from ice.llutil.backup_src import _backup_source_files_to
 
 from ice.core.dataset import DatasetNode
+from ice.llutil.ignore_me import IgnoreMe
+from ice.llutil.launcher.launcher import get_current_launcher
 import numpy as np
 
 import torch.cuda
@@ -26,6 +28,7 @@ from ice.llutil.multiprocessing import in_main_process
 from ice.llutil.print import _print
 from torch.autograd.grad_mode import set_grad_enabled
 from torch.cuda.amp.grad_scaler import GradScaler
+from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 
@@ -470,12 +473,21 @@ class HyperGraph:
 
         global_shared_events["debugger_start"] = launcher.events.debugger_start
         global_shared_events["debugger_end"] = launcher.events.debugger_end
+        
+        # setup tensorboard
+        if not in_main_process() and get_current_launcher().rank == 0:
+            self.board:SummaryWriter = SummaryWriter(self.run_info.out_dir)
+        else:
+            self.board:SummaryWriter = IgnoreMe()
+        
         try:
             get_logger().info(repr(ice_args))
             self.load_checkpoint(resume_from)
             self.exec_tasks(tasks, launcher)
         except StopAllTasks:
             pass
+        finally:
+            self.board.close()
 
     def _prepare_out_dir(self, run_id:str, out_dir:str=None):
         """
@@ -491,23 +503,26 @@ class HyperGraph:
             - ...
         ```
         """
-        base_out_dir = out_dir or "out"
         if in_main_process():
+            base_out_dir = out_dir or "out"
             os.makedirs(base_out_dir, exist_ok=True)
-        today = datetime.today()
-        run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_{today.month:02d}{today.day:02d}{today.hour:02d}{today.minute:02d}_", dir=base_out_dir)
-        ckpt_dir = os.path.join(run_id_dir, "ckpts")
-        if in_main_process():
+            today = datetime.today()
+            run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_{today.month:02d}{today.day:02d}{today.hour:02d}{today.minute:02d}_", dir=base_out_dir)
+            ckpt_dir = os.path.join(run_id_dir, "ckpts")
             os.makedirs(ckpt_dir, exist_ok=True)
-        log_dir = os.path.join(run_id_dir, "logs")
-        if in_main_process():
+            log_dir = os.path.join(run_id_dir, "logs")
             os.makedirs(log_dir, exist_ok=True)
-        if self.entrypoint is not None:
-            src_dir = os.path.join(run_id_dir, "src")
-            if in_main_process():
+            if self.entrypoint is not None:
+                src_dir = os.path.join(run_id_dir, "src")
                 os.makedirs(src_dir, exist_ok=True)
                 _backup_source_files_to(self.entrypoint, src_dir)
         
+            self.run_info.run_id = run_id
+            self.run_info.full_run_id = os.path.basename(run_id_dir)
+            self.run_info.out_dir = run_id_dir
+            self.run_info.ckpt_dir = ckpt_dir
+            self.run_info.log_dir = log_dir 
+       
         # Setup the handler for root logger. The submodule logger will automatically bubble up to it.
         if in_main_process():
             handler = logging.FileHandler(os.path.join(log_dir, "agent.log"))
@@ -517,25 +532,22 @@ class HyperGraph:
         root_logger.setLevel(logging.INFO)
         root_logger.addHandler(handler)
 
-        self.run_info.run_id = run_id
-        self.run_info.full_run_id = os.path.basename(run_id_dir)
-        self.run_info.out_dir = run_id_dir
-        self.run_info.ckpt_dir = ckpt_dir
-        self.run_info.log_dir = log_dir
+        
 
     def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
 
         self._set_initial_rng_state(seed)
         self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
 
-        kwds["rdzv_id"] = run_id
-        kwds["log_dir"] = self.run_info.log_dir
-        kwds["start_method"] = start_method
-        kwds["events"] = Events(start_method)
-        if "omp_num_threads" not in kwds:
-            kwds["omp_num_threads"] = self._num_workers + 1
-
         if in_main_process():
+            
+            kwds["rdzv_id"] = run_id
+            kwds["log_dir"] = self.run_info.log_dir
+            kwds["start_method"] = start_method
+            kwds["events"] = Events(start_method)
+            if "omp_num_threads" not in kwds:
+                kwds["omp_num_threads"] = self._num_workers + 1
+
             if launcher is None:
                 launcher = ElasticLauncher(**kwds)
             else:

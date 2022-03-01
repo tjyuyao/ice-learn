@@ -48,7 +48,9 @@ class LossNode(Node):
         if self.training:
             self.egraph.losses_counter += 1
         with autocast(self.launcher.assigned_device.type, **self.egraph.hypergraph.autocast_kwds):
-            return self.loss_fn(self, cache)
+            loss = self.loss_fn(self, cache)
+        self.board.add_scalar(self.name, loss.item(), global_step=self.global_steps)
+        return loss
 
     def backward(self):
         assert self.training

@@ -8,6 +8,7 @@ from ice.llutil.argparser import as_list
 from ice.llutil.config import Configurable
 from ice.llutil.launcher.launcher import get_current_launcher
 from torch.cuda.amp.grad_scaler import GradScaler
+from torch.utils.tensorboard import SummaryWriter
 
 
 class InvalidURIError(Exception):
@@ -125,6 +126,10 @@ class Node(Configurable):
     @property
     def grad_acc_steps(self) -> int:
         return self.egraph.hypergraph.grad_acc_steps
+
+    @property
+    def board(self) -> SummaryWriter:
+        return self.egraph.hypergraph.board
 
     def forward(self):
         """retrieves forward output in cache or calculates it using `forward_impl` and save the output to the cache. Subclasses should not override this method."""

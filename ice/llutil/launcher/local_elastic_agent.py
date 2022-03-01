@@ -300,7 +300,7 @@ class LocalElasticAgent(SimpleElasticAgent):
             self.events.stop_all_tasks.set()
             if e.sigval == signal.SIGINT:
                 while True:
-                    yn = input("Should I save the checkpoint? [Y/n]").lower()
+                    yn = input("\nShould I save the checkpoint? [Y/n]").lower()
                     if yn in ("y", ""):
                         self.events.finished_save_checkpoint.clear()
                         self.events.trigger_save_checkpoint.set()

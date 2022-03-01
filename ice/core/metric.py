@@ -137,8 +137,25 @@ class MetricNode(Node):
         self.metric.update(*as_list(self.forward()))
         
     def epoch_end(self):
+        metric_value = self.metric.evaluate()
+        self.tensorboard_log_metric(metric_value)
+               
         if self.user_epoch_end_hook:
             self.user_epoch_end_hook(self)
+    
+    def tensorboard_log_metric(self, metric_value):
+        if isinstance(metric_value, float):
+            self.board.add_scalar(self.name, metric_value, global_step=self.global_steps)
+        elif isinstance(metric_value, torch.Tensor):
+            if metric_value.numel() == 1:
+                self.board.add_scalar(self.name, metric_value.item(), global_step=self.global_steps)
+        elif isinstance(metric_value, dict):
+            for k, v in metric_value.items():
+                if isinstance(v, float):
+                    self.board.add_scalar(self.name + '/' + k, v, global_step=self.global_steps)
+                elif isinstance(v, torch.Tensor):
+                    if v.numel() == 1:
+                        self.board.add_scalar(self.name + '/' + k, v.item(), global_step=self.global_steps)
 
 
 class ValueMeter(Meter):
