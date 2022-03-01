@@ -203,7 +203,7 @@ class DatasetNode(Node):
         self.internal_steps = 0
         self.iterator = None
         
-        self.actual_num_iters_per_epoch = int(len(self.sampler) / batch_size + 0.5)
+        self.actual_num_iters_per_epoch = math.ceil(len(self.sampler) / batch_size)
     
     def forward_impl(self, _):
         
