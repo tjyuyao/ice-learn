@@ -506,7 +506,7 @@ class HyperGraph:
             src_dir = os.path.join(run_id_dir, "src")
             if in_main_process():
                 os.makedirs(src_dir, exist_ok=True)
-            _backup_source_files_to(self.entrypoint, src_dir)
+                _backup_source_files_to(self.entrypoint, src_dir)
         
         # Setup the handler for root logger. The submodule logger will automatically bubble up to it.
         if in_main_process():
