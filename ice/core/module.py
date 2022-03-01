@@ -1,4 +1,5 @@
 from fnmatch import fnmatch
+import re
 from time import sleep
 from typing import Any, Callable, Dict, List, Set, Tuple, overload
 from ice.llutil.config import freeze
@@ -88,7 +89,7 @@ class ModuleNode(Node):
         self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
         self.move(self.module)
 
-        optim_cfgs = as_dict(optimizers, "*") if optimizers is not None else {}
+        optim_cfgs = as_dict(optimizers, ".*") if optimizers is not None else {}
         for param in self.module.parameters():
             param.requires_grad = False
 
@@ -98,18 +99,24 @@ class ModuleNode(Node):
         for patterns, optimizer in optim_cfgs.items():
             optimizers_keys.append(patterns)
             matched_params = []  # ! this should not be a set(), which will cause DDP error.
+            matched_param_names = []
             for pattern in as_list(patterns):
                 pattern_matched = False
+                matcher = re.compile(pattern)
                 for param_uri, param in self.module.named_parameters():
-                    if fnmatch(param_uri, pattern):
+                    if matcher.match(param_uri):
                         matched_params.append(param)
+                        matched_param_names.append(param_uri)
                         param.requires_grad = True
                         trainable_params.add(param)
                         pattern_matched = True
                 if not pattern_matched:
                     get_logger().warning(f"pattern `{pattern}` does not match any parameters in `{module.__class__.__name__}`.")
-            optimizer = optimizer(params=matched_params)
-            optimizers.append(optimizer.freeze())
+            if self.launcher.rank == 0:
+                get_logger().info(f"matched_parameters for {optimizer} in {module.__class__.__name__}:\n{matched_param_names}")
+            optimizer = optimizer(params=matched_params).freeze()
+            if matched_params:
+                optimizers.append(optimizer)
 
         untrainable_params:Set[torch.nn.parameter.Parameter] = set()
         for param in self.module.parameters():

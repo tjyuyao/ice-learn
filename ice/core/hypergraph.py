@@ -445,7 +445,7 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         node_rank=0, master_addr="127.0.0.1", master_port=None,
-        redirects="0", tee="0", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 
@@ -453,7 +453,7 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         rdzv_endpoint="", rdzv_backend="static", rdzv_configs="", standalone=False,
-        redirects="0", tee="0", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 
@@ -492,23 +492,30 @@ class HyperGraph:
         ```
         """
         base_out_dir = out_dir or "out"
-        os.makedirs(base_out_dir, exist_ok=True)
+        if in_main_process():
+            os.makedirs(base_out_dir, exist_ok=True)
         today = datetime.today()
         run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_{today.month:02d}{today.day:02d}{today.hour:02d}{today.minute:02d}_", dir=base_out_dir)
         ckpt_dir = os.path.join(run_id_dir, "ckpts")
-        os.makedirs(ckpt_dir, exist_ok=True)
+        if in_main_process():
+            os.makedirs(ckpt_dir, exist_ok=True)
         log_dir = os.path.join(run_id_dir, "logs")
-        os.makedirs(log_dir, exist_ok=True)
+        if in_main_process():
+            os.makedirs(log_dir, exist_ok=True)
         if self.entrypoint is not None:
             src_dir = os.path.join(run_id_dir, "src")
-            os.makedirs(src_dir, exist_ok=True)
+            if in_main_process():
+                os.makedirs(src_dir, exist_ok=True)
             _backup_source_files_to(self.entrypoint, src_dir)
         
-        # Setup the file handler for root logger. The submodule logger will automatically bubble up to it.
+        # Setup the handler for root logger. The submodule logger will automatically bubble up to it.
+        if in_main_process():
+            handler = logging.FileHandler(os.path.join(log_dir, "agent.log"))
+        else:
+            handler = logging.StreamHandler(sys.stderr)
         root_logger = logging.getLogger()
         root_logger.setLevel(logging.INFO)
-        fh = logging.FileHandler(os.path.join(log_dir, "agent.log"))
-        root_logger.addHandler(fh)
+        root_logger.addHandler(handler)
 
         self.run_info.run_id = run_id
         self.run_info.full_run_id = os.path.basename(run_id_dir)
@@ -519,17 +526,16 @@ class HyperGraph:
     def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
 
         self._set_initial_rng_state(seed)
+        self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
+
+        kwds["rdzv_id"] = run_id
+        kwds["log_dir"] = self.run_info.log_dir
+        kwds["start_method"] = start_method
+        kwds["events"] = Events(start_method)
+        if "omp_num_threads" not in kwds:
+            kwds["omp_num_threads"] = self._num_workers + 1
 
         if in_main_process():
-            self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
-
-            kwds["rdzv_id"] = run_id
-            kwds["log_dir"] = self.run_info.log_dir
-            kwds["start_method"] = start_method
-            kwds["events"] = Events(start_method)
-            if "omp_num_threads" not in kwds:
-                kwds["omp_num_threads"] = self._num_workers + 1
-
             if launcher is None:
                 launcher = ElasticLauncher(**kwds)
             else:

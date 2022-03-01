@@ -28,7 +28,6 @@ class Optimizer(Configurable):
     def __init__(
         self,
         optimizer: Type[optim.Optimizer],
-        optimizer_kwds: Dict,
         updators: List[DictProcessor] = [],
     ): ...
     
@@ -37,14 +36,13 @@ class Optimizer(Configurable):
 
     def __freeze__(
         self,
-        optimizer_class: Type[optim.Optimizer],
-        optimizer_kwds: Dict,
+        optimizer: optim.Optimizer,
         updators: List[DictProcessor] = [],
         *,
         params
     ):
         self.optimizer = ZeroRedundancyOptimizer(
-            params, optimizer_class=optimizer_class, **optimizer_kwds)
+            params, optimizer_class=optimizer)
         for group in self.optimizer.param_groups:
             group.setdefault('initial_lr', group['lr'])
         self.updators = as_list(updators)

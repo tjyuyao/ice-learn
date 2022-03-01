@@ -158,8 +158,8 @@ class ElasticLauncher(Configurable):
         max_restarts=0,
         monitor_interval=5,
         start_method="spawn",
-        redirects="0",
-        tee="0",
+        redirects="2",
+        tee="1",
         log_dir=None,
         role="default",
 
@@ -222,8 +222,8 @@ class ElasticLauncher(Configurable):
         max_restarts=0,
         monitor_interval=None,
         start_method="spawn",
-        redirects="0",
-        tee="0",
+        redirects="2",
+        tee="1",
         log_dir=None,
         role="default",
 
