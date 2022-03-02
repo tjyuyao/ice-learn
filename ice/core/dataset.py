@@ -218,9 +218,10 @@ class DatasetNode(Node):
             self.internal_steps = 0
             self.internal_epoch += 1
             self.sampler.set_epoch(epoch=self.internal_epoch)
-            self.iterator = iter(self.loader)
+            self.iterator = None
             # continue working
             if self.step_mode:
+                self.iterator = iter(self.loader)
                 sample = next(self.iterator)
             else:
                 raise e
