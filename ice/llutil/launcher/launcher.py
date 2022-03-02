@@ -110,8 +110,7 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     except Exception as e:
         if launcher.local_rank == 0:
             shadow_tb.shadow(type(e), e, e.__traceback__)
-        if shadow_tb.DEBUG_ICE:
-            raise
+        raise
     time.sleep(launcher.config.monitor_interval + 1.)
     _current_launcher = None
     # dist.destroy_process_group()
@@ -312,10 +311,8 @@ class ElasticLauncher(Configurable):
         args = [self, entrypoint] + list(args)
         try:
             launch_agent(self.config, _wrap, list(args), self.events)
-            
         except ChildFailedError as e:
-            if shadow_tb.DEBUG_ICE:
-                raise
+            raise
 
     @property
     def devices(self) -> List[torch.device]:
