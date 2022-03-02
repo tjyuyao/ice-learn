@@ -144,18 +144,19 @@ class MetricNode(Node):
             self.user_epoch_end_hook(self)
     
     def tensorboard_log_metric(self, metric_value):
+        train_tag = " (train)" if self.training else " (eval)"
         if isinstance(metric_value, float):
-            self.board.add_scalar(self.name, metric_value, global_step=self.global_steps)
+            self.board.add_scalar(self.name + train_tag, metric_value, global_step=self.global_steps)
         elif isinstance(metric_value, torch.Tensor):
             if metric_value.numel() == 1:
-                self.board.add_scalar(self.name, metric_value.item(), global_step=self.global_steps)
+                self.board.add_scalar(self.name + train_tag, metric_value.item(), global_step=self.global_steps)
         elif isinstance(metric_value, dict):
             for k, v in metric_value.items():
                 if isinstance(v, float):
-                    self.board.add_scalar(self.name + '/' + k, v, global_step=self.global_steps)
+                    self.board.add_scalar(self.name + '/' + k + train_tag, v, global_step=self.global_steps)
                 elif isinstance(v, torch.Tensor):
                     if v.numel() == 1:
-                        self.board.add_scalar(self.name + '/' + k, v.item(), global_step=self.global_steps)
+                        self.board.add_scalar(self.name + '/' + k + train_tag, v.item(), global_step=self.global_steps)
 
 
 class ValueMeter(Meter):
