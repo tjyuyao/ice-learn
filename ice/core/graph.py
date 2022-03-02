@@ -217,7 +217,7 @@ class ExecutableGraph:
     def add_node(self, node_name, node, tags):
         if node_name in self.nodes.keys() and node is not self.nodes[node_name]:
             if self.node_tags[self.nodes[node_name]] != ["*"]:
-                assert node is self.nodes[node_name], "Different node can not share node_name in one task."
+                assert node is self.nodes[node_name], f"Different node can not share node_name `{node_name}` in one task."
                 assert node_name == self.node_names[node], f"A node_name cannot have two different names: `{node_name}` and `{self.node_names[node]}`."
             elif ["*"] == tags:
                 return
