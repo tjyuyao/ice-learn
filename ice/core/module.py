@@ -112,7 +112,7 @@ class ModuleNode(Node):
                         pattern_matched = True
                 if not pattern_matched:
                     get_logger().warning(f"pattern `{pattern}` does not match any parameters in `{module.__class__.__name__}`.")
-            if self.launcher.rank == 0:
+            if pattern != ".*" and self.launcher.rank == 0:
                 get_logger().info(f"matched_parameters for {optimizer} in {module.__class__.__name__}:\n{matched_param_names}")
             optimizer = optimizer(params=matched_params).freeze()
             if matched_params:
