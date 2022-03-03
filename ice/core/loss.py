@@ -45,11 +45,11 @@ class LossNode(Node):
             raise NotImplementedError(f"Unimplemented for LossMode `{loss_mode}`")
 
     def forward_impl(self, cache: "GraphOutputCache"):
-        if self.training:
-            self.egraph.losses_counter += 1
         with autocast(self.launcher.assigned_device.type, **self.egraph.hypergraph.autocast_kwds):
             loss = self.loss_fn(self, cache)
-        self.board.add_scalar(self.name, loss.item(), global_step=self.global_steps)
+        if self.training:
+            self.egraph.losses_counter += 1
+            self.board.add_scalar(self.name, loss.item(), global_step=self.global_train_steps)
         return loss
 
     def backward(self):

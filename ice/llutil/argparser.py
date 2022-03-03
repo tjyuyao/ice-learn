@@ -5,9 +5,13 @@ and a FlexibleArgParser for command line argument parsing. The default singleton
 argument parser is accessable via ``ice.args``.
 """
 
-import sys
 import socket
+import sys
 from collections import abc
+from typing import Dict
+
+import numpy as np
+import torch
 
 _type = type
 
@@ -15,6 +19,12 @@ def isa(obj, types):
     """an alias for python built-in ``isinstance``."""
     if types is callable: return callable(obj)
     return isinstance(obj, types)
+
+def parse_scalar(obj):
+    if isinstance(obj, (int, float)): return obj
+    if isinstance(obj, torch.Tensor) and obj.numel() == 1: return obj.item()
+    if isinstance(obj, np.ndarray) and obj.size == 1: return obj.item()
+    raise TypeError(f"Expect `{obj}` to be a scalar.")
 
 def as_list(maybe_element):
     """helps to regularize input into list of element.
@@ -186,6 +196,7 @@ class FlexibleArgParser:
             argv (List[str]): simillar to `sys.argv[1:]`.
         """
         object.__setattr__(self, "_args", {})
+        object.__setattr__(self, "_hparams", set())
         iarg = 0
         for token in argv:
             idsp = token.find("=")
@@ -209,7 +220,7 @@ class FlexibleArgParser:
     def __setattr__(self, attr, item):
         return self.__setitem__(attr, item)
 
-    def setdefault(self, key, default, _type=str, help=""):
+    def setdefault(self, key, default, _type=str, hparam=False, help=""):
         """Set argument value under `key` as `value`, only if original entry does not exists.
 
         Args:
@@ -230,6 +241,9 @@ class FlexibleArgParser:
             except Exception: raise ArgumentTypeError(key, default, help)
         else:
             self[key] = default
+        
+        if hparam:
+            self._hparams.add(key)
 
     def __repr__(self):
         iargs = {k: _format_arg(v) for k, v in self._args.items() if isa(k, int)}
@@ -251,6 +265,9 @@ class FlexibleArgParser:
         __dict.update(kwds)
         for k, v in __dict.items():
             self[k] = v
+            
+    def hparam_dict(self) -> Dict:
+        return {k:self._args[k] for k in self._hparams}
 
 
 args = FlexibleArgParser()

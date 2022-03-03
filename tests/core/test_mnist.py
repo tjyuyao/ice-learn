@@ -1,14 +1,24 @@
 import ice
 import torch
+from ice.core.loss import LossNode
+from ice.core.metric import MetricNode
 from torch import autocast, nn
 from torch.nn import functional as F
-from torch.optim import SGD
+from torch.optim import SGD, Adam
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, Normalize, ToTensor
 
-from ice.core.loss import LossNode
-from ice.llutil.launcher import ElasticLauncher
-from tqdm import tqdm
+# arguments
+
+ice.args.setdefault("lr", 0.01, float, hparam=True)
+
+# initialization
+
+ice.init_autocast()
+ice.make_configurable(SGD, Adam)
+ice.set_gradient_accumulate(2)
+
+# node
 
 @ice.configurable
 class Net(nn.Module):
@@ -34,52 +44,51 @@ class Net(nn.Module):
         return F.log_softmax(x, dim=-1)
 
 
-_C = ice.ConfigDict()
+def make_mnist(train:bool, batch_size:int):
+    TRANSFORM = Compose([ToTensor(), Normalize((0.1307,), (0.3081,))])
+    return ice.DatasetNode(
+        dataset=MNIST(download=True, root="/tmp/MNIST94117", transform=TRANSFORM, train=train),
+        batch_size=batch_size,
+        shuffle=train,
+    )
 
-_C.DATASETS.MNIST.TRANSFORM = Compose([ToTensor(), Normalize((0.1307,), (0.3081,))])
-_C.DATASETS.MNIST.TRAIN = MNIST(download=True, root="/tmp/MNIST94117", transform=_C.DATASETS.MNIST.TRANSFORM, train=True)
-_C.DATASETS.MNIST.VAL = MNIST(download=True, root="/tmp/MNIST94117", transform=_C.DATASETS.MNIST.TRANSFORM, train=False)
-_C.DATASETS.MNIST.TRAIN_NODE = ice.DatasetNode(_C.DATASETS.MNIST.TRAIN, batch_size=100, shuffle=True)
-_C.DATASETS.MNIST.VAL_NODE = ice.DatasetNode(_C.DATASETS.MNIST.VAL, batch_size=100, shuffle=False)
+def report(n: MetricNode):
+    if n.training: return
+    avg_nll_loss = n.metric.evaluate().item()
+    if n.launcher.rank == 0:
+        print(f"steps={n.global_train_steps} avg_nll_loss={avg_nll_loss}")
 
-_C.MODULES.NET_NODE = ice.ModuleNode(
+
+# hypergraph
+
+ice.add("mnist", make_mnist(train=True, batch_size=100), tags="train")
+ice.add("mnist", make_mnist(train=False, batch_size=100), tags="val")
+ice.add("net", ice.ModuleNode(
     module=Net(),
     forward=lambda n, x: n.module(x['mnist'][0]),
-    optimizers=ice.Optimizer(SGD, dict(lr=0.01, momentum=0.5))
-    )
-_C.LOSSES.NLL_NODE = LossNode(forward=lambda n, x: F.nll_loss(x["net"], x["mnist"][1]))
+    optimizers=ice.Optimizer(Adam(lr=ice.args.lr))
+    ))
+ice.add("nll_loss", LossNode(forward=lambda n, x: F.nll_loss(x["net"], x["mnist"][1])))
+ice.add("avg_nll_loss", 
+    ice.MetricNode(
+        ice.AverageMeter(),
+        forward=lambda n, x: (x['nll_loss'], x['mnist'][1].size(0)),
+        epoch_end=report,
+    ))
+ice.print_forward_output("nll_loss", every=100)
 
 
-_C.GRAPHS.G1 = ice.HyperGraph(grad_scaler=True)
-_C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.TRAIN_NODE, tags="train")
-_C.GRAPHS.G1.add("mnist", _C.DATASETS.MNIST.VAL_NODE, tags="val")
-_C.GRAPHS.G1.add("net", _C.MODULES.NET_NODE)
-_C.GRAPHS.G1.add("nll_loss", _C.LOSSES.NLL_NODE)
-_C.GRAPHS.G1.add("avg_nll_loss", ice.MetricNode(ice.AverageMeter(), forward=lambda n, x: x['nll_loss']), tags="val")
-_C.GRAPHS.G1.print_forward_output("nll_loss", every=100)
-
-
-def report(g: ice.HyperGraph, launcher: ElasticLauncher):
-    data = {
-        "train_steps": g.global_counters.steps.train,
-        "avg_nll_loss": g['val/avg_nll_loss'].metric.evaluate().item(),
-    }
-    if launcher.rank == 0:
-        tqdm.write(repr(data), end=',\n')
-
-
-_C.GRAPHS.G1.run(
+# training shedule
+ice.run(
     [
-        # lambda g: g.load_checkpoint("out/unnamed_prbki3b2/ckpts/E3S758.pth"),
         ice.Repeat([
             ice.Task(train=True, epochs=1, tags="train"),
-            lambda g: g.save_checkpoint(),
+            ice.SaveCheckpointTask(),
             ice.Task(train=False, epochs=1, tags="val"),
-            report,
-        ], times=5)
+        ], times=3)
     ],
     devices="cuda:0,0",
     omp_num_threads=4,
     monitor_interval=1,
-    tee="3",
+    # tee="3"
 )

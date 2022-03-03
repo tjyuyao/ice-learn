@@ -28,7 +28,7 @@ from ice.llutil.multiprocessing import in_main_process
 from ice.llutil.print import _print
 from torch.autograd.grad_mode import set_grad_enabled
 from torch.cuda.amp.grad_scaler import GradScaler
-from torch.utils.tensorboard import SummaryWriter
+from ice.llutil.board import BoardWriter
 from tqdm import tqdm
 
 
@@ -193,11 +193,11 @@ class Task(_Task):
         return value
 
     @property
-    def global_steps(self):
+    def global_auto_steps(self):
         return self.hypergraph.global_counters.steps[self._train_str]
 
-    @global_steps.setter
-    def global_steps(self, value):
+    @global_auto_steps.setter
+    def global_auto_steps(self, value):
         self.hypergraph.global_counters.steps[self._train_str] = value
         return value
 
@@ -429,8 +429,8 @@ class HyperGraph:
         def probe_fn(n:Node, x:GraphOutputCache):
             if train_only and not n.training: return
             if localrank0_only and n.launcher.local_rank != 0: return
-            if total is not None and n.global_steps // every > total: return  # total
-            if n.global_steps > 1 and n.global_steps % every: return # every
+            if total is not None and n.global_auto_steps // every > total: return  # total
+            if n.global_auto_steps > 1 and n.global_auto_steps % every: return # every
             prefix = f"E{self.global_counters.epochs.train}S{self.global_counters.steps.train}:"
 
             for nodename in as_list(nodenames):
@@ -475,10 +475,10 @@ class HyperGraph:
         global_shared_events["debugger_end"] = launcher.events.debugger_end
         
         # setup tensorboard
-        if not in_main_process() and get_current_launcher().rank == 0:
-            self.board:SummaryWriter = SummaryWriter(self.run_info.out_dir)
+        if get_current_launcher().rank == 0:
+            self.board:BoardWriter = BoardWriter(self.run_info.out_dir)
         else:
-            self.board:SummaryWriter = IgnoreMe()
+            self.board:BoardWriter = IgnoreMe()
         
         try:
             get_logger().info(repr(ice_args))
@@ -487,6 +487,7 @@ class HyperGraph:
         except StopAllTasks:
             pass
         finally:
+            self.board.add_hparams()
             self.board.close()
 
     def _prepare_out_dir(self, run_id:str, out_dir:str=None):

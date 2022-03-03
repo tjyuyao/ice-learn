@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List, Union, overload
 import torch
 import torch.distributed as dist
 from ice.core.graph import GraphOutputCache, Node
-from ice.llutil.argparser import as_dict, as_list, isa
+from ice.llutil.argparser import as_dict, as_list, isa, parse_scalar
 from ice.llutil.logger import get_logger
 
 
@@ -51,6 +51,9 @@ class DictMetric(Meter):  # metric is a container of meters but is also a meter 
         self.meters:Dict[Meter] = {}
         self.meter_prototype = meter_prototype
         self.update_argnames = list(signature(meter_prototype.update).parameters.keys())
+    
+    def __len__(self):
+        return len(self.meters)
 
     def reset(self):
         for meter in self.meters.values():
@@ -137,26 +140,19 @@ class MetricNode(Node):
         self.metric.update(*as_list(self.forward()))
         
     def epoch_end(self):
-        metric_value = self.metric.evaluate()
-        self.tensorboard_log_metric(metric_value)
+        if not self.training:
+            self.tensorboard_log_metric(postfix="")
                
         if self.user_epoch_end_hook:
             self.user_epoch_end_hook(self)
     
-    def tensorboard_log_metric(self, metric_value):
-        train_tag = " (train)" if self.training else " (eval)"
-        if isinstance(metric_value, float):
-            self.board.add_scalar(self.name + train_tag, metric_value, global_step=self.global_steps)
-        elif isinstance(metric_value, torch.Tensor):
-            if metric_value.numel() == 1:
-                self.board.add_scalar(self.name + train_tag, metric_value.item(), global_step=self.global_steps)
-        elif isinstance(metric_value, dict):
+    def tensorboard_log_metric(self, postfix=""):
+        metric_value = self.metric.evaluate()
+        if isinstance(metric_value, dict):
             for k, v in metric_value.items():
-                if isinstance(v, float):
-                    self.board.add_scalar(self.name + '/' + k + train_tag, v, global_step=self.global_steps)
-                elif isinstance(v, torch.Tensor):
-                    if v.numel() == 1:
-                        self.board.add_scalar(self.name + '/' + k + train_tag, v.item(), global_step=self.global_steps)
+                self.board.add_scalar(f"{self.name}/{k}{postfix}", parse_scalar(v), global_step=self.global_train_steps)
+        else:
+            self.board.add_scalar(f"{self.name}{postfix}", parse_scalar(metric_value), global_step=self.global_train_steps)
 
 
 class ValueMeter(Meter):

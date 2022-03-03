@@ -8,7 +8,7 @@ from ice.llutil.argparser import as_list
 from ice.llutil.config import Configurable
 from ice.llutil.launcher.launcher import get_current_launcher
 from torch.cuda.amp.grad_scaler import GradScaler
-from torch.utils.tensorboard import SummaryWriter
+from ice.llutil.board import BoardWriter
 
 
 class InvalidURIError(Exception):
@@ -96,12 +96,16 @@ class Node(Configurable):
         return get_current_launcher()
     
     @property
-    def global_steps(self) -> int:
-        return self.egraph.task.global_steps
+    def global_auto_steps(self) -> int:
+        return self.egraph.task.global_auto_steps
+    
+    @property
+    def global_train_steps(self) -> int:
+        return self.egraph.hypergraph.global_counters.steps.train
 
     @property
-    def global_epochs(self) -> int:
-        return self.egraph.task.global_epochs
+    def global_train_epochs(self) -> int:
+        return self.egraph.hypergraph.global_counters.epochs.train
 
     @property
     def epoch_steps(self) -> int:
@@ -128,7 +132,7 @@ class Node(Configurable):
         return self.egraph.hypergraph.grad_acc_steps
 
     @property
-    def board(self) -> SummaryWriter:
+    def board(self) -> BoardWriter:
         return self.egraph.hypergraph.board
 
     def forward(self):
@@ -255,7 +259,7 @@ class ExecutableGraph:
 
     def iterate(self):
         self.cache.clear()
-        self.task.global_steps += 1
+        self.task.global_auto_steps += 1
         if self.task.training:
             self.apply("forward")
             self.apply("backward")
