@@ -267,7 +267,7 @@ class FlexibleArgParser:
             self[k] = v
             
     def hparam_dict(self) -> Dict:
-        return {k:self._args[k] for k in self._hparams}
+        return {k:str(self._args[k]) for k in self._hparams}
 
 
 args = FlexibleArgParser()

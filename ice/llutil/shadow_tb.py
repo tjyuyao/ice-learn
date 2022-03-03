@@ -1,12 +1,12 @@
 import os
 
 from ice.llutil.logger import get_logger
+from ice.llutil.multiprocessing import in_main_process
 
 
 DEBUG_ICE = bool(os.environ.get("DEBUG_ICE", 0))
 
-if DEBUG_ICE:
-    get_logger().warn("DEBUG_ICE mode enabled.")
+if not DEBUG_ICE:
     SHADOW_PATTERNS = (
         'torch/nn/modules/',
         'pickle.py',
@@ -19,6 +19,8 @@ if DEBUG_ICE:
         'threading.py',
         )
 else:
+    if in_main_process():
+        get_logger().warn("DEBUG_ICE mode enabled.")
     SHADOW_PATTERNS = ()
 
 import sys
@@ -38,7 +40,7 @@ def shadow(etype, evalue, tb):
     show = [fs for fs in extracted_tb[:-1] if _check_file(fs.filename)]
     show.append(extracted_tb[-1])
     fmt = format_list(show) + format_exception_only(etype, evalue)
-    print(''.join(fmt), end='', file=sys.stderr)
+    print(''.join(fmt), end='', file=sys.__stderr__, flush=True)
 
 
 sys.excepthook = shadow
