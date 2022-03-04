@@ -374,7 +374,6 @@ class HyperGraph:
     def select_egraph(self, query) -> ExecutableGraph:
         query = as_list(query)
         keys = self._select_keys(query)
-        get_logger().info(f"selected nodes: {keys}")
         shortcut_query = hash(tuple(query))
         egraph = ExecutableGraph(self)
         if shortcut_query not in self._shortcuts:
@@ -382,6 +381,8 @@ class HyperGraph:
                 name, node, tags = self.nodes[key]
                 egraph.add_node(name, node, tags)
             self._shortcuts[shortcut_query] = egraph
+            if self.launcher.local_rank == 0:
+                get_logger().info(f"selected nodes: {keys}")
         else:
             egraph = self._shortcuts[shortcut_query]
         return egraph
