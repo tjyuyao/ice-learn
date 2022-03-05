@@ -176,10 +176,8 @@ class ModuleNode(Node):
             optimizer.update(
                 self.grad_scaler,
                 self.grad_acc_steps,
-                current_epoch=self.optim_counter.epochs,
-                epoch_size=self.task.epoch_size,
-                global_steps=self.optim_counter.steps,
-                epoch_steps=self.optim_counter.epoch_steps,
+                optim_steps=self.optim_counter.steps,
+                module_node=self,
             )
             self.optim_counter.steps += 1
             self.optim_counter.epoch_steps += 1

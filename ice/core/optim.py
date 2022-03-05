@@ -50,14 +50,14 @@ class Optimizer(Configurable):
     @overload
     def update(self, grad_scaler:GradScaler, grad_acc_steps:int, *, current_epoch, epoch_steps, global_steps, epoch_size): ...
 
-    def update(self, grad_scaler:GradScaler, grad_acc_steps:int, global_steps, **kwds):
+    def update(self, grad_scaler:GradScaler, grad_acc_steps:int, optim_steps, module_node):
         # gradient accumulation
-        if global_steps % grad_acc_steps: return
+        if optim_steps % grad_acc_steps: return
 
         # update the learning rate
         for updator in self.updators:
             for group in self.optimizer.param_groups:
-                updator(dict(param_group=group, global_steps=global_steps, **kwds))
+                updator(dict(n=module_node, x=group, module_node=module_node, param_group=group))
                 # scale gradients according to gradient accumulate steps. (assuming mean reduce of loss in batch dimension.)
                 if grad_acc_steps != 1:
                     with torch.no_grad():
