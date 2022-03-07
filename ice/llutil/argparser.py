@@ -234,11 +234,11 @@ class FlexibleArgParser:
         if _type is not None:
             assert callable(_type), f"{repr(_type)} is not a valid type."
 
-        if default is REQUIRED:
-            raise ArgumentTypeError(key, help)
-        elif key in self:
+        if key in self:
             try: self[key] = _type(self[key])
             except Exception: raise ArgumentTypeError(key, default, help)
+        elif default is REQUIRED:
+            raise ArgumentTypeError(key, help)
         else:
             self[key] = default
         
