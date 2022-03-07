@@ -359,6 +359,7 @@ class HyperGraph:
         return self.run_info.launcher
 
     def add(self, name, node:Node, tags="*"):
+        assert isa(node, Node), f"{node.__class__.__name__} is not a Node"
         tags = as_list(tags)
         assert is_list_of(tags, str)
         uid = _tags_to_uid(tags, name)
