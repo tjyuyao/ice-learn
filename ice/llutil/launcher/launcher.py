@@ -110,6 +110,7 @@ def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
     except Exception as e:
         if launcher.local_rank == 0:
             shadow_tb.shadow(type(e), e, e.__traceback__)
+            time.sleep(1.)
         raise
     time.sleep(launcher.config.monitor_interval + 1.)
     _current_launcher = None

@@ -31,7 +31,6 @@ class BoardWriter(SummaryWriter):
         if len(hparam_dict) == 0: return
         
         metric_dict = {k:0. for k in self._scalar_names}
-        print(metric_dict)
         exp, ssi, sei = hparams(hparam_dict, metric_dict, hparam_domain_discrete)
 
         self.file_writer.add_summary(exp)

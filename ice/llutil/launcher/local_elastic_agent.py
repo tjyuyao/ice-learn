@@ -270,7 +270,7 @@ class LocalElasticAgent(SimpleElasticAgent):
                     if bar is not None:
                         bar.clear()
                         bar.close()
-                    bar = tqdm(total=prog_total, leave=False, position=0, ncols=80, smoothing=0.7)
+                    bar = tqdm(total=prog_total, leave=False, position=0, ncols=80, smoothing=0.9)
                 if prog_iter != self.events.progress_bar_iter.value:
                     prog_iter = self.events.progress_bar_iter.value
                     if bar is not None:
