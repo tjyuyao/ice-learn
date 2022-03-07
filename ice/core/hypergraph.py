@@ -100,7 +100,7 @@ class Task(_Task):
 
             epoch_size = None
             for node in self.egraph.nodes.values():
-                if isa(node, DatasetNode):
+                if hasattr(node, "__len__"):
                     len_node = len(node)
                     if epoch_size is None or epoch_size > len_node:
                         epoch_size = len_node
