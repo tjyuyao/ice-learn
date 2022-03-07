@@ -131,14 +131,17 @@ class ModuleNode(Node):
 
         self.optim_counter = Counter()
 
-        self._ddp_module = DistributedDataParallel(
-            _ModuleProxy(self, self.module, forward),
-            broadcast_buffers=broadcast_buffers,
-            bucket_cap_mb=bucket_cap_mb,
-            find_unused_parameters=find_unused_parameters,
-            gradient_as_bucket_view=gradient_as_bucket_view)
-        if static_graph:
-            self._ddp_module._set_static_graph()
+        if self.optimizable:
+            self._ddp_module = DistributedDataParallel(
+                _ModuleProxy(self, self.module, forward),
+                broadcast_buffers=broadcast_buffers,
+                bucket_cap_mb=bucket_cap_mb,
+                find_unused_parameters=find_unused_parameters,
+                gradient_as_bucket_view=gradient_as_bucket_view)
+            if static_graph:
+                self._ddp_module._set_static_graph()
+        else:
+            self._ddp_module = _ModuleProxy(self, self.module, forward)
 
         return self
 
