@@ -100,7 +100,7 @@ class Task(_Task):
 
             epoch_size = None
             for node in self.egraph.nodes.values():
-                if isa(node, DatasetNode):
+                if hasattr(node, "__len__"):
                     len_node = len(node)
                     if epoch_size is None or epoch_size > len_node:
                         epoch_size = len_node
@@ -359,6 +359,7 @@ class HyperGraph:
         return self.run_info.launcher
 
     def add(self, name, node:Node, tags="*"):
+        assert isa(node, Node), f"{node.__class__.__name__} is not a Node"
         tags = as_list(tags)
         assert is_list_of(tags, str)
         uid = _tags_to_uid(tags, name)
