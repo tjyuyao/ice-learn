@@ -21,3 +21,4 @@ from ice.core.loss import LossNode
 from ice.core.metric import Meter, DictMetric, ValueMeter, SummationMeter, AverageMeter, MovingAverageMeter, MetricNode
 
 from .hypergraph import *
+from .utils import *
