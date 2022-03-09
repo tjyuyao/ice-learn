@@ -27,6 +27,7 @@ def _backup_source_files_to(entrypoint:str, target_dir:str):
 
     pkgpaths = [importlib.util.find_spec(pkg).origin for pkg in pkgs]
     selected_files = set()
+    selected_files.add(entrypoint)
     for path in pkgpaths:
         try:
             path = pathlib.Path(path).relative_to(dirname)

@@ -96,11 +96,11 @@ class Task(_Task):
 
         # run epochs: assert self.total_epochs == 0 or self.total_steps == 0
         if self.total_epochs:
-            if self.epoch_steps != 0: self.global_epochs -= 1  # already started before last interruption
+            if self.epoch_steps != 0: self.global_auto_epochs -= 1  # already started before last interruption
 
             epoch_size = None
             for node in self.egraph.nodes.values():
-                if isa(node, DatasetNode):
+                if hasattr(node, "__len__"):
                     len_node = len(node)
                     if epoch_size is None or epoch_size > len_node:
                         epoch_size = len_node
@@ -115,16 +115,16 @@ class Task(_Task):
 
             for self.task_epochs in range(self.task_epochs, self.total_epochs):
                 self.egraph.apply("epoch_start")
-                self.global_epochs += 1
                 while True:
                     try:
-                        self.epoch_steps += 1
                         self._iterate()
+                        self.epoch_steps += 1
                     except StopIteration:
                         self.epoch_steps = 0
                         break
                     except StopTask: return
                 self.egraph.apply("epoch_end")
+                self.global_auto_epochs += 1
         else:
             if launcher.local_rank == 0:
                 # update progress bar total
@@ -184,11 +184,11 @@ class Task(_Task):
         return "train" if self.training else "eval"
 
     @property
-    def global_epochs(self):
+    def global_auto_epochs(self):
         return self.hypergraph.global_counters.epochs[self._train_str]
 
-    @global_epochs.setter
-    def global_epochs(self, value):
+    @global_auto_epochs.setter
+    def global_auto_epochs(self, value):
         self.hypergraph.global_counters.epochs[self._train_str] = value
         return value
 
@@ -340,7 +340,7 @@ class HyperGraph:
                 self._grad_scaler = GradScaler(**kwds)
             else:
                 self._grad_scaler = GradScaler(enabled=False)
-        elif isa(grad_scaler, grad_scaler):
+        elif isa(grad_scaler, GradScaler):
             if len(kwds):
                 get_logger().warn("when grad_scaler is a GradScaler, you should not specify other keywords parameters for `init_grad_scaler()`")
             self._grad_scaler = grad_scaler
@@ -375,7 +375,6 @@ class HyperGraph:
     def select_egraph(self, query) -> ExecutableGraph:
         query = as_list(query)
         keys = self._select_keys(query)
-        get_logger().info(f"selected nodes: {keys}")
         shortcut_query = hash(tuple(query))
         egraph = ExecutableGraph(self)
         if shortcut_query not in self._shortcuts:
@@ -383,6 +382,8 @@ class HyperGraph:
                 name, node, tags = self.nodes[key]
                 egraph.add_node(name, node, tags)
             self._shortcuts[shortcut_query] = egraph
+            if self.launcher.local_rank == 0:
+                get_logger().info(f"selected nodes: {keys}")
         else:
             egraph = self._shortcuts[shortcut_query]
         return egraph

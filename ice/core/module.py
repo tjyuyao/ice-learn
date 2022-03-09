@@ -114,8 +114,8 @@ class ModuleNode(Node):
                     get_logger().warning(f"pattern `{pattern}` does not match any parameters in `{module.__class__.__name__}`.")
             if pattern != ".*" and self.launcher.rank == 0:
                 get_logger().info(f"matched_parameters for {optimizer} in {module.__class__.__name__}:\n{matched_param_names}")
-            optimizer = optimizer(params=matched_params).freeze()
             if matched_params:
+                optimizer = optimizer(params=matched_params).freeze()
                 optimizers.append(optimizer)
 
         untrainable_params:Set[torch.nn.parameter.Parameter] = set()
@@ -179,10 +179,8 @@ class ModuleNode(Node):
             optimizer.update(
                 self.grad_scaler,
                 self.grad_acc_steps,
-                current_epoch=self.optim_counter.epochs,
-                epoch_size=self.task.epoch_size,
-                global_steps=self.optim_counter.steps,
-                epoch_steps=self.optim_counter.epoch_steps,
+                optim_steps=self.optim_counter.steps,
+                module_node=self,
             )
             self.optim_counter.steps += 1
             self.optim_counter.epoch_steps += 1
