@@ -19,7 +19,7 @@
     
     
       
-        <title>Common tips for debugging ICE programs - ice-learn</title>
+        <title>How to debug `ice` programs - ice-learn</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#common-tips-for-debugging-ice-programs" class="md-skip">
+        <a href="#how-to-debug-ice-programs" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Common tips for debugging ICE programs
+              How to debug `ice` programs
             
           </span>
         </div>
@@ -248,20 +248,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
-        Tutorials
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -274,12 +260,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Common tips for debugging ICE programs
+          How to debug `ice` programs
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Common tips for debugging ICE programs
+        How to debug `ice` programs
       </a>
       
         
@@ -298,8 +284,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#debug-by-print" class="md-nav__link">
-    Debug by print
+  <a href="#debug-by-print_forward_output" class="md-nav__link">
+    Debug by print_forward_output
   </a>
   
 </li>
@@ -307,6 +293,13 @@
         <li class="md-nav__item">
   <a href="#debug-by-breakpoint" class="md-nav__link">
     Debug by breakpoint
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-by-integrated-development-environment" class="md-nav__link">
+    Debug by Integrated Development Environment
   </a>
   
 </li>
@@ -1098,8 +1091,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#debug-by-print" class="md-nav__link">
-    Debug by print
+  <a href="#debug-by-print_forward_output" class="md-nav__link">
+    Debug by print_forward_output
   </a>
   
 </li>
@@ -1107,6 +1100,13 @@
         <li class="md-nav__item">
   <a href="#debug-by-breakpoint" class="md-nav__link">
     Debug by breakpoint
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-by-integrated-development-environment" class="md-nav__link">
+    Debug by Integrated Development Environment
   </a>
   
 </li>
@@ -1129,14 +1129,10 @@
 
 
 
-<h1 id="common-tips-for-debugging-ice-programs">Common tips for debugging ICE programs</h1>
-<h2 id="debug-by-print">Debug by print</h2>
-<h2 id="debug-by-breakpoint">Debug by breakpoint</h2>
-<p>set device to cuda or cpu at first</p>
-<p>debugging ddp:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">current_device</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="nb">breakpoint</span><span class="p">()</span>
-</code></pre></div>
+<h1 id="how-to-debug-ice-programs">How to debug <code>ice</code> programs</h1>
+<h2 id="debug-by-print_forward_output">Debug by <code>print_forward_output</code></h2>
+<h2 id="debug-by-breakpoint">Debug by <code>breakpoint</code></h2>
+<h2 id="debug-by-integrated-development-environment">Debug by Integrated Development Environment</h2>
 
               
             </article>
@@ -1150,7 +1146,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Tutorials" rel="prev">
+        <a href="../../get_started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get Started" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1159,7 +1155,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Tutorials
+              Get Started
             </div>
           </div>
         </a>

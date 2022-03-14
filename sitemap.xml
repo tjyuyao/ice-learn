@@ -241,11 +241,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/user_guide/</loc>
-         <lastmod>2022-03-14</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://example.com/user_guide/01_debug_tips/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
