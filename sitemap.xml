@@ -1,247 +1,247 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://example.com/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/get_started/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/get_started/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.hypergraph/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.hypergraph/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.scripts.wait_process/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.scripts.wait_process/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.scripts.waitfinish/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.scripts.waitfinish/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.transforms.image.io/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image.io/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.transforms.image/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.transforms.image.photometric/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image.photometric/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.transforms.image.spatial/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image.spatial/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.transforms/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.transforms.random/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.random/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.transforms.semseg/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.semseg/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/api.utils/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/api.utils/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/core.dataset/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/core.dataset/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/core.graph/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/core.graph/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/core.hypergraph/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/core.hypergraph/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/core.loss/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/core.loss/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/core.metric/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/core.metric/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/core.module/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/core.module/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/core.optim/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/core.optim/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.argparser/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.argparser/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.board/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.board/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.collections/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.collections/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.config/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.config/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.debug/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.debug/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.dictprocess/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.dictprocess/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.file_client/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.file_client/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.ignore_me/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.ignore_me/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.launcher.elastic_multiprocessing/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.elastic_multiprocessing/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.launcher.events/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.events/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.launcher.launch_agent/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.launch_agent/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.launcher.launcher/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.launcher/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.launcher.local_elastic_agent/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.local_elastic_agent/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.launcher/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.logger/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.logger/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.logging/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.logging/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.multiprocessing/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.multiprocessing/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.print/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.print/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.pycuda/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.pycuda/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.shadow_tb/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.shadow_tb/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/documents/llutil.test/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.test/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/resources/dev_notes/00_setup_devenv/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/00_setup_devenv/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/resources/dev_notes/01_contribution_guide/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/01_contribution_guide/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/resources/dev_notes/02_docs_and_tests/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/02_docs_and_tests/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/resources/dev_notes/03_architechture_design/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/03_architechture_design/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/user_guide/01_debug_tips/</loc>
+         <loc>https://tjyuyao.github.io/ice-learn/user_guide/01_debug_tips/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
