@@ -7,6 +7,7 @@ import importlib
 import importlib.util
 import inspect
 import os
+from attr import attr
 import dill
 import pkgutil
 import re
@@ -243,10 +244,13 @@ def _get_class_that_defined_method(meth: Any) -> Any:
         mod = inspect.getmodule(meth)
         if mod is None:
             return None
-        cls = getattr(
-            inspect.getmodule(meth),
-            meth.__qualname__.split(".<locals>", 1)[0].rsplit(".", 1)[0],
-        )
+        
+        mod = inspect.getmodule(meth)
+        attrname = meth.__qualname__.split(".<locals>", 1)[0].rsplit(".", 1)[0]
+        if attrname == "__create_fn__" and not hasattr(mod, attrname):
+            attrname = meth.__qualname__.split(".<locals>", 1)[1].rsplit(".", 1)[1]
+        cls = getattr(mod, attrname)
+            
         if isinstance(cls, type):
             return cls
     return getattr(meth, "__objclass__", None)  # handle special descriptor objects

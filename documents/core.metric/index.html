@@ -1,0 +1,2267 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="This site is the documentation for ice-learn, yet another high-level deep learning library based on pytorch and pycuda.">
+      
+      
+        <meta name="author" content="Yuyao Huang">
+      
+      
+        <link rel="canonical" href="https://example.com/documents/core.metric/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
+    
+    
+      
+        <title>Core.metric - ice-learn</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e8d9bf0c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-coremetric" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="ice-learn" class="md-header__button md-logo" aria-label="ice-learn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ice-learn
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Core.metric
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tjyuyao/ice-learn/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ice-learn" class="md-nav__button md-logo" aria-label="ice-learn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ice-learn
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tjyuyao/ice-learn/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get_started/" class="md-nav__link">
+        Get Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          User Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="User Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          User Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/" class="md-nav__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/01_debug_tips/" class="md-nav__link">
+        Common tips for debugging ICE programs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Documents
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Documents" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Documents
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.hypergraph/" class="md-nav__link">
+        Api.hypergraph
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        Api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.scripts.wait_process/" class="md-nav__link">
+        Api.scripts.wait process
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.scripts.waitfinish/" class="md-nav__link">
+        Api.scripts.waitfinish
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.transforms.image.io/" class="md-nav__link">
+        Api.transforms.image.io
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.transforms.image/" class="md-nav__link">
+        Api.transforms.image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.transforms.image.photometric/" class="md-nav__link">
+        Api.transforms.image.photometric
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.transforms.image.spatial/" class="md-nav__link">
+        Api.transforms.image.spatial
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.transforms/" class="md-nav__link">
+        Api.transforms
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.transforms.random/" class="md-nav__link">
+        Api.transforms.random
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.transforms.semseg/" class="md-nav__link">
+        Api.transforms.semseg
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.utils/" class="md-nav__link">
+        Api.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core.dataset/" class="md-nav__link">
+        Core.dataset
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core.graph/" class="md-nav__link">
+        Core.graph
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core.hypergraph/" class="md-nav__link">
+        Core.hypergraph
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core.loss/" class="md-nav__link">
+        Core.loss
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Core.metric
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Core.metric
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#class-meter" class="md-nav__link">
+    class Meter
+  </a>
+  
+    <nav class="md-nav" aria-label="class Meter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-dictmetric" class="md-nav__link">
+    class DictMetric
+  </a>
+  
+    <nav class="md-nav" aria-label="class DictMetric">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-__init__" class="md-nav__link">
+    method __init__
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_1" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_1" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_1" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_1" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-metricnode" class="md-nav__link">
+    class MetricNode
+  </a>
+  
+    <nav class="md-nav" aria-label="class MetricNode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-__init___1" class="md-nav__link">
+    method __init__
+  </a>
+  
+    <nav class="md-nav" aria-label="method __init__">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#property-board" class="md-nav__link">
+    property board
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-device" class="md-nav__link">
+    property device
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-epoch_size" class="md-nav__link">
+    property epoch_size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-epoch_steps" class="md-nav__link">
+    property epoch_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-global_auto_steps" class="md-nav__link">
+    property global_auto_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-global_train_epochs" class="md-nav__link">
+    property global_train_epochs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-global_train_steps" class="md-nav__link">
+    property global_train_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-grad_acc_steps" class="md-nav__link">
+    property grad_acc_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-grad_scaler" class="md-nav__link">
+    property grad_scaler
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-launcher" class="md-nav__link">
+    property launcher
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-name" class="md-nav__link">
+    property name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-out_dir" class="md-nav__link">
+    property out_dir
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-run_id" class="md-nav__link">
+    property run_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-step_mode" class="md-nav__link">
+    property step_mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-task" class="md-nav__link">
+    property task
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-training" class="md-nav__link">
+    property training
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-better" class="md-nav__link">
+    method better
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-epoch_end" class="md-nav__link">
+    method epoch_end
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-epoch_start" class="md-nav__link">
+    method epoch_start
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-tensorboard_log_metric" class="md-nav__link">
+    method tensorboard_log_metric
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_2" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-valuemeter" class="md-nav__link">
+    class ValueMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class ValueMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_2" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_2" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_2" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_3" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-summationmeter" class="md-nav__link">
+    class SummationMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class SummationMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_3" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_3" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_3" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_4" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-averagemeter" class="md-nav__link">
+    class AverageMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class AverageMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_4" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_4" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_4" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_5" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-movingaveragemeter" class="md-nav__link">
+    class MovingAverageMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class MovingAverageMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-__init___2" class="md-nav__link">
+    method __init__
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_5" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_5" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_5" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_6" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core.module/" class="md-nav__link">
+        Core.module
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core.optim/" class="md-nav__link">
+        Core.optim
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.argparser/" class="md-nav__link">
+        Llutil.argparser
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.board/" class="md-nav__link">
+        Llutil.board
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.collections/" class="md-nav__link">
+        Llutil.collections
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.config/" class="md-nav__link">
+        Llutil.config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.debug/" class="md-nav__link">
+        Llutil.debug
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.dictprocess/" class="md-nav__link">
+        Llutil.dictprocess
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.file_client/" class="md-nav__link">
+        Llutil.file client
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.ignore_me/" class="md-nav__link">
+        Llutil.ignore me
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.launcher.elastic_multiprocessing/" class="md-nav__link">
+        Llutil.launcher.elastic multiprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.launcher.events/" class="md-nav__link">
+        Llutil.launcher.events
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.launcher.launch_agent/" class="md-nav__link">
+        Llutil.launcher.launch agent
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.launcher.launcher/" class="md-nav__link">
+        Llutil.launcher.launcher
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.launcher.local_elastic_agent/" class="md-nav__link">
+        Llutil.launcher.local elastic agent
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.launcher/" class="md-nav__link">
+        Llutil.launcher
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.logger/" class="md-nav__link">
+        Llutil.logger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.logging/" class="md-nav__link">
+        Llutil.logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil/" class="md-nav__link">
+        Llutil
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.multiprocessing/" class="md-nav__link">
+        Llutil.multiprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.print/" class="md-nav__link">
+        Llutil.print
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.pycuda/" class="md-nav__link">
+        Llutil.pycuda
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.shadow_tb/" class="md-nav__link">
+        Llutil.shadow tb
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.test/" class="md-nav__link">
+        Llutil.test
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Resources
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Resources" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Resources
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_1" type="checkbox" id="__nav_4_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_1">
+          Development Notes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development Notes" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          Development Notes
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resources/dev_notes/00_setup_devenv/" class="md-nav__link">
+        Setup Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resources/dev_notes/01_contribution_guide/" class="md-nav__link">
+        Contribution Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resources/dev_notes/02_docs_and_tests/" class="md-nav__link">
+        Documents & Tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resources/dev_notes/03_architechture_design/" class="md-nav__link">
+        The Folder Structure
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#class-meter" class="md-nav__link">
+    class Meter
+  </a>
+  
+    <nav class="md-nav" aria-label="class Meter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-dictmetric" class="md-nav__link">
+    class DictMetric
+  </a>
+  
+    <nav class="md-nav" aria-label="class DictMetric">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-__init__" class="md-nav__link">
+    method __init__
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_1" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_1" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_1" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_1" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-metricnode" class="md-nav__link">
+    class MetricNode
+  </a>
+  
+    <nav class="md-nav" aria-label="class MetricNode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-__init___1" class="md-nav__link">
+    method __init__
+  </a>
+  
+    <nav class="md-nav" aria-label="method __init__">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#property-board" class="md-nav__link">
+    property board
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-device" class="md-nav__link">
+    property device
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-epoch_size" class="md-nav__link">
+    property epoch_size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-epoch_steps" class="md-nav__link">
+    property epoch_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-global_auto_steps" class="md-nav__link">
+    property global_auto_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-global_train_epochs" class="md-nav__link">
+    property global_train_epochs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-global_train_steps" class="md-nav__link">
+    property global_train_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-grad_acc_steps" class="md-nav__link">
+    property grad_acc_steps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-grad_scaler" class="md-nav__link">
+    property grad_scaler
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-launcher" class="md-nav__link">
+    property launcher
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-name" class="md-nav__link">
+    property name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-out_dir" class="md-nav__link">
+    property out_dir
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-run_id" class="md-nav__link">
+    property run_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-step_mode" class="md-nav__link">
+    property step_mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-task" class="md-nav__link">
+    property task
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-training" class="md-nav__link">
+    property training
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-better" class="md-nav__link">
+    method better
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-epoch_end" class="md-nav__link">
+    method epoch_end
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-epoch_start" class="md-nav__link">
+    method epoch_start
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-tensorboard_log_metric" class="md-nav__link">
+    method tensorboard_log_metric
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_2" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-valuemeter" class="md-nav__link">
+    class ValueMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class ValueMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_2" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_2" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_2" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_3" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-summationmeter" class="md-nav__link">
+    class SummationMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class SummationMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_3" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_3" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_3" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_4" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-averagemeter" class="md-nav__link">
+    class AverageMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class AverageMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_4" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_4" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_4" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_5" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-movingaveragemeter" class="md-nav__link">
+    class MovingAverageMeter
+  </a>
+  
+    <nav class="md-nav" aria-label="class MovingAverageMeter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-__init___2" class="md-nav__link">
+    method __init__
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-evaluate_5" class="md-nav__link">
+    method evaluate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-reset_5" class="md-nav__link">
+    method reset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-sync_5" class="md-nav__link">
+    method sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-update_6" class="md-nav__link">
+    method update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/tjyuyao/ice-learn/edit/master/docs/documents/core.metric.md" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+
+<!-- markdownlint-disable -->
+
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h1 id="module-coremetric"><kbd>module</kbd> <code>core.metric</code></h1>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L13"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h2 id="class-meter"><kbd>class</kbd> <code>Meter</code></h2>
+<p>value reducer that works recursively.</p>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L22"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-evaluate"><kbd>method</kbd> <code>evaluate</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">evaluate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L16"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-reset"><kbd>method</kbd> <code>reset</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">reset</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L25"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-sync"><kbd>method</kbd> <code>sync</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">sync</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L19"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-update"><kbd>method</kbd> <code>update</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L31"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h2 id="class-dictmetric"><kbd>class</kbd> <code>DictMetric</code></h2>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L39"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-__init__"><kbd>method</kbd> <code>__init__</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="n">meters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meter_prototype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L84"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-evaluate_1"><kbd>method</kbd> <code>evaluate</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">evaluate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L58"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-reset_1"><kbd>method</kbd> <code>reset</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">reset</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L80"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-sync_1"><kbd>method</kbd> <code>sync</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">sync</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L62"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-update_1"><kbd>method</kbd> <code>update</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">update</span><span class="p">(</span><span class="n">explicit</span><span class="o">=</span><span class="p">{},</span> <span class="o">*</span><span class="n">shared_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L92"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h2 id="class-metricnode"><kbd>class</kbd> <code>MetricNode</code></h2>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-__init___1"><kbd>method</kbd> <code>__init__</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h4 id="property-board"><kbd>property</kbd> board</h4>
+<hr />
+<h4 id="property-device"><kbd>property</kbd> device</h4>
+<p>the assigned device by current launcher.</p>
+<hr />
+<h4 id="property-epoch_size"><kbd>property</kbd> epoch_size</h4>
+<hr />
+<h4 id="property-epoch_steps"><kbd>property</kbd> epoch_steps</h4>
+<hr />
+<h4 id="property-global_auto_steps"><kbd>property</kbd> global_auto_steps</h4>
+<hr />
+<h4 id="property-global_train_epochs"><kbd>property</kbd> global_train_epochs</h4>
+<hr />
+<h4 id="property-global_train_steps"><kbd>property</kbd> global_train_steps</h4>
+<hr />
+<h4 id="property-grad_acc_steps"><kbd>property</kbd> grad_acc_steps</h4>
+<hr />
+<h4 id="property-grad_scaler"><kbd>property</kbd> grad_scaler</h4>
+<hr />
+<h4 id="property-launcher"><kbd>property</kbd> launcher</h4>
+<hr />
+<h4 id="property-name"><kbd>property</kbd> name</h4>
+<p>the node name in the current activated <a href="../core.graph/#class-executablegraph"><code>ExecutableGraph</code></a>.</p>
+<hr />
+<h4 id="property-out_dir"><kbd>property</kbd> out_dir</h4>
+<hr />
+<h4 id="property-run_id"><kbd>property</kbd> run_id</h4>
+<hr />
+<h4 id="property-step_mode"><kbd>property</kbd> step_mode</h4>
+<p>whether current task is running by step (True) or by epoch (False).</p>
+<hr />
+<h4 id="property-task"><kbd>property</kbd> task</h4>
+<hr />
+<h4 id="property-training"><kbd>property</kbd> training</h4>
+<p>whether current task is training.</p>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L128"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-better"><kbd>method</kbd> <code>better</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">better</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span> <span class="err">→</span> <span class="nb">bool</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L142"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-epoch_end"><kbd>method</kbd> <code>epoch_end</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">epoch_end</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L136"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-epoch_start"><kbd>method</kbd> <code>epoch_start</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">epoch_start</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L149"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-tensorboard_log_metric"><kbd>method</kbd> <code>tensorboard_log_metric</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">tensorboard_log_metric</span><span class="p">(</span><span class="n">postfix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L139"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-update_2"><kbd>method</kbd> <code>update</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">update</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L158"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h2 id="class-valuemeter"><kbd>class</kbd> <code>ValueMeter</code></h2>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-evaluate_2"><kbd>method</kbd> <code>evaluate</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">evaluate</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L160"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-reset_2"><kbd>method</kbd> <code>reset</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">reset</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-sync_2"><kbd>method</kbd> <code>sync</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">sync</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-update_3"><kbd>method</kbd> <code>update</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h2 id="class-summationmeter"><kbd>class</kbd> <code>SummationMeter</code></h2>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L182"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-evaluate_3"><kbd>method</kbd> <code>evaluate</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">evaluate</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L175"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-reset_3"><kbd>method</kbd> <code>reset</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">reset</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L185"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-sync_3"><kbd>method</kbd> <code>sync</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">sync</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-update_4"><kbd>method</kbd> <code>update</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">update</span><span class="p">(</span><span class="n">batch_sum</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L192"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h2 id="class-averagemeter"><kbd>class</kbd> <code>AverageMeter</code></h2>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L205"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-evaluate_4"><kbd>method</kbd> <code>evaluate</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">evaluate</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L194"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-reset_4"><kbd>method</kbd> <code>reset</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">reset</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L208"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-sync_4"><kbd>method</kbd> <code>sync</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">sync</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L200"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-update_5"><kbd>method</kbd> <code>update</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">update</span><span class="p">(</span><span class="n">batch_avg</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L216"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h2 id="class-movingaveragemeter"><kbd>class</kbd> <code>MovingAverageMeter</code></h2>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L218"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-__init___2"><kbd>method</kbd> <code>__init__</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="n">window_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L229"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-evaluate_5"><kbd>method</kbd> <code>evaluate</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">evaluate</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L221"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-reset_5"><kbd>method</kbd> <code>reset</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">reset</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L25"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-sync_5"><kbd>method</kbd> <code>sync</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">sync</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L224"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-update_6"><kbd>method</kbd> <code>update</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+</code></pre></div>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../core.loss/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core.loss" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Core.loss
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../core.module/" class="md-footer__link md-footer__link--next" aria-label="Next: Core.module" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Core.module
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright (c) 2022 Yuyao Huang
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.8aa65030.min.js"></script>
+      
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+      
+    
+  </body>
+</html>

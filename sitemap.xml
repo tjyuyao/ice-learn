@@ -16,12 +16,67 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://example.com/documents/api.hypergraph/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://example.com/documents/api.scripts.wait_process/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://example.com/documents/api.scripts.waitfinish/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.transforms.image.io/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.transforms.image/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.transforms.image.photometric/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.transforms.image.spatial/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.transforms/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.transforms.random/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.transforms.semseg/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/api.utils/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/core.dataset/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -36,7 +91,32 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://example.com/documents/core.loss/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/core.metric/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/core.module/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/core.optim/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://example.com/documents/llutil.argparser/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.board/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -51,12 +131,57 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://example.com/documents/llutil.debug/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://example.com/documents/llutil.dictprocess/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://example.com/documents/llutil.file_client/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.ignore_me/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.launcher.elastic_multiprocessing/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.launcher.events/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.launcher.launch_agent/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.launcher.launcher/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.launcher.local_elastic_agent/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://example.com/documents/llutil.launcher/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.logger/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -76,7 +201,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://example.com/documents/llutil.print/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://example.com/documents/llutil.pycuda/</loc>
+         <lastmod>2022-03-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/documents/llutil.shadow_tb/</loc>
          <lastmod>2022-03-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
