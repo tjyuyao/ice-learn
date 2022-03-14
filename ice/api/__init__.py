@@ -2,6 +2,7 @@ from typing import List, overload
 from ice.llutil import test
 from ice.llutil.collections import Dict, ConfigDict
 from ice.llutil.argparser import args, as_dict, as_list, isa, get_hostname
+from ice.llutil.multiprocessing import in_main_process, auto_freeze_enabled, enable_auto_freeze
 from ice.llutil.config import (clone, configurable, Configurable, freeze, is_configurable,
                                make_configurable, frozen)
 from ice.llutil.debug import set_trace
@@ -13,7 +14,6 @@ try:
 except ImportError:
     pass
 from ice.llutil.dictprocess import dictprocess
-from ice.llutil.multiprocessing import in_main_process
 
 from ice.core.graph import Node, ExecutableGraph, GraphOutputCache
 from ice.core.hypergraph import HyperGraph, Task, Repeat
