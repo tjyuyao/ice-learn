@@ -26,4 +26,4 @@
 
 ## Documentation
 
-Please see the [docs](https://github.com/tjyuyao/ice-learn/tree/main/docs) subdirectory, where contains further informations about [Get Started Tutorials](https://github.com/tjyuyao/ice-learn/tree/main/docs/tutorials), [API Reference Manual](https://github.com/tjyuyao/ice-learn/tree/main/docs/references) and [Dev. Notes for Contributors](https://github.com/tjyuyao/ice-learn/tree/main/docs/devnotes).
+You can access documentation through [Online Documentation Site](https://tjyuyao.github.io/ice-learn/), or the [`docs` subdirectory](https://github.com/tjyuyao/ice-learn/tree/main/docs) directly. The documentation is partial auto-generated from comment, and partial manually written, the note on how we produce the documenation can be found [here](https://tjyuyao.github.io/ice-learn/resources/dev_notes/02_docs_and_tests/).
