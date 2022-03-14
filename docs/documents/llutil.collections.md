@@ -67,7 +67,7 @@ assert 2 == cnt.total()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/collections.py#L44"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/collections.py#L46"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `total`
 
@@ -84,7 +84,7 @@ total()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/collections.py#L48"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/collections.py#L50"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ConfigDict`
 stores multi-level configurations easily.

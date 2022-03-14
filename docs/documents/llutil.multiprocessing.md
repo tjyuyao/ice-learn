@@ -25,20 +25,49 @@ contents, and we recommend referring to very good docs of the original module.
 
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L45"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
-## <kbd>function</kbd> `called_from_main`
+## <kbd>function</kbd> `in_main_process`
 
 ```python
-called_from_main()
+in_main_process()
 ```
 
-Another version of ``if __name__ == "__main__"`` that works everywhere.
+Whether current process is worker process or main process.
+ 
 
 
 
 
-**Returns:**
 
- bool
+
+---
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L56"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `enable_auto_freeze`
+
+```python
+enable_auto_freeze(enable: bool = True)
+```
+
+
+
+
+
+
+
+
+---
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/multiprocessing/__init__.py#L60"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `auto_freeze_enabled`
+
+```python
+auto_freeze_enabled()
+```
+
+
+
 
 
 
