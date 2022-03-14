@@ -1,6 +1,6 @@
 # ice-learn
 
-<img align="left" width="100" height="100" src="https://s3.bmp.ovh/imgs/2022/03/89472f58c56b474c.jpg">
+<img align="left" width="130" height="130" src="https://s3.bmp.ovh/imgs/2022/03/89472f58c56b474c.jpg">
 
 > `ice` is a sweet extension of PyTorch, a modular high-level deep learning framework that extends and integrates PyTorch and PyCUDA with intuitive interfaces. We aims not only to minimize the boilerplate code without loss of functionality, but also maximize the flexibility and usability for extending and composing any deep learning tasks into an integrate multi-task learning program.
 
