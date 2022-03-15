@@ -1,14 +1,16 @@
+from __future__ import annotations
+
 from collections import deque, abc
 from copy import deepcopy
 from inspect import signature
-from typing import Any, Callable, Dict, List, Union, overload
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Union, overload
 
-import torch
-import torch.distributed as dist
 from ice.core.graph import GraphOutputCache, Node
 from ice.llutil.argparser import as_dict, as_list, isa, parse_scalar
 from ice.llutil.logger import get_logger
 
+if TYPE_CHECKING:
+    import torch
 
 class Meter:
     """value reducer that works recursively."""
@@ -184,6 +186,8 @@ class SummationMeter(Meter):
     
     def sync(self):
         if isa(self.unsync_summation, int) and self.unsync_summation == 0: return
+        import torch
+        import torch.distributed as dist
         dist.all_reduce(self.unsync_summation, op=dist.ReduceOp.SUM)
         self.summation += self.unsync_summation
         self.unsync_summation = torch.zeros_like(self.summation)
@@ -207,6 +211,8 @@ class AverageMeter(Meter):
     
     def sync(self):
         if isa(self.unsync_summation, int) and self.unsync_summation == 0: return
+        import torch
+        import torch.distributed as dist
         dist.all_reduce(self.unsync_summation, op=dist.ReduceOp.SUM)
         self.summation += self.unsync_summation
         self.unsync_summation = torch.zeros_like(self.summation)

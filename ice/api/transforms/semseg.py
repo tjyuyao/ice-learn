@@ -1,7 +1,6 @@
 import os.path as osp
 
 import numpy as np
-import torch
 from ice.api.transforms.random import RandomROI, _rng
 from ice.llutil.dictprocess import dictprocess
 from ice.llutil.file_client import FileClient
@@ -94,5 +93,6 @@ def LabelToTensor(src:np.ndarray):
     Returns:
         a torch.Tensor
     """
+    import torch
     segmap = src.astype(np.int64)
     return torch.from_numpy(segmap)

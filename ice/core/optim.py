@@ -1,12 +1,14 @@
-from ice.llutil.argparser import as_list
-from torch import optim
-from typing import List, Type, Dict, overload
+from __future__ import annotations
 
-import torch
+from ice.llutil.argparser import as_list
+from typing import TYPE_CHECKING, List, Type, Dict, overload
+
 from ice.llutil.config import Configurable
 from ice.llutil.dictprocess import DictProcessor
-from torch.distributed.optim.zero_redundancy_optimizer import ZeroRedundancyOptimizer
-from torch.cuda.amp.grad_scaler import GradScaler
+
+if TYPE_CHECKING:
+    from torch import optim
+    from torch.cuda.amp.grad_scaler import GradScaler
 
 
 class Optimizer(Configurable):
@@ -41,6 +43,7 @@ class Optimizer(Configurable):
         *,
         params
     ):
+        from torch.distributed.optim.zero_redundancy_optimizer import ZeroRedundancyOptimizer
         self.optimizer = ZeroRedundancyOptimizer(
             params, optimizer_class=optimizer)
         for group in self.optimizer.param_groups:
@@ -53,6 +56,7 @@ class Optimizer(Configurable):
     def update(self, grad_scaler:GradScaler, grad_acc_steps:int, optim_steps, module_node):
         # gradient accumulation
         if optim_steps % grad_acc_steps: return
+        import torch
 
         # update the learning rate
         for updator in self.updators:

@@ -5,9 +5,8 @@ from multiprocessing import get_logger
 import traceback
 from typing import Any, Tuple
 
-import torch
 from ice.llutil.argparser import as_list, isa
-from ice.llutil.multiprocessing import auto_freeze_enabled
+from ice.llutil.utils import auto_freeze_enabled
 
 
 def _inplace_surrogate(cls, funcname):
@@ -198,6 +197,7 @@ def clone(obj, deepcopy=True):
     >>> conv3x3.freeze()
     >>> assert conv3x3.kernel_size == (3, 3)
     """
+    import torch
     if isinstance(obj, list):
         obj = [clone(x, deepcopy=deepcopy) for x in obj]
     elif isinstance(obj, tuple):
@@ -239,6 +239,7 @@ def freeze(obj):
     Example:
         See examples for ``configurable`` and ``clone``.
     """
+    import torch
     if isinstance(obj, list):
         obj = [freeze(x) for x in obj]
     elif isinstance(obj, tuple):

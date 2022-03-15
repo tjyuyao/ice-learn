@@ -1,5 +1,4 @@
 import cv2
-import torch
 import numpy as np
 import numpy.random as random
 
@@ -45,6 +44,7 @@ def ToTensor(img:np.ndarray):
     Returns:
         a torch.Tensor
     """
+    import torch
     if len(img.shape) < 3:
         img = np.expand_dims(img, -1)
     img = np.ascontiguousarray(img.transpose(2, 0, 1))

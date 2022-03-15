@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 import logging
 import os
 import random
 import signal
 import time
-from types import FrameType
 import uuid
-from typing import List, overload
+from types import FrameType
+from typing import TYPE_CHECKING, List, overload
 
-import torch
-import torch.distributed as dist
 from ice.llutil.config import Configurable
 from ice.llutil.logger import get_logger
-from torch.distributed.elastic.multiprocessing import Std
-from torch.distributed.elastic.multiprocessing.errors import record, ChildFailedError
-from torch.distributed.elastic.rendezvous.utils import _parse_rendezvous_config
-from .launch_agent import LaunchConfig, launch_agent
+
 from .events import Events
-import ice.llutil.shadow_tb as shadow_tb
+
+if TYPE_CHECKING:
+    import torch
+
 
 log = get_logger()
 
@@ -38,6 +38,8 @@ def _parse_min_max_nnodes(nnodes: str):
 
 
 def _parse_devices_and_backend(devices: str = "auto", dist_backend: str = "auto"):
+    import torch
+
     # determine device type
     if devices[:3] == "cpu" or (
         devices[:4] == "auto" and not torch.cuda.is_available()
@@ -94,6 +96,10 @@ def get_current_launcher() -> "ElasticLauncher":
     return _current_launcher
 
 def _wrap(launcher:"ElasticLauncher", entrypoint, *args):
+    import ice.llutil.shadow_tb as shadow_tb
+    import torch
+    import torch.distributed as dist
+
     global _current_launcher
     _current_launcher = launcher
     if not shadow_tb.DEBUG_ICE:
@@ -236,6 +242,13 @@ class ElasticLauncher(Configurable):
         
         events:Events = None,
     ):
+
+        from torch.distributed.elastic.multiprocessing import Std
+        from torch.distributed.elastic.rendezvous.utils import \
+            _parse_rendezvous_config
+
+        from .launch_agent import LaunchConfig
+
         if standalone:
             rdzv_backend = "c10d"
             rdzv_endpoint = "localhost:29400"
@@ -307,11 +320,14 @@ class ElasticLauncher(Configurable):
         
         self.events = events
 
-    @record
     def __call__(self, entrypoint, *args):
+        from torch.distributed.elastic.multiprocessing.errors import (
+            ChildFailedError, record)
+
+        from .launch_agent import launch_agent
         args = [self, entrypoint] + list(args)
         try:
-            launch_agent(self.config, _wrap, list(args), self.events)
+            record(launch_agent)(self.config, _wrap, list(args), self.events)
         except ChildFailedError as e:
             raise
 

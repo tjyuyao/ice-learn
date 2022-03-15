@@ -1,7 +1,7 @@
 import os
 
 from ice.llutil.logger import get_logger
-from ice.llutil.multiprocessing import in_main_process
+from ice.llutil.utils import in_main_process
 
 
 DEBUG_ICE = bool(os.environ.get("DEBUG_ICE", 0))

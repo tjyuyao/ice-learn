@@ -3,20 +3,20 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, overload
 
-import torch
 
-from ice.llutil.argparser import as_list
 from ice.llutil.config import Configurable
 from ice.llutil.launcher.launcher import get_current_launcher
-from torch.cuda.amp.grad_scaler import GradScaler
-from ice.llutil.board import BoardWriter
+
+if TYPE_CHECKING:
+    import torch
+    from torch.cuda.amp.grad_scaler import GradScaler
+    from ice.llutil.board import BoardWriter
 
 if TYPE_CHECKING:
     from ice.core.hypergraph import Task, HyperGraph
 
 class InvalidURIError(Exception):
     """An Exception raised when valid node URI is expected."""
-
 
 class StopTask(Exception):
     """An Exception raised to exit current task."""
@@ -171,6 +171,7 @@ class Node(Configurable):
     def load_state_dict(self, _state_dict:Dict, strict:bool): """resumes node state from state_dict."""
     
     def move(self, data, device=None):
+        import torch
         if device is None:
             device = get_current_launcher().assigned_device
         if isinstance(data, (torch.Tensor, torch.nn.Module)):

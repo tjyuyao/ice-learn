@@ -1,4 +1,5 @@
-from datetime import datetime
+from __future__ import annotations
+
 import logging
 import os
 import random
@@ -6,30 +7,29 @@ import sys
 import tempfile
 from copy import deepcopy
 from dataclasses import dataclass
+from datetime import datetime
 from inspect import signature
-import time
-from typing import Any, Callable, Dict, List, Optional, Union, overload
-from ice.llutil.backup_src import _backup_source_files_to
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union, overload
 
-from ice.core.dataset import DatasetNode
-from ice.llutil.ignore_me import IgnoreMe
-from ice.llutil.launcher.launcher import get_current_launcher
 import numpy as np
-
-import torch.cuda
 from ice.core.graph import (ExecutableGraph, GraphOutputCache, InvalidURIError,
                             Node, StopAllTasks, StopTask)
-from ice.llutil.argparser import as_list, is_list_of, isa, args as ice_args
+from ice.llutil.argparser import args as ice_args
+from ice.llutil.argparser import as_list, is_list_of, isa
+from ice.llutil.backup_src import _backup_source_files_to
 from ice.llutil.collections import Dict as iDict
 from ice.llutil.config import Configurable, freeze, frozen, is_configurable
+from ice.llutil.ignore_me import IgnoreMe
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
+from ice.llutil.launcher.launcher import get_current_launcher
 from ice.llutil.logger import get_logger
-from ice.llutil.multiprocessing import in_main_process
-from ice.llutil.print import _print
-from torch.autograd.grad_mode import set_grad_enabled
-from torch.cuda.amp.grad_scaler import GradScaler
-from ice.llutil.board import BoardWriter
+from ice.llutil.utils import in_main_process, init_torch_multiprocessing
+from ice.llutil.print import _print, set_printoptions
+
 from tqdm import tqdm
+
+if TYPE_CHECKING:
+    from torch.cuda.amp.grad_scaler import GradScaler
 
 
 class ResumeTaskFailed(Exception):
@@ -73,6 +73,7 @@ class Task(_Task):
 
     def __call__(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
         if self.finished: return  # for resuming progress
+        from torch.autograd.grad_mode import set_grad_enabled
         with set_grad_enabled(self.training):
             self.__call__impl(hypergraph, launcher)
         self.finished = True
@@ -91,6 +92,7 @@ class Task(_Task):
                 hypergraph._last_executed_egraph.clean_up_nodes()
             self.egraph.prepare_nodes()
             if self.launcher.assigned_device.type == "cuda":
+                import torch.cuda
                 torch.cuda.empty_cache() # result in more precise value in `nvidia-smi`.
         hypergraph._last_executed_egraph = self.egraph
 
@@ -300,7 +302,7 @@ class HyperGraph:
     """HyperGraph is the container for all nodes.
     """
 
-    def __init__(self, autocast_enabled=False, autocast_dtype=torch.float16, grad_scaler:Union[bool, GradScaler] = None) -> None:
+    def __init__(self, autocast_enabled=False, autocast_dtype=None, grad_scaler:Union[bool, GradScaler] = None) -> None:
         self.nodes = {}
         self.global_counters = GlobalCounters()
         self.run_info = iDict()
@@ -313,7 +315,10 @@ class HyperGraph:
         self.grad_acc_steps = 1
         self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
 
-    def init_autocast(self, autocast_enabled=True, autocast_dtype=torch.float16, grad_scaler:Union[bool, GradScaler] = None):
+    def init_autocast(self, autocast_enabled=True, autocast_dtype=None, grad_scaler:Union[bool, GradScaler] = None):
+        if autocast_dtype is None:
+            import torch
+            autocast_dtype = torch.float16
         self.autocast_kwds = dict(enabled=autocast_enabled, dtype=autocast_dtype)
         self.init_grad_scaler(grad_scaler if grad_scaler is not None else autocast_enabled)
     
@@ -335,6 +340,7 @@ class HyperGraph:
         ...
         
     def init_grad_scaler(self, grad_scaler:Union[bool, GradScaler] = True, **kwds):
+        from torch.cuda.amp.grad_scaler import GradScaler
         if isa(grad_scaler, bool):
             if grad_scaler:
                 self._grad_scaler = GradScaler(**kwds)
@@ -463,6 +469,7 @@ class HyperGraph:
     ):        ...
 
     def _set_initial_rng_state(self, seed):
+        import torch
         torch.manual_seed(seed)
         random.seed(seed)
         np.random.seed(seed)
@@ -477,6 +484,7 @@ class HyperGraph:
         global_shared_events["debugger_end"] = launcher.events.debugger_end
         
         # setup tensorboard
+        from ice.llutil.board import BoardWriter
         if get_current_launcher().rank == 0:
             self.board:BoardWriter = BoardWriter(self.run_info.out_dir)
         else:
@@ -484,6 +492,7 @@ class HyperGraph:
         
         try:
             get_logger().info(repr(ice_args))
+            set_printoptions(threshold=4, linewidth=120, precision=2, sci_mode=False)
             self.load_checkpoint(resume_from)
             self.exec_tasks(tasks, launcher)
         except StopAllTasks:
@@ -541,6 +550,8 @@ class HyperGraph:
 
         self._set_initial_rng_state(seed)
         self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
+
+        init_torch_multiprocessing()
 
         if in_main_process():
             
