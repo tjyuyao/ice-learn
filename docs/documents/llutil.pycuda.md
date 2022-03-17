@@ -12,7 +12,7 @@ Integrates PyCUDA to PyTorch and ice.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L67"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L70"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `CUDAModule`
 Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
@@ -58,7 +58,7 @@ __global__ void matmul(Tensor<float, 2> *a, Tensor<float, 2> *b, Tensor<float, 2
     }
     (*c)[m][n] = v;
 }
-""", float_bits=32).freeze()
+""", float_bits=32)
 
 kernels.matmul(a, b, c, M, N, K, grid=(N // 32 + 1, M // 32 + 1), block=(32, 32, 1))
 
@@ -68,12 +68,12 @@ assert torch.allclose(c, torch.mm(a, b))
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L110"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
-### <kbd>method</kbd> `__freeze__`
+### <kbd>method</kbd> `__init__`
 
 ```python
-__freeze__(
+__init__(
     source,
     float_bits,
     int_bits=32,

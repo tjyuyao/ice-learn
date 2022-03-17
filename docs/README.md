@@ -1,7 +1,9 @@
 # Documentation
 
-## [Quick Start Tutorials](./tutorials)
+## [Quick Start](./get_started)
 
-## [API Reference Manual](./references)
+## [User Guide](./user_guide/01_debug_tips)
 
-## [For Developers](./devnotes)
+## [API Reference Manual](./documents)
+
+## [For Developers](./resources/dev_notes/00_setup_devenv)

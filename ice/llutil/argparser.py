@@ -11,7 +11,6 @@ from collections import abc
 from typing import Dict
 
 import numpy as np
-import torch
 
 _type = type
 
@@ -21,6 +20,7 @@ def isa(obj, types):
     return isinstance(obj, types)
 
 def parse_scalar(obj):
+    import torch
     if isinstance(obj, (int, float)): return obj
     if isinstance(obj, torch.Tensor) and obj.numel() == 1: return obj.item()
     if isinstance(obj, np.ndarray) and obj.size == 1: return obj.item()

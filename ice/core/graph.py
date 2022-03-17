@@ -1,19 +1,22 @@
 """contains ``Node`` and ``ExecutableGraph``."""
+from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, overload
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, overload
 
-import torch
 
-from ice.llutil.argparser import as_list
 from ice.llutil.config import Configurable
 from ice.llutil.launcher.launcher import get_current_launcher
-from torch.cuda.amp.grad_scaler import GradScaler
-from ice.llutil.board import BoardWriter
 
+if TYPE_CHECKING:
+    import torch
+    from torch.cuda.amp.grad_scaler import GradScaler
+    from ice.llutil.board import BoardWriter
+
+if TYPE_CHECKING:
+    from ice.core.hypergraph import Task, HyperGraph
 
 class InvalidURIError(Exception):
     """An Exception raised when valid node URI is expected."""
-
 
 class StopTask(Exception):
     """An Exception raised to exit current task."""
@@ -168,6 +171,7 @@ class Node(Configurable):
     def load_state_dict(self, _state_dict:Dict, strict:bool): """resumes node state from state_dict."""
     
     def move(self, data, device=None):
+        import torch
         if device is None:
             device = get_current_launcher().assigned_device
         if isinstance(data, (torch.Tensor, torch.nn.Module)):
@@ -209,12 +213,12 @@ class GraphOutputCache:
 class ExecutableGraph:
 
     def __init__(self, hypergraph) -> None:
-        self.hypergraph = hypergraph
+        self.hypergraph: HyperGraph = hypergraph
         self.nodes:Dict[str, Node] = {}
         self.node_tags:Dict[Node, List[str]] = {}
         self.node_names:Dict[Node, str] = {}
         self.cache = GraphOutputCache(self)
-        self.task = None
+        self.task: Task = None
         self.losses_counter = 0
         self.total_loss = 0
 
@@ -264,7 +268,8 @@ class ExecutableGraph:
             self.apply("forward")
             self.apply("backward")
             self.apply("update")
-            self.grad_scaler.update()
+            if self.task.global_auto_steps % self.hypergraph.grad_acc_steps == 0:
+                self.grad_scaler.update()
         else: # eval
             self.apply("forward")
             self.apply("update")

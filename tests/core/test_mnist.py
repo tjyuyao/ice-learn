@@ -32,7 +32,6 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(320, 50)
         self.fc2 = nn.Linear(50, 10)
 
-    @autocast("cuda")
     def forward(self, x):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
         x = self.bn(x)

@@ -5,9 +5,8 @@ from multiprocessing import get_logger
 import traceback
 from typing import Any, Tuple
 
-import torch
 from ice.llutil.argparser import as_list, isa
-from ice.llutil.multiprocessing import in_main_process
+from ice.llutil.utils import auto_freeze_enabled
 
 
 def _inplace_surrogate(cls, funcname):
@@ -198,6 +197,7 @@ def clone(obj, deepcopy=True):
     >>> conv3x3.freeze()
     >>> assert conv3x3.kernel_size == (3, 3)
     """
+    import torch
     if isinstance(obj, list):
         obj = [clone(x, deepcopy=deepcopy) for x in obj]
     elif isinstance(obj, tuple):
@@ -239,6 +239,7 @@ def freeze(obj):
     Example:
         See examples for ``configurable`` and ``clone``.
     """
+    import torch
     if isinstance(obj, list):
         obj = [freeze(x) for x in obj]
     elif isinstance(obj, tuple):
@@ -450,6 +451,8 @@ class Configurable:
 
     def auto_freeze(self):
 
+        if not auto_freeze_enabled(): return self._obj
+
         def all_args():
             for arg in self._args_only: yield arg
             for arg in self._args_or_kwds.values(): yield arg
@@ -466,7 +469,7 @@ class Configurable:
         return self._obj
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
-        return self.clone().update_params(*args, **kwds)
+        return self.clone().update_params(*args, **kwds).auto_freeze()
 
 class _Builder(Configurable):
     """This class stores the arguments and meta informations that is needed by ``configurable`` decorator.
@@ -479,15 +482,11 @@ class _Builder(Configurable):
         self._obj = obj
         super().__init__(*args, **kwds)
         object.__setattr__(obj, "_builder", self)
-        if not in_main_process():
-            self.auto_freeze()
+        self.auto_freeze()
 
     def __reduce__(self) -> Tuple[Any, ...]:
         assert not self._frozen, f"{self}"
         return (partial(self._cls, *self._args_only, *self._args_or_kwds.values(), *self._var_args, **self._kwds_only, **self._var_kwds), ())
-    
-    def __call__(self, *args: Any, **kwds: Any) -> Any:
-        return super().__call__(*args, **kwds).auto_freeze()
     
     def __repr__(self):
         return str(self)

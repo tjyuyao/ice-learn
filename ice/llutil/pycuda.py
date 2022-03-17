@@ -1,11 +1,11 @@
 """Integrates PyCUDA to PyTorch and ice."""
+from __future__ import annotations
 
 import os
 import re
 from functools import wraps
 
 import numpy
-
 from ice.llutil.logger import get_logger
 
 # According to [this link](https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated),
@@ -13,13 +13,12 @@ from ice.llutil.logger import get_logger
 # `reg.get_or_register_dtype("bool", np.bool)` throwing a DeprecationWarning. We choose to use the old behavior.
 numpy.bool = bool
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import torch
 
 import pycuda.driver as cuda
-import torch
-from pycuda.compiler import SourceModule
-
-from .config import Configurable, configurable
-
 
 _int_regex = re.compile(r'\bint\b')
 _float_regex = re.compile(r'\bfloat\b')
@@ -35,6 +34,9 @@ _EXTRA_HEADERS ='#include "PyCUDATensorAccessor.cuh" \n'
 class _CUDAContext:
     
     def __init__(self):
+        import torch
+
+        import pycuda.driver as cuda
         self.device = cuda.Device(torch.cuda.current_device())
     
     def __enter__(self):
@@ -45,9 +47,9 @@ class _CUDAContext:
     def __exit__(self, type, value, traceback):
         self.context.pop()
         
-    
 class _Tensor(cuda.PointerHolderBase):
     def __init__(self, t: torch.Tensor):
+        import torch
         if not t.is_cuda:
             raise ValueError('Cannot convert CPU tensor for pycuda (call `cuda()` on it)')
         if not t.layout is torch.strided:
@@ -124,6 +126,7 @@ class CUDAModule(object):
             this to happen, use more specific CUDA typename such as `__half`, `double`, `int16_t`, etc.
 
         """
+        import torch
         source = self._replace_data_type(source, int_bits, float_bits)
         if not self._find_extern_C(source):
             source = 'extern "C" {\n' + source +'\n}'
@@ -148,6 +151,8 @@ class CUDAModule(object):
         self.float_bits = float_bits
     
     def __getattr__(self, name):
+        import torch
+        import pycuda.driver as cuda
         @wraps(cuda.Function.__call__)
         def wrapper(*args, block=(1, 1, 1), grid=(1, 1), **kwds):
             casted_args = []
@@ -170,6 +175,8 @@ class CUDAModule(object):
         return wrapper
 
     def _jit_compile(self):
+        import pycuda.driver as cuda
+        from pycuda.compiler import SourceModule
         try:
             self.mod = SourceModule(**self.compile_kwds)
         except cuda.CompileError as e:

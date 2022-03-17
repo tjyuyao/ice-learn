@@ -1,7 +1,6 @@
 from enum import Enum, auto
 from typing import Any, Callable, Type, overload
 
-from torch import autocast
 from ice.core.graph import GraphOutputCache, Node
 from ice.llutil.argparser import isa
 
@@ -45,6 +44,7 @@ class LossNode(Node):
             raise NotImplementedError(f"Unimplemented for LossMode `{loss_mode}`")
 
     def forward_impl(self, cache: "GraphOutputCache"):
+        from torch import autocast
         with autocast(self.launcher.assigned_device.type, **self.egraph.hypergraph.autocast_kwds):
             loss = self.loss_fn(self, cache)
         if self.training:

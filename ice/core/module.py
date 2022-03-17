@@ -1,31 +1,18 @@
-from fnmatch import fnmatch
+from __future__ import annotations
+
 import re
 from time import sleep
-from typing import Any, Callable, Dict, List, Set, Tuple, overload
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Set, Tuple, overload
 from ice.llutil.config import freeze
 
-import torch
-import torch.nn as nn
 from ice.core.graph import GraphOutputCache, Node
 from ice.core.optim import Optimizer
 from ice.llutil.argparser import as_dict, as_list
 from ice.llutil.collections import Counter
 from ice.llutil.logger import get_logger
-from torch.nn.parallel import DistributedDataParallel
-from torch import autocast
 
-
-class _ModuleProxy(nn.Module):
-
-    def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any]) -> None:
-        super().__init__()
-        self.node = node
-        self._module = module
-        self.forward_override = forward
-
-    def forward(self, cache):
-        with autocast(self.node.launcher.assigned_device.type, **self.node.egraph.hypergraph.autocast_kwds):
-            return self.forward_override(self.node, cache)
+if TYPE_CHECKING:
+    import torch.nn as nn
 
 
 class ModuleNode(Node):
@@ -77,6 +64,8 @@ class ModuleNode(Node):
                    bucket_cap_mb=25,
                    gradient_as_bucket_view=False,
                    ):
+        import torch
+        import torch.nn as nn
         super().__freeze__()
         module = freeze(module)
         if weight_init_fn is not None:
@@ -131,7 +120,21 @@ class ModuleNode(Node):
 
         self.optim_counter = Counter()
 
+        class _ModuleProxy(nn.Module):
+
+            def __init__(self, node:"ModuleNode", module: nn.Module, forward: Callable[["ModuleNode", GraphOutputCache], Any]) -> None:
+                super().__init__()
+                self.node = node
+                self._module = module
+                self.forward_override = forward
+
+            def forward(self, cache):
+                from torch import autocast
+                with autocast(self.node.launcher.assigned_device.type, **self.node.egraph.hypergraph.autocast_kwds):
+                    return self.forward_override(self.node, cache)
+
         if self.optimizable:
+            from torch.nn.parallel import DistributedDataParallel
             self._ddp_module = DistributedDataParallel(
                 _ModuleProxy(self, self.module, forward),
                 broadcast_buffers=broadcast_buffers,
@@ -196,6 +199,7 @@ class ModuleNode(Node):
         return _state_dict
 
     def load_state_dict(self, _state_dict:Dict, strict:bool):
+        import torch
         with torch.no_grad():
             # load module
             result = self.module.load_state_dict(_state_dict["module"], strict=strict)

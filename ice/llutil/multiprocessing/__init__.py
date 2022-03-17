@@ -39,13 +39,3 @@ from .spawn import (
 
 from torch.multiprocessing import set_sharing_strategy, get_sharing_strategy, get_all_sharing_strategies
 init_reductions()
-
-import inspect
-
-def in_main_process():
-    """Whether current process is worker process or main process.
-    """
-    for frameinfo in inspect.stack():
-        if "spawn_main" == frameinfo.function:
-            return False
-    return True

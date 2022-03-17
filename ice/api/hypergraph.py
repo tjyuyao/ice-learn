@@ -1,14 +1,28 @@
-from typing import List, Union, overload
+from __future__ import annotations
+from typing import List, Union, overload, TYPE_CHECKING
 
-import torch
 from ice.core.graph import Node
-from ice.core.hypergraph import HyperGraph, LoadCheckpointTask, SaveCheckpointTask
-from ice.llutil.launcher import ElasticLauncher
-from torch.cuda.amp.grad_scaler import GradScaler
 
+if TYPE_CHECKING:
+    from ice.llutil.launcher import ElasticLauncher
+    from torch.cuda.amp.grad_scaler import GradScaler
 
-default_graph = HyperGraph()
+def LoadCheckpointTask():
+    from ice.core import hypergraph
+    return hypergraph.LoadCheckpointTask()
 
+def SaveCheckpointTask():
+    from ice.core import hypergraph
+    return hypergraph.SaveCheckpointTask()
+
+_DEFAULT_GRAPH = None
+
+def get_default_graph():
+    global _DEFAULT_GRAPH
+    if _DEFAULT_GRAPH is None:
+        from ice.core.hypergraph import HyperGraph
+        _DEFAULT_GRAPH = HyperGraph()
+    return _DEFAULT_GRAPH
 
 @overload
 def run(tasks, devices="auto", run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0): ...
@@ -33,22 +47,21 @@ def run(
 ):    ...
 
 def run(*args, **kwds):
-    default_graph.run(*args, **kwds)
-
+    get_default_graph().run(*args, **kwds)
 
 def add(name, node:Node, tags="*"):
-    default_graph.add(name, node, tags)
+    get_default_graph().add(name, node, tags)
 
 
 @overload
 def print_forward_output(*nodenames, every=1, total=None, tags:List[str] = "*", train_only=True, localrank0_only=True): ...
 
 def print_forward_output(*args, **kwds):
-    default_graph.print_forward_output(*args, **kwds)
+    get_default_graph().print_forward_output(*args, **kwds)
 
 
 @overload
-def init_grad_scaler(grad_scaler: Union[bool, GradScaler] = True,
+def init_grad_scaler(grad_scaler: Union[bool, "GradScaler"] = True,
                      *,
                      init_scale=2.**16,
                      growth_factor=2.0,
@@ -58,20 +71,20 @@ def init_grad_scaler(grad_scaler: Union[bool, GradScaler] = True,
     ...
 
 def init_grad_scaler(*args, **kwds):
-    default_graph.init_grad_scaler(*args, **kwds)
+    get_default_graph().init_grad_scaler(*args, **kwds)
 
 
 @overload
 def init_autocast(autocast_enabled=True,
-                  autocast_dtype=torch.float16,
-                  grad_scaler: Union[bool, GradScaler] = None):
+                  autocast_dtype="torch.float16",
+                  grad_scaler: Union[bool, "GradScaler"] = None):
     ...
 
 def init_autocast(*args, **kwds):
-    default_graph.init_autocast(*args, **kwds)
+    get_default_graph().init_autocast(*args, **kwds)
 
 def set_gradient_accumulate(every):
-    default_graph.set_gradient_accumulate(every)
+    get_default_graph().set_gradient_accumulate(every)
     
 def backup_source_files(entrypoint:str):
-    default_graph.backup_source_files(entrypoint)
+    get_default_graph().backup_source_files(entrypoint)

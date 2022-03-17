@@ -4,55 +4,168 @@
 
 ## Modules
 
+- [`api`](./api.md#module-api)
+- [`api.hypergraph`](./api.hypergraph.md#module-apihypergraph)
 - [`api.scripts.wait_process`](./api.scripts.wait_process.md#module-apiscriptswait_process): wait for a process to finish.
+- [`api.transforms`](./api.transforms.md#module-apitransforms)
+- [`api.transforms.image`](./api.transforms.image.md#module-apitransformsimage)
+- [`api.transforms.image.io`](./api.transforms.image.io.md#module-apitransformsimageio)
+- [`api.transforms.image.photometric`](./api.transforms.image.photometric.md#module-apitransformsimagephotometric)
+- [`api.transforms.image.spatial`](./api.transforms.image.spatial.md#module-apitransformsimagespatial)
+- [`api.transforms.random`](./api.transforms.random.md#module-apitransformsrandom)
+- [`api.transforms.semseg`](./api.transforms.semseg.md#module-apitransformssemseg)
+- [`api.utils`](./api.utils.md#module-apiutils)
+- [`core.dataset`](./core.dataset.md#module-coredataset)
 - [`core.graph`](./core.graph.md#module-coregraph): contains [`Node`](./core.graph.md#class-node) and [`ExecutableGraph`](./core.graph.md#class-executablegraph).
 - [`core.hypergraph`](./core.hypergraph.md#module-corehypergraph)
+- [`core.loss`](./core.loss.md#module-coreloss)
+- [`core.metric`](./core.metric.md#module-coremetric)
+- [`core.module`](./core.module.md#module-coremodule)
+- [`core.optim`](./core.optim.md#module-coreoptim)
 - [`llutil`](./llutil.md#module-llutil)
 - [`llutil.argparser`](./llutil.argparser.md#module-llutilargparser): parse arguments for functions and command line.
+- [`llutil.board`](./llutil.board.md#module-llutilboard)
 - [`llutil.collections`](./llutil.collections.md#module-llutilcollections)
 - [`llutil.config`](./llutil.config.md#module-llutilconfig)
+- [`llutil.debug`](./llutil.debug.md#module-llutildebug)
 - [`llutil.dictprocess`](./llutil.dictprocess.md#module-llutildictprocess)
+- [`llutil.file_client`](./llutil.file_client.md#module-llutilfile_client)
+- [`llutil.ignore_me`](./llutil.ignore_me.md#module-llutilignore_me)
 - [`llutil.launcher`](./llutil.launcher.md#module-llutillauncher)
-- [`llutil.logging`](./llutil.logging.md#module-llutillogging): logging utilities.
+- [`llutil.launcher.elastic_multiprocessing`](./llutil.launcher.elastic_multiprocessing.md#module-llutillauncherelastic_multiprocessing)
+- [`llutil.launcher.events`](./llutil.launcher.events.md#module-llutillauncherevents)
+- [`llutil.launcher.launch_agent`](./llutil.launcher.launch_agent.md#module-llutillauncherlaunch_agent)
+- [`llutil.launcher.launcher`](./llutil.launcher.launcher.md#module-llutillauncherlauncher)
+- [`llutil.launcher.local_elastic_agent`](./llutil.launcher.local_elastic_agent.md#module-llutillauncherlocal_elastic_agent)
+- [`llutil.logger`](./llutil.logger.md#module-llutillogger): logging utilities.
 - [`llutil.multiprocessing`](./llutil.multiprocessing.md#module-llutilmultiprocessing): a drop-in replacement for `torch.multiprocessing`.
+- [`llutil.print`](./llutil.print.md#module-llutilprint)
 - [`llutil.pycuda`](./llutil.pycuda.md#module-llutilpycuda): Integrates PyCUDA to PyTorch and ice.
+- [`llutil.shadow_tb`](./llutil.shadow_tb.md#module-llutilshadow_tb)
 - [`llutil.test`](./llutil.test.md#module-llutiltest): helps developers of ice to test.
 
 ## Classes
 
+- [`dataset.DatasetNode`](./core.dataset.md#class-datasetnode): Automating DataLoader and DataSampler creation and maintainance.
+- [`dataset.ResumableDistributedSampler`](./core.dataset.md#class-resumabledistributedsampler)
 - [`graph.ExecutableGraph`](./core.graph.md#class-executablegraph)
 - [`graph.GraphOutputCache`](./core.graph.md#class-graphoutputcache)
 - [`graph.InvalidURIError`](./core.graph.md#class-invalidurierror): An Exception raised when valid node URI is expected.
 - [`graph.Node`](./core.graph.md#class-node): This class defines the executable node.
+- [`graph.StopAllTasks`](./core.graph.md#class-stopalltasks): An Exception raised to exit current running.
 - [`graph.StopTask`](./core.graph.md#class-stoptask): An Exception raised to exit current task.
+- [`hypergraph.Counter`](./core.hypergraph.md#class-counter)
+- [`hypergraph.GlobalCounters`](./core.hypergraph.md#class-globalcounters): GlobalCounters(steps: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b32e0>, epochs: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b3c40>)
 - [`hypergraph.HyperGraph`](./core.hypergraph.md#class-hypergraph): HyperGraph is the container for all nodes.
 - [`hypergraph.Repeat`](./core.hypergraph.md#class-repeat)
+- [`hypergraph.ResumeTaskFailed`](./core.hypergraph.md#class-resumetaskfailed): raised when task structure does not match during resuming.
 - [`hypergraph.Task`](./core.hypergraph.md#class-task)
+- [`loss.LossMode`](./core.loss.md#class-lossmode): An enumeration.
+- [`loss.LossNode`](./core.loss.md#class-lossnode)
+- [`metric.AverageMeter`](./core.metric.md#class-averagemeter)
+- [`metric.DictMetric`](./core.metric.md#class-dictmetric)
+- [`metric.Meter`](./core.metric.md#class-meter): value reducer that works recursively.
+- [`metric.MetricNode`](./core.metric.md#class-metricnode)
+- [`metric.MovingAverageMeter`](./core.metric.md#class-movingaveragemeter)
+- [`metric.SummationMeter`](./core.metric.md#class-summationmeter)
+- [`metric.ValueMeter`](./core.metric.md#class-valuemeter)
+- [`module.ModuleNode`](./core.module.md#class-modulenode): a node that extends `torch.nn.Module`
+- [`optim.Optimizer`](./core.optim.md#class-optimizer): Optimizer configuration API for ice-learn.
 - [`argparser.ArgumentMissingError`](./llutil.argparser.md#class-argumentmissingerror): Raised when a required argument is missing from command line.
 - [`argparser.ArgumentTypeError`](./llutil.argparser.md#class-argumenttypeerror): Raised when converting an argument failed.
 - [`argparser.FlexibleArgParser`](./llutil.argparser.md#class-flexibleargparser): A flexible and lightweight argument parser that saves loads of code.
+- [`board.BoardWriter`](./llutil.board.md#class-boardwriter)
 - [`collections.ConfigDict`](./llutil.collections.md#class-configdict): stores multi-level configurations easily.
 - [`collections.Counter`](./llutil.collections.md#class-counter): count values by group.
 - [`collections.Dict`](./llutil.collections.md#class-dict): access dict values as attributes.
 - [`config.Configurable`](./llutil.config.md#class-configurable)
-- [`launcher.ElasticLauncher`](./llutil.launcher.md#class-elasticlauncher): A helper [`Configurable`](./llutil.config.md#class-configurable) class for `torchrun` and `torch.distributed.launch`.
+- [`debug.SubProcessPdb`](./llutil.debug.md#class-subprocesspdb): Pdb that works from a multiprocessing child
+- [`file_client.BaseStorageBackend`](./llutil.file_client.md#class-basestoragebackend): Abstract class of storage backends.
+- [`file_client.CephBackend`](./llutil.file_client.md#class-cephbackend): Ceph storage backend (for internal use).
+- [`file_client.FileClient`](./llutil.file_client.md#class-fileclient): A general file client to access files in different backends.
+- [`file_client.HTTPBackend`](./llutil.file_client.md#class-httpbackend): HTTP and HTTPS storage bachend.
+- [`file_client.HardDiskBackend`](./llutil.file_client.md#class-harddiskbackend): Raw hard disks storage backend.
+- [`file_client.LmdbBackend`](./llutil.file_client.md#class-lmdbbackend): Lmdb storage backend.
+- [`file_client.MemcachedBackend`](./llutil.file_client.md#class-memcachedbackend): Memcached storage backend.
+- [`file_client.PetrelBackend`](./llutil.file_client.md#class-petrelbackend): Petrel storage backend (for internal use).
+- [`ignore_me.IgnoreMe`](./llutil.ignore_me.md#class-ignoreme)
+- [`elastic_multiprocessing.MultiprocessContext`](./llutil.launcher.elastic_multiprocessing.md#class-multiprocesscontext): [`PContext`](./llutil.launcher.elastic_multiprocessing.md#class-pcontext) holding worker processes invoked as a function.
+- [`elastic_multiprocessing.PContext`](./llutil.launcher.elastic_multiprocessing.md#class-pcontext): The base class that standardizes operations over a set of processes
+- [`elastic_multiprocessing.TailLog`](./llutil.launcher.elastic_multiprocessing.md#class-taillog): Tails the given log files. The log files do not have to exist when the
+- [`events.Events`](./llutil.launcher.events.md#class-events): Communicate among main process (agent) and subprocesses (workers).
+- [`launch_agent.LaunchConfig`](./llutil.launcher.launch_agent.md#class-launchconfig): Creates a rendezvous config.
+- [`launcher.ElasticLauncher`](./llutil.launcher.launcher.md#class-elasticlauncher): A helper [`Configurable`](./llutil.config.md#class-configurable) class for `torchrun` and `torch.distributed.launch`.
+- [`local_elastic_agent.LocalElasticAgent`](./llutil.launcher.local_elastic_agent.md#class-localelasticagent): An implementation of :py:class:`torchelastic.agent.server.ElasticAgent`
 - [`pycuda.CUDAModule`](./llutil.pycuda.md#class-cudamodule): Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
 
 ## Functions
 
+- [`hypergraph.add`](./api.hypergraph.md#function-add)
+- [`hypergraph.backup_source_files`](./api.hypergraph.md#function-backup_source_files)
+- [`hypergraph.init_autocast`](./api.hypergraph.md#function-init_autocast)
+- [`hypergraph.init_grad_scaler`](./api.hypergraph.md#function-init_grad_scaler)
+- [`hypergraph.print_forward_output`](./api.hypergraph.md#function-print_forward_output)
+- [`hypergraph.run`](./api.hypergraph.md#function-run)
+- [`hypergraph.set_gradient_accumulate`](./api.hypergraph.md#function-set_gradient_accumulate)
+- [`io.Load`](./api.transforms.image.io.md#function-load): **Args**:
+- [`io.imfrombytes`](./api.transforms.image.io.md#function-imfrombytes): Read an image from bytes.
+- [`io.imread`](./api.transforms.image.io.md#function-imread): Read an image.
+- [`io.imwrite`](./api.transforms.image.io.md#function-imwrite): Write image to file.
+- [`io.use_backend`](./api.transforms.image.io.md#function-use_backend): Select a backend for image decoding.
+- [`photometric.Normalize`](./api.transforms.image.photometric.md#function-normalize): Normalize the image and convert BGR2RGB.
+- [`photometric.PhotoMetricDistortion`](./api.transforms.image.photometric.md#function-photometricdistortion): Apply photometric distortion to image sequentially, every dictprocessation
+- [`photometric.ToTensor`](./api.transforms.image.photometric.md#function-totensor): Args:
+- [`spatial.Crop`](./api.transforms.image.spatial.md#function-crop): crop a region of interest from the `src` array.
+- [`spatial.Flip`](./api.transforms.image.spatial.md#function-flip): flip the `src` image.
+- [`spatial.Pad`](./api.transforms.image.spatial.md#function-pad): Padding a image to target size.
+- [`spatial.Resize`](./api.transforms.image.spatial.md#function-resize): Args:
+- [`spatial.SizeDivisorMultiple`](./api.transforms.image.spatial.md#function-sizedivisormultiple): Returns a smallest but larger shape to ensure each edge to be multiple to some number.
+- [`random.RandomChoice`](./api.transforms.random.md#function-randomchoice)
+- [`random.RandomDo`](./api.transforms.random.md#function-randomdo)
+- [`random.RandomFloats`](./api.transforms.random.md#function-randomfloats)
+- [`random.RandomImage`](./api.transforms.random.md#function-randomimage): generate a random image for testing purpose
+- [`random.RandomIntegers`](./api.transforms.random.md#function-randomintegers)
+- [`random.RandomProbabilities`](./api.transforms.random.md#function-randomprobabilities)
+- [`random.RandomROI`](./api.transforms.random.md#function-randomroi): generate random region of interest.
+- [`semseg.LabelToTensor`](./api.transforms.semseg.md#function-labeltotensor): Convert to tensor (as int64).
+- [`semseg.LoadAnnotation`](./api.transforms.semseg.md#function-loadannotation): Load annotations for semantic segmentation.
+- [`semseg.RandomCrop`](./api.transforms.semseg.md#function-randomcrop): Crop a pair of images and segmentation labels such that the class is relatively balanced for training.
+- [`utils.parse_devices`](./api.utils.md#function-parse_devices)
+- [`dataset.failsafe_collate`](./core.dataset.md#function-failsafe_collate): Puts each data field into a tensor with outer dimension batch size
+- [`hypergraph.GlobalCounters.__init__`](./core.hypergraph.md#function-__init__)
+- [`hypergraph.LoadCheckpointTask`](./core.hypergraph.md#function-loadcheckpointtask)
+- [`hypergraph.SaveCheckpointTask`](./core.hypergraph.md#function-savecheckpointtask)
 - [`argparser.as_dict`](./llutil.argparser.md#function-as_dict): helps to regularize input into a dict.
 - [`argparser.as_list`](./llutil.argparser.md#function-as_list): helps to regularize input into list of element.
+- [`argparser.get_hostname`](./llutil.argparser.md#function-get_hostname)
+- [`argparser.is_list_of`](./llutil.argparser.md#function-is_list_of): Check whether it is a list of some type.
+- [`argparser.is_seq_of`](./llutil.argparser.md#function-is_seq_of): Check whether it is a sequence of some type.
+- [`argparser.is_tuple_of`](./llutil.argparser.md#function-is_tuple_of): Check whether it is a tuple of some type.
 - [`argparser.isa`](./llutil.argparser.md#function-isa): an alias for python built-in `isinstance`.
+- [`argparser.parse_scalar`](./llutil.argparser.md#function-parse_scalar)
 - [`config.clone`](./llutil.config.md#function-clone): clone configurables, containers, and ordinary objects recursively.
 - [`config.configurable`](./llutil.config.md#function-configurable): This decorator delays the initialization of `cls` until [`freeze()`](./llutil.config.md#function-freeze).
 - [`config.freeze`](./llutil.config.md#function-freeze): freeze configurables recursively.
+- [`config.frozen`](./llutil.config.md#function-frozen)
 - [`config.has_builder`](./llutil.config.md#function-has_builder)
 - [`config.is_configurable`](./llutil.config.md#function-is_configurable): check if a class or an object is configurable.
 - [`config.make_configurable`](./llutil.config.md#function-make_configurable): This function converts multiple existing classes to configurables.
 - [`config.objattr`](./llutil.config.md#function-objattr)
+- [`debug.set_trace`](./llutil.debug.md#function-set_trace)
 - [`dictprocess.Collect`](./llutil.dictprocess.md#function-collect): a predefined DictProcessor that keep only selected entries.
 - [`dictprocess.Compose`](./llutil.dictprocess.md#function-compose): a predefined DictProcessor that composes a list of other DictProcessors together.
 - [`dictprocess.dictprocess`](./llutil.dictprocess.md#function-dictprocess): a decorator that convert function into a DictProcessor (`Callable[[Dict], Dict]`).
-- [`logging.get_logger`](./llutil.logging.md#function-get_logger): set up a simple logger that writes into stderr. 
-- [`multiprocessing.called_from_main`](./llutil.multiprocessing.md#function-called_from_main): Another version of ``if __name__ == "__main__"`` that works everywhere.
+- [`file_client.has_method`](./llutil.file_client.md#function-has_method): Check whether the object has a method.
+- [`file_client.mmcv_mkdir_or_exist`](./llutil.file_client.md#function-mmcv_mkdir_or_exist)
+- [`elastic_multiprocessing.start_processes`](./llutil.launcher.elastic_multiprocessing.md#function-start_processes): Starts `n` copies of `entrypoint` processes with the provided options.
+- [`elastic_multiprocessing.tail_logfile`](./llutil.launcher.elastic_multiprocessing.md#function-tail_logfile)
+- [`launch_agent.LaunchConfig.__init__`](./llutil.launcher.launch_agent.md#function-__init__)
+- [`launch_agent.launch_agent`](./llutil.launcher.launch_agent.md#function-launch_agent)
+- [`launcher.get_current_launcher`](./llutil.launcher.launcher.md#function-get_current_launcher)
+- [`logger.get_logger`](./llutil.logger.md#function-get_logger): set up a simple logger that writes into stderr. 
+- [`multiprocessing.auto_freeze_enabled`](./llutil.multiprocessing.md#function-auto_freeze_enabled)
+- [`multiprocessing.enable_auto_freeze`](./llutil.multiprocessing.md#function-enable_auto_freeze)
+- [`multiprocessing.in_main_process`](./llutil.multiprocessing.md#function-in_main_process): Whether current process is worker process or main process.
+- [`print.format_size`](./llutil.print.md#function-format_size): Format a byte count as a human readable file size.
+- [`shadow_tb.shadow`](./llutil.shadow_tb.md#function-shadow)
 - [`test.requires_n_gpus`](./llutil.test.md#function-requires_n_gpus)

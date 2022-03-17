@@ -1,15 +1,8 @@
 
-# Common tips for debugging ICE programs
+# How to debug `ice` programs
 
-## Debug by print
+## Debug by `print_forward_output`
 
-## Debug by breakpoint
+## Debug by `breakpoint`
 
-set device to cuda or cpu at first
-
-debugging ddp:
-
-```python
-if torch.cuda.current_device() == 0:
-    breakpoint()
-```
+## Debug by Integrated Development Environment
