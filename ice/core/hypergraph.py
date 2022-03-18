@@ -520,6 +520,14 @@ class HyperGraph:
             os.makedirs(base_out_dir, exist_ok=True)
             today = datetime.today()
             run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_{today.month:02d}{today.day:02d}{today.hour:02d}{today.minute:02d}_", dir=base_out_dir)
+            
+            # make symlink to current run_id_dir
+            run_id_dir_link = os.path.join(base_out_dir, run_id)
+            if os.path.islink(run_id_dir_link):
+                os.remove(run_id_dir_link)
+            if not os.path.exists(run_id_dir_link):
+                os.symlink(run_id_dir, run_id_dir_link, target_is_directory=True)
+            
             ckpt_dir = os.path.join(run_id_dir, "ckpts")
             os.makedirs(ckpt_dir, exist_ok=True)
             log_dir = os.path.join(run_id_dir, "logs")
