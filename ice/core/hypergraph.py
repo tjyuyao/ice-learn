@@ -598,11 +598,13 @@ class HyperGraph:
 
         if self.launcher.rank == 0:
             tqdm.write(f"Saving checkpoint to \"{save_to}\".")
+            import torch
             torch.save(_checkpoint, save_to)
 
     def load_checkpoint(self, resume_from, strict=False, tags="*"):
         self.run_info.resume_from = resume_from
         if resume_from is None: return
+        import torch
         _checkpoint = torch.load(resume_from, map_location=self.launcher.assigned_device)
 
         try: # resuming task progress
