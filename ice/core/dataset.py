@@ -205,6 +205,10 @@ class DatasetNode(Node):
         
         self.actual_num_iters_per_epoch = math.ceil(len(self.sampler) / batch_size)
     
+    def prepare(self):
+        if self.iterator is None:
+            self.iterator = iter(self.loader)
+
     def forward_impl(self, _):
         
         if self.iterator is None:

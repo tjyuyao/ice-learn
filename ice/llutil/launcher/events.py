@@ -12,7 +12,7 @@ class Events:
         self.finished_save_checkpoint = mp.get_context(start_method).Event()
         self.debugger_start = mp.get_context(start_method).Event()
         self.debugger_end = mp.get_context(start_method).Event()
-        self.progress_bar_iter = mp.get_context(start_method).Value('i', 0)
+        self.progress_bar_iter = mp.get_context(start_method).Value('i', -1)
         self.progress_bar_total = mp.get_context(start_method).Value('i', -1)
 
 
