@@ -2,6 +2,7 @@ from enum import Enum, auto
 from typing import Any, Callable, Type, overload
 
 from ice.core.graph import GraphOutputCache, Node
+from ice.core.dataset import DatasetNode
 from ice.llutil.argparser import isa
 
 
@@ -33,6 +34,7 @@ class LossNode(Node):
         super().__freeze__()
         self.loss_fn = forward
         self.loss_mode = loss_mode
+        self.ddp_var_batch_reduce_weight = None
         if loss_mode == LossMode.MANUAL:
             if weight is None:
                 self.weight = 1.0
@@ -47,6 +49,15 @@ class LossNode(Node):
         from torch import autocast
         with autocast(self.launcher.assigned_device.type, **self.egraph.hypergraph.autocast_kwds):
             loss = self.loss_fn(self, cache)
+            if self.ddp_var_batch_reduce_weight is None:
+                datasets = cache.find_ancestors(self.name, lambda n: hasattr(n, "batch_size_in_total"))
+                if datasets:
+                    Bi = datasets[0].batch_size_on_this_device
+                    Bt  = datasets[0].batch_size_in_total
+                    self.ddp_var_batch_reduce_weight = self.launcher.world_size * Bi / Bt
+                else:
+                    self.ddp_var_batch_reduce_weight = 1.
+            loss = loss * self.ddp_var_batch_reduce_weight
         if self.training:
             self.egraph.losses_counter += 1
             self.board.add_scalar(self.name, loss.item(), global_step=self.global_train_steps)

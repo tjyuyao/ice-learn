@@ -38,6 +38,7 @@ def DatasetNode(
     num_workers: int = 0,
     pin_memory: bool = False,
     drop_last: bool = False,
+    batch_size_in_total: bool = False,
     num_iters_per_epoch: int = None,
     prefetch_factor: int = 2,
     worker_init_fn: Optional[Callable] = None,
