@@ -456,7 +456,7 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         node_rank=0, master_addr="127.0.0.1", master_port=None,
-        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="3", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 
@@ -464,7 +464,7 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         rdzv_endpoint="", rdzv_backend="static", rdzv_configs="", standalone=False,
-        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="3", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 

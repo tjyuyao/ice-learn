@@ -165,7 +165,7 @@ class ElasticLauncher(Configurable):
         monitor_interval=5,
         start_method="spawn",
         redirects="2",
-        tee="1",
+        tee="3",
         log_dir=None,
         role="default",
 
@@ -229,7 +229,7 @@ class ElasticLauncher(Configurable):
         monitor_interval=None,
         start_method="spawn",
         redirects="2",
-        tee="1",
+        tee="3",
         log_dir=None,
         role="default",
 
