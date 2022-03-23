@@ -8,6 +8,9 @@ from tqdm import tqdm
 from varname import argname
 
 
+default_printoptions_set = False
+
+
 def set_printoptions(
     precision=None,
     threshold=None,
@@ -94,6 +97,10 @@ def _print(
     sci_mode=None,
 ):
     import torch
+
+    global default_printoptions_set
+    if not default_printoptions_set:
+        set_printoptions(threshold=4, linewidth=120, precision=2, sci_mode=False)
 
     if threshold or threshold or edgeitems or linewidth or sci_mode:
         set_printoptions(
