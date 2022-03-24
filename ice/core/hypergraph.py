@@ -457,7 +457,7 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         node_rank=0, master_addr="127.0.0.1", master_port=None,
-        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="3", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 
@@ -465,7 +465,7 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         rdzv_endpoint="", rdzv_backend="static", rdzv_configs="", standalone=False,
-        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="3", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 
@@ -521,6 +521,14 @@ class HyperGraph:
             os.makedirs(base_out_dir, exist_ok=True)
             today = datetime.today()
             run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_{today.month:02d}{today.day:02d}{today.hour:02d}{today.minute:02d}_", dir=base_out_dir)
+            
+            # # make symlink to current run_id_dir
+            # run_id_dir_link = os.path.join(base_out_dir, run_id)
+            # if os.path.islink(run_id_dir_link):
+            #     os.remove(run_id_dir_link)
+            # if not os.path.exists(run_id_dir_link):
+            #     os.symlink(os.path.basename(run_id_dir), run_id_dir_link, target_is_directory=True)
+            
             ckpt_dir = os.path.join(run_id_dir, "ckpts")
             os.makedirs(ckpt_dir, exist_ok=True)
             log_dir = os.path.join(run_id_dir, "logs")
@@ -591,11 +599,13 @@ class HyperGraph:
 
         if self.launcher.rank == 0:
             tqdm.write(f"Saving checkpoint to \"{save_to}\".")
+            import torch
             torch.save(_checkpoint, save_to)
 
     def load_checkpoint(self, resume_from, strict=False, tags="*"):
         self.run_info.resume_from = resume_from
         if resume_from is None: return
+        import torch
         _checkpoint = torch.load(resume_from, map_location=self.launcher.assigned_device)
 
         try: # resuming task progress

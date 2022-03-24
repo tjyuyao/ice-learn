@@ -1,6 +1,7 @@
 #export
 
 import math
+from ice.llutil.launcher.launcher import get_current_launcher
 import numpy as np
 import torch
 import re
@@ -155,6 +156,7 @@ class DatasetNode(Node):
                  num_workers: int = 0,
                  pin_memory: bool = False,
                  drop_last: bool = False,
+                 batch_size_in_total: bool = False,
                  num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
                  worker_init_fn: Optional[Callable] = None,
@@ -174,6 +176,7 @@ class DatasetNode(Node):
                  num_workers: int = 0,
                  pin_memory: bool = False,
                  drop_last: bool = False,
+                 batch_size_in_total: bool = False,
                  num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
                  worker_init_fn: Optional[Callable] = None,
@@ -186,11 +189,21 @@ class DatasetNode(Node):
         freeze(dataset)
         pipeline = Compose(as_list(pipeline)) if isinstance(pipeline, list) else pipeline
         dataset = _DatasetProxy(self, dataset, pipeline)
+        launcher = get_current_launcher()
+        
+        if batch_size_in_total:
+            batch_size_in_total = batch_size
+            batch_size_on_this_device = batch_size // launcher.world_size + (1 if launcher.rank <  batch_size % launcher.world_size else 0)
+        else:
+            batch_size_in_total = batch_size * launcher.world_size
+            batch_size_on_this_device = batch_size
+            
+        # print(launcher.rank, batch_size_in_total, batch_size_on_this_device)
 
         self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch, seed=torch.random.initial_seed())
         self.loader = DataLoader(
                 dataset,
-                batch_size=batch_size,
+                batch_size=batch_size_on_this_device,
                 sampler=self.sampler,
                 num_workers=num_workers,
                 pin_memory=pin_memory,
@@ -203,8 +216,14 @@ class DatasetNode(Node):
         self.internal_steps = 0
         self.iterator = None
         
-        self.actual_num_iters_per_epoch = math.ceil(len(self.sampler) / batch_size)
+        self.actual_num_iters_per_epoch = math.ceil(len(self.sampler) / batch_size_on_this_device)
+        self.batch_size_in_total = batch_size_in_total
+        self.batch_size_on_this_device = batch_size_on_this_device
     
+    def prepare(self):
+        if self.iterator is None:
+            self.iterator = iter(self.loader)
+
     def forward_impl(self, _):
         
         if self.iterator is None:

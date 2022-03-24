@@ -254,7 +254,7 @@ class LocalElasticAgent(SimpleElasticAgent):
         self._initialize_workers(self._worker_group)
 
         try:
-            prog_iter = 0
+            prog_iter = -1
             prog_total = -1
             bar:tqdm = None
             while True:

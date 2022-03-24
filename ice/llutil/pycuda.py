@@ -147,7 +147,8 @@ class CUDAModule(object):
         self.numpy_int_type = {16: numpy.int16, 32: numpy.int32, 64: numpy.int64}[int_bits]
         self.numpy_float_type = {16: numpy.float32, 32: numpy.float32, 64: numpy.float64}[float_bits]
         self.torch_int_types = [torch.int16, torch.int32, torch.int64]
-        self.torch_float_type = {16: torch.float16, 32: torch.float32, 64: torch.float64}[float_bits]
+        self.torch_all_float_types = {16: torch.float16, 32: torch.float32, 64: torch.float64}
+        self.torch_float_type = self.torch_all_float_types[float_bits]
         self.float_bits = float_bits
     
     def __getattr__(self, name):
@@ -159,8 +160,10 @@ class CUDAModule(object):
             with _CUDAContext():
                 for arg in args:
                     if isinstance(arg, torch.Tensor):
-                        if arg.dtype != self.torch_float_type:
+                        if arg.dtype in self.torch_all_float_types and \
+                            arg.dtype != self.torch_float_type:
                             arg = arg.to(dtype=self.torch_float_type)
+                            # TODO: warning? autocast mode sensitive?
                             # raise TypeError(f"This CUDAModule expects {self.torch_float_type} but you passed in a {arg.dtype} Tensor.")
                         arg = _Tensor(arg)
                     elif isinstance(arg, int):

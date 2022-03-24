@@ -245,6 +245,14 @@ class FlexibleArgParser:
         if hparam:
             self._hparams.add(key)
 
+    def set(self, key, value, hparam=False):
+        self[key] = value
+        if hparam:
+            self._hparams.add(key)
+    
+    def get(self, key):
+        return self[key]
+
     def __repr__(self):
         iargs = {k: _format_arg(v) for k, v in self._args.items() if isa(k, int)}
         iargs = [iargs[key] for key in sorted(iargs.keys())]
