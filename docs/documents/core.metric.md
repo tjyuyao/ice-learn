@@ -9,11 +9,14 @@
 
 
 
+**Global Variables**
+---------------
+- **TYPE_CHECKING**
 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L13"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L15"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Meter`
 value reducer that works recursively.
@@ -26,7 +29,7 @@ value reducer that works recursively.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L22"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L24"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `evaluate`
 
@@ -42,7 +45,7 @@ evaluate(*args, **kwds)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L16"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L18"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `reset`
 
@@ -58,7 +61,7 @@ reset()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L25"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L27"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `sync`
 
@@ -74,7 +77,7 @@ sync()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L19"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L21"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
@@ -91,7 +94,7 @@ update(value, *args)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L31"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L33"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `DictMetric`
 
@@ -100,7 +103,7 @@ update(value, *args)
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L39"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L41"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -119,7 +122,7 @@ __init__(meters=None, meter_prototype=None)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L84"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `evaluate`
 
@@ -135,7 +138,7 @@ evaluate(*args, **kwds)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L58"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L60"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `reset`
 
@@ -151,7 +154,7 @@ reset()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L80"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L82"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `sync`
 
@@ -167,7 +170,7 @@ sync()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L62"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L64"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
@@ -184,7 +187,7 @@ update(explicit={}, *shared_args, **kwds)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L92"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L94"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `MetricNode`
 
@@ -193,7 +196,7 @@ update(explicit={}, *shared_args, **kwds)
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -368,7 +371,7 @@ whether current task is training.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L128"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L130"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `better`
 
@@ -384,7 +387,7 @@ better(new_value) → bool
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L142"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L144"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `epoch_end`
 
@@ -400,7 +403,7 @@ epoch_end()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L136"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L138"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `epoch_start`
 
@@ -416,7 +419,7 @@ epoch_start()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L149"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L151"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `tensorboard_log_metric`
 
@@ -432,7 +435,7 @@ tensorboard_log_metric(postfix='')
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L139"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L141"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
@@ -449,7 +452,7 @@ update()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L158"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L160"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ValueMeter`
 
@@ -463,7 +466,7 @@ update()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `evaluate`
 
@@ -479,7 +482,7 @@ evaluate()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L160"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L162"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `reset`
 
@@ -495,7 +498,7 @@ reset()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L171"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `sync`
 
@@ -511,12 +514,12 @@ sync()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
 ```python
-update(value: Tensor)
+update(value: 'Tensor')
 ```
 
 
@@ -528,7 +531,7 @@ update(value: Tensor)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L175"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `SummationMeter`
 
@@ -542,7 +545,7 @@ update(value: Tensor)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L182"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L184"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `evaluate`
 
@@ -558,7 +561,7 @@ evaluate()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L175"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L177"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `reset`
 
@@ -574,7 +577,7 @@ reset()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L185"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L187"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `sync`
 
@@ -590,12 +593,12 @@ sync()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L181"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
 ```python
-update(batch_sum: Tensor)
+update(batch_sum: 'Tensor')
 ```
 
 
@@ -607,7 +610,7 @@ update(batch_sum: Tensor)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L192"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L196"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `AverageMeter`
 
@@ -621,7 +624,7 @@ update(batch_sum: Tensor)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L205"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L209"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `evaluate`
 
@@ -637,7 +640,7 @@ evaluate()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L194"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L198"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `reset`
 
@@ -653,7 +656,7 @@ reset()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L208"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L212"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `sync`
 
@@ -669,12 +672,12 @@ sync()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L200"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L204"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 
 ```python
-update(batch_avg: Tensor, count: int = 1)
+update(batch_avg: 'Tensor', count: 'int' = 1)
 ```
 
 
@@ -686,7 +689,7 @@ update(batch_avg: Tensor, count: int = 1)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L216"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L222"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `MovingAverageMeter`
 
@@ -695,12 +698,12 @@ update(batch_avg: Tensor, count: int = 1)
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L218"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L224"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
 ```python
-__init__(window_size: int) → None
+__init__(window_size: 'int') → None
 ```
 
 
@@ -714,7 +717,7 @@ __init__(window_size: int) → None
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L229"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L235"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `evaluate`
 
@@ -730,7 +733,7 @@ evaluate()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L221"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L227"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `reset`
 
@@ -746,7 +749,7 @@ reset()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L25"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L27"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `sync`
 
@@ -762,7 +765,7 @@ sync()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L224"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/metric.py#L230"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 

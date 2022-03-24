@@ -9,11 +9,14 @@
 
 
 
+**Global Variables**
+---------------
+- **TYPE_CHECKING**
 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L12"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L14"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Optimizer`
 Optimizer configuration API for ice-learn.
@@ -41,7 +44,7 @@ This is an extension of `torch.optim.Optimizer` that:
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L34"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L36"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -60,7 +63,7 @@ __init__(*args, **kwds) → None
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L77"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L81"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `load_state_dict`
 
@@ -76,7 +79,7 @@ load_state_dict(_state_dict)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L71"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L75"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `state_dict`
 
@@ -92,7 +95,7 @@ state_dict(rank)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/optim.py#L56"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 

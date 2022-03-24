@@ -12,7 +12,7 @@
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L47"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L46"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `configurable`
 
@@ -69,7 +69,7 @@ assert i.a == 2 and i.b == 1
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L120"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L119"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `is_configurable`
 
@@ -105,7 +105,7 @@ assert ice.is_configurable(nn.Conv2d)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L137"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L136"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `has_builder`
 
@@ -122,7 +122,7 @@ has_builder(obj) → bool
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L145"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L144"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `frozen`
 
@@ -139,7 +139,7 @@ frozen(obj)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L156"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L155"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `make_configurable`
 
@@ -176,7 +176,7 @@ assert ice.is_configurable(nn.Conv2d)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L175"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L174"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `clone`
 
@@ -280,7 +280,7 @@ See examples for [`configurable`](./llutil.config.md#function-configurable) and 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L257"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L258"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `objattr`
 
@@ -297,7 +297,7 @@ objattr(obj, attrname)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L261"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L262"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Configurable`
 
@@ -306,7 +306,7 @@ objattr(obj, attrname)
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L265"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L266"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -325,7 +325,7 @@ __init__(*args, **kwds) → None
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L451"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L452"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `auto_freeze`
 
@@ -341,7 +341,7 @@ auto_freeze()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L433"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L434"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `clone`
 
@@ -357,7 +357,7 @@ clone(deepcopy=True)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L424"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L425"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `extra_repr`
 
@@ -373,7 +373,7 @@ extra_repr()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L442"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L443"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `freeze`
 
@@ -389,7 +389,7 @@ freeze()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L306"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/config.py#L307"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update_params`
 

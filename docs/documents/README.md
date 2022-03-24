@@ -43,6 +43,7 @@
 - [`llutil.pycuda`](./llutil.pycuda.md#module-llutilpycuda): Integrates PyCUDA to PyTorch and ice.
 - [`llutil.shadow_tb`](./llutil.shadow_tb.md#module-llutilshadow_tb)
 - [`llutil.test`](./llutil.test.md#module-llutiltest): helps developers of ice to test.
+- [`llutil.utils`](./llutil.utils.md#module-llutilutils)
 
 ## Classes
 
@@ -55,7 +56,7 @@
 - [`graph.StopAllTasks`](./core.graph.md#class-stopalltasks): An Exception raised to exit current running.
 - [`graph.StopTask`](./core.graph.md#class-stoptask): An Exception raised to exit current task.
 - [`hypergraph.Counter`](./core.hypergraph.md#class-counter)
-- [`hypergraph.GlobalCounters`](./core.hypergraph.md#class-globalcounters): GlobalCounters(steps: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b32e0>, epochs: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b3c40>)
+- [`hypergraph.GlobalCounters`](./core.hypergraph.md#class-globalcounters): GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246610>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246a00>)
 - [`hypergraph.HyperGraph`](./core.hypergraph.md#class-hypergraph): HyperGraph is the container for all nodes.
 - [`hypergraph.Repeat`](./core.hypergraph.md#class-repeat)
 - [`hypergraph.ResumeTaskFailed`](./core.hypergraph.md#class-resumetaskfailed): raised when task structure does not match during resuming.
@@ -100,8 +101,12 @@
 
 ## Functions
 
+- [`api.DatasetNode`](./api.md#function-datasetnode)
+- [`hypergraph.LoadCheckpointTask`](./api.hypergraph.md#function-loadcheckpointtask)
+- [`hypergraph.SaveCheckpointTask`](./api.hypergraph.md#function-savecheckpointtask)
 - [`hypergraph.add`](./api.hypergraph.md#function-add)
 - [`hypergraph.backup_source_files`](./api.hypergraph.md#function-backup_source_files)
+- [`hypergraph.get_default_graph`](./api.hypergraph.md#function-get_default_graph)
 - [`hypergraph.init_autocast`](./api.hypergraph.md#function-init_autocast)
 - [`hypergraph.init_grad_scaler`](./api.hypergraph.md#function-init_grad_scaler)
 - [`hypergraph.print_forward_output`](./api.hypergraph.md#function-print_forward_output)
@@ -163,9 +168,11 @@
 - [`launch_agent.launch_agent`](./llutil.launcher.launch_agent.md#function-launch_agent)
 - [`launcher.get_current_launcher`](./llutil.launcher.launcher.md#function-get_current_launcher)
 - [`logger.get_logger`](./llutil.logger.md#function-get_logger): set up a simple logger that writes into stderr. 
-- [`multiprocessing.auto_freeze_enabled`](./llutil.multiprocessing.md#function-auto_freeze_enabled)
-- [`multiprocessing.enable_auto_freeze`](./llutil.multiprocessing.md#function-enable_auto_freeze)
-- [`multiprocessing.in_main_process`](./llutil.multiprocessing.md#function-in_main_process): Whether current process is worker process or main process.
 - [`print.format_size`](./llutil.print.md#function-format_size): Format a byte count as a human readable file size.
+- [`print.set_printoptions`](./llutil.print.md#function-set_printoptions)
 - [`shadow_tb.shadow`](./llutil.shadow_tb.md#function-shadow)
 - [`test.requires_n_gpus`](./llutil.test.md#function-requires_n_gpus)
+- [`utils.auto_freeze_enabled`](./llutil.utils.md#function-auto_freeze_enabled)
+- [`utils.enable_auto_freeze`](./llutil.utils.md#function-enable_auto_freeze)
+- [`utils.in_main_process`](./llutil.utils.md#function-in_main_process): Whether current process is worker process or main process.
+- [`utils.init_torch_multiprocessing`](./llutil.utils.md#function-init_torch_multiprocessing)

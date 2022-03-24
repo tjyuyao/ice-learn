@@ -11,11 +11,12 @@
 
 **Global Variables**
 ---------------
+- **TYPE_CHECKING**
 - **global_shared_events**
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L247"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L250"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `LoadCheckpointTask`
 
@@ -32,7 +33,7 @@ LoadCheckpointTask(resume_from, strict=False, tags='*')
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L252"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L255"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `SaveCheckpointTask`
 
@@ -49,7 +50,7 @@ SaveCheckpointTask(save_to=None, tags='*')
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L35"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L36"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ResumeTaskFailed`
 raised when task structure does not match during resuming.
@@ -63,7 +64,7 @@ raised when task structure does not match during resuming.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L51"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L52"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Task`
 
@@ -72,7 +73,7 @@ raised when task structure does not match during resuming.
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L59"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L60"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -111,7 +112,7 @@ __init__(*args, **kwds) → None
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L170"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `load_state_dict`
 
@@ -127,7 +128,7 @@ load_state_dict(_state_dict, dry_run=False)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L160"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `state_dict`
 
@@ -144,7 +145,7 @@ state_dict()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L204"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L207"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Repeat`
 
@@ -153,7 +154,7 @@ state_dict()
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L209"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L212"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -172,7 +173,7 @@ __init__(*args, **kwds) → None
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L240"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L243"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `load_state_dict`
 
@@ -188,7 +189,7 @@ load_state_dict(_state_dict, dry_run=False)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L236"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L239"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `state_dict`
 
@@ -205,7 +206,7 @@ state_dict()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L257"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L260"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `Counter`
 
@@ -214,7 +215,7 @@ state_dict()
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L259"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L262"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -244,10 +245,10 @@ __init__() → None
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L283"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L286"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `GlobalCounters`
-GlobalCounters(steps: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b32e0>, epochs: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b3c40>)
+GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246610>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246a00>)
 
 
 
@@ -258,8 +259,8 @@ GlobalCounters(steps: core.hypergraph.Counter = <core.hypergraph.Counter object 
 
 ```python
 __init__(
-    steps: Counter = <core.hypergraph.Counter object at 0x7fa8819b32e0>,
-    epochs: Counter = <core.hypergraph.Counter object at 0x7fa8819b3c40>
+    steps: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246610>,
+    epochs: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246a00>
 ) → None
 ```
 
@@ -275,7 +276,7 @@ __init__(
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L299"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L302"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `HyperGraph`
 HyperGraph is the container for all nodes.
@@ -285,15 +286,15 @@ HyperGraph is the container for all nodes.
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L303"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L306"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
 ```python
 __init__(
     autocast_enabled=False,
-    autocast_dtype=torch.float16,
-    grad_scaler: Union[bool, GradScaler] = None
+    autocast_dtype=None,
+    grad_scaler: 'Union[bool, GradScaler]' = None
 ) → None
 ```
 
@@ -318,12 +319,12 @@ __init__(
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L361"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L368"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `add`
 
 ```python
-add(name, node: Node, tags='*')
+add(name, node: 'Node', tags='*')
 ```
 
 
@@ -334,12 +335,12 @@ add(name, node: Node, tags='*')
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L323"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L329"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `backup_source_files`
 
 ```python
-backup_source_files(entrypoint: str)
+backup_source_files(entrypoint: 'str')
 ```
 
 
@@ -350,12 +351,12 @@ backup_source_files(entrypoint: str)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L613"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L625"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `exec_tasks`
 
 ```python
-exec_tasks(tasks, launcher: ElasticLauncher)
+exec_tasks(tasks, launcher: 'ElasticLauncher')
 ```
 
 
@@ -366,15 +367,15 @@ exec_tasks(tasks, launcher: ElasticLauncher)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L316"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L319"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `init_autocast`
 
 ```python
 init_autocast(
     autocast_enabled=True,
-    autocast_dtype=torch.float16,
-    grad_scaler: Union[bool, GradScaler] = None
+    autocast_dtype=None,
+    grad_scaler: 'Union[bool, GradScaler]' = None
 )
 ```
 
@@ -386,7 +387,7 @@ init_autocast(
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L337"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L343"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `init_grad_scaler`
 
@@ -401,7 +402,7 @@ Ellipsis
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L320"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L326"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `is_autocast_enabled`
 
@@ -417,7 +418,7 @@ is_autocast_enabled() → bool
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L351"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L358"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `is_grad_scaler_enabled`
 
@@ -433,7 +434,7 @@ is_grad_scaler_enabled() → bool
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L584"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L596"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `load_checkpoint`
 
@@ -449,7 +450,7 @@ load_checkpoint(resume_from, strict=False, tags='*')
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L429"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L436"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `print_forward_output`
 
@@ -458,7 +459,7 @@ print_forward_output(
     *nodenames,
     every=1,
     total=None,
-    tags: List[str] = '*',
+    tags: 'List[str]' = '*',
     train_only=True,
     localrank0_only=True
 )
@@ -472,7 +473,7 @@ print_forward_output(
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L372"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L379"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `remove`
 
@@ -488,7 +489,7 @@ remove(query)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L540"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L550"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `run`
 
@@ -503,7 +504,7 @@ Ellipsis
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L540"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L550"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `run`
 
@@ -518,7 +519,7 @@ Ellipsis
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L540"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L550"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `run`
 
@@ -533,7 +534,7 @@ Ellipsis
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L540"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L550"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `run`
 
@@ -548,7 +549,7 @@ Ellipsis
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L561"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L573"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `save_checkpoint`
 
@@ -564,7 +565,7 @@ save_checkpoint(save_to=None, tags='*')
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L375"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L382"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `select_egraph`
 
@@ -580,7 +581,7 @@ select_egraph(query) → ExecutableGraph
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L403"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L410"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `select_nodes`
 
@@ -596,7 +597,7 @@ select_nodes(*query)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L354"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L361"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `set_gradient_accumulate`
 

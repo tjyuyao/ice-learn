@@ -9,11 +9,14 @@
 
 
 
+**Global Variables**
+---------------
+- **TYPE_CHECKING**
 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L31"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L18"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ModuleNode`
 a node that extends `torch.nn.Module`
@@ -27,7 +30,7 @@ Multiple `ModelNode` with different training configuration under differnt tags c
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L66"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
@@ -202,7 +205,7 @@ whether current task is training.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `epoch_end`
 
@@ -218,7 +221,7 @@ epoch_end()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L162"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `epoch_start`
 
@@ -234,12 +237,12 @@ epoch_start()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L170"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `forward_impl`
 
 ```python
-forward_impl(cache: 'GraphOutputCache')
+forward_impl(cache: "'GraphOutputCache'")
 ```
 
 
@@ -250,12 +253,12 @@ forward_impl(cache: 'GraphOutputCache')
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L198"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L201"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `load_state_dict`
 
 ```python
-load_state_dict(_state_dict: Dict, strict: bool)
+load_state_dict(_state_dict: 'Dict', strict: 'bool')
 ```
 
 
@@ -266,7 +269,7 @@ load_state_dict(_state_dict: Dict, strict: bool)
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L148"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L151"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `prepare`
 
@@ -282,7 +285,7 @@ prepare()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L188"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L191"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `state_dict`
 
@@ -298,7 +301,7 @@ state_dict()
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L176"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 

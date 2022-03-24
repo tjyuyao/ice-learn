@@ -105,7 +105,7 @@ class Net(nn.Module):
         x = self.drop2(x)
         x = self.fc16(x)
 
-        return F.log_softmax(x, dim=3)
+        return F.log_softmax(x, dim=-1)
 
 
 def make_cifar10(train:bool, batch_size:int):
@@ -125,8 +125,8 @@ def report(n: MetricNode):
 
 # hypergraph
 
-ice.add("cifar10", make_cifar10(train=True, batch_size=100), tags="train")
-ice.add("cifar10", make_cifar10(train=False, batch_size=100), tags="val")
+ice.add("cifar10", make_cifar10(train=True, batch_size=200), tags="train")
+ice.add("cifar10", make_cifar10(train=False, batch_size=200), tags="val")
 ice.add("net", ice.ModuleNode(
     module=Net(),
     forward=lambda n, x: n.module(x['cifar10'][0]),
@@ -139,20 +139,20 @@ ice.add("avg_nll_loss",
         forward=lambda n, x: (x['nll_loss'], x['cifar10'][1].size(0)),
         epoch_end=report,
     ))
-ice.print_forward_output("nll_loss", every=100)
+ice.print_forward_output("nll_loss", every=200)
 
 
 # training shedule
 ice.run(
     [
         ice.Repeat([
-            ice.Task(train=True, epochs=1, tags="train"),
+            ice.Task(train=True, epochs=5, tags="train"),
             ice.SaveCheckpointTask(),
-            ice.Task(train=False, epochs=1, tags="val"),
-        ], times=3)
+            ice.Task(train=False, epochs=5, tags="val"),
+        ], times=5)
     ],
-    devices="cuda:0,0",
-    omp_num_threads=4,
+    devices="cuda:1",
+    omp_num_threads=6,
     monitor_interval=1,
-    # tee="3"
+    tee="3"
 )

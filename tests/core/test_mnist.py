@@ -74,7 +74,7 @@ ice.add("avg_nll_loss",
         forward=lambda n, x: (x['nll_loss'], x['mnist'][1].size(0)),
         epoch_end=report,
     ))
-ice.print_forward_output("nll_loss", every=100)
+ice.print_forward_output("nll_loss", every=200)
 
 
 # training shedule
@@ -89,5 +89,5 @@ ice.run(
     devices="cuda:0,0",
     omp_num_threads=4,
     monitor_interval=1,
-    # tee="3"
+    tee="3"
 )

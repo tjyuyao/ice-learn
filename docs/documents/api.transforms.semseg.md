@@ -12,7 +12,7 @@
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L13"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L12"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `LoadAnnotation`
 
@@ -23,7 +23,7 @@ LoadAnnotation(
     label_map=None,
     reduce_zero_label=False,
     imdecode_backend='pillow',
-    file_client: FileClient = <ice.llutil.file_client.FileClient object at 0x7fa8a00b3ee0>
+    file_client: FileClient = <ice.llutil.file_client.FileClient object at 0x7fe7b5817280>
 )
 ```
 
@@ -51,7 +51,7 @@ Load annotations for semantic segmentation.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L59"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L58"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `RandomCrop`
 
@@ -63,7 +63,7 @@ RandomCrop(
     dst_w: int,
     cat_max_ratio=1.0,
     ignore_index=255,
-    rng=Generator(PCG64) at 0x7FA88C0C6900
+    rng=Generator(PCG64) at 0x7FE7B58063C0
 )
 ```
 
@@ -75,7 +75,7 @@ Crop a pair of images and segmentation labels such that the class is relatively 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L87"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `LabelToTensor`
 

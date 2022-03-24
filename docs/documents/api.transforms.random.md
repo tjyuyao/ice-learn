@@ -24,7 +24,7 @@ RandomIntegers(
     dtype=<class 'numpy.int64'>,
     endpoint=False,
     tolist=False,
-    rng=Generator(PCG64) at 0x7FA88C0C63C0
+    rng=Generator(PCG64) at 0x7FE7B5806040
 )
 ```
 
@@ -48,7 +48,7 @@ RandomFloats(
     size=None,
     dtype=<class 'numpy.float64'>,
     tolist=False,
-    rng=Generator(PCG64) at 0x7FA88C0C63C0
+    rng=Generator(PCG64) at 0x7FE7B5806040
 )
 ```
 
@@ -69,7 +69,7 @@ RandomFloats(
 RandomProbabilities(
     size=None,
     dtype=<class 'numpy.float64'>,
-    rng=Generator(PCG64) at 0x7FA88C0C63C0
+    rng=Generator(PCG64) at 0x7FE7B5806040
 )
 ```
 
@@ -90,7 +90,7 @@ RandomProbabilities(
 RandomChoice(
     candidates: List = None,
     return_index=False,
-    rng=Generator(PCG64) at 0x7FA88C0C63C0
+    rng=Generator(PCG64) at 0x7FE7B5806040
 )
 ```
 
@@ -114,7 +114,7 @@ RandomROI(
     img_h: int = None,
     roi_h: int,
     roi_w: int,
-    rng=Generator(PCG64) at 0x7FA88C0C63C0
+    rng=Generator(PCG64) at 0x7FE7B5806040
 )
 ```
 
@@ -159,7 +159,7 @@ rng (np.random.Generator, optional).
 RandomDo(
     translist: List[Callable],
     prob: float = 0.5,
-    rng=Generator(PCG64) at 0x7FA88C0C63C0
+    rng=Generator(PCG64) at 0x7FE7B5806040
 )
 ```
 
@@ -184,7 +184,7 @@ RandomImage(
     low=0,
     high=255,
     dtype=<class 'numpy.uint8'>,
-    rng=Generator(PCG64) at 0x7FA88C0C63C0
+    rng=Generator(PCG64) at 0x7FE7B5806040
 )
 ```
 

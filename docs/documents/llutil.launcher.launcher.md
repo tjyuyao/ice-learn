@@ -9,15 +9,18 @@
 
 
 
+**Global Variables**
+---------------
+- **TYPE_CHECKING**
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/launcher/launcher.py#L92"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/launcher/launcher.py#L94"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `get_current_launcher`
 
 ```python
-get_current_launcher() → ElasticLauncher
+get_current_launcher() → 'ElasticLauncher'
 ```
 
 
@@ -29,7 +32,7 @@ get_current_launcher() → ElasticLauncher
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/launcher/launcher.py#L120"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/launcher/launcher.py#L126"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `ElasticLauncher`
 A helper [`Configurable`](./llutil.config.md#class-configurable) class for `torchrun` and `torch.distributed.launch`.
@@ -59,7 +62,7 @@ if __name__ == "__main__":
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/launcher/launcher.py#L204"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/launcher/launcher.py#L210"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 

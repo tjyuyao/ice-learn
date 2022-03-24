@@ -12,7 +12,30 @@
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/print.py#L39"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/print.py#L11"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `set_printoptions`
+
+```python
+set_printoptions(
+    precision=None,
+    threshold=None,
+    edgeitems=None,
+    linewidth=None,
+    sci_mode=None
+)
+```
+
+
+
+
+
+
+
+
+---
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/print.py#L62"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `format_size`
 

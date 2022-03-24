@@ -59,5 +59,5 @@ from ice.core.metric import (AverageMeter, DictMetric, Meter, MetricNode,
 from ice.core.module import ModuleNode
 from ice.core.optim import Optimizer
 
-from ..llutil.utils import *
+from ice.llutil.utils import *
 from .hypergraph import *

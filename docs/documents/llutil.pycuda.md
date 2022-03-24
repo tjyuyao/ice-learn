@@ -8,11 +8,14 @@ Integrates PyCUDA to PyTorch and ice.
 
 
 
+**Global Variables**
+---------------
+- **TYPE_CHECKING**
 
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L70"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L72"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `CUDAModule`
 Just-In-Time compilation of a set of CUDA kernel functions and device functions from source.
@@ -68,7 +71,7 @@ assert torch.allclose(c, torch.mm(a, b))
 
 
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L110"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/pycuda.py#L112"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `__init__`
 
