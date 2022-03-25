@@ -1,5 +1,3 @@
-#export
-
 import math
 from ice.llutil.launcher.launcher import get_current_launcher
 import numpy as np
@@ -50,7 +48,8 @@ def failsafe_collate(batch):
             if _NP_STR_OBJ_ARRAY_PATTERN.search(elem.dtype.str) is not None:
                 raise TypeError(_FAILSAFE_COLLATE_ERR_MSG_FORMAT.format(elem.dtype))
 
-            return failsafe_collate([torch.as_tensor(np.ascontiguousarray(b)) for b in batch])
+            return batch
+            # return failsafe_collate([torch.as_tensor(np.ascontiguousarray(b)) for b in batch])
         elif elem.shape == ():  # scalars
             return torch.as_tensor(batch)
     elif isinstance(elem, float):
