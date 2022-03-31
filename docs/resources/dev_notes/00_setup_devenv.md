@@ -7,6 +7,15 @@ Please read about poetry (see REFERNCES section at the end of this page) and the
 
 ## Pypi Mirror for China (Optional)
 
+### Aliyun
+
+```bash
+mkdir -p ~/.pip
+echo "[global]\nindex-url = https://mirrors.aliyun.com/pypi/simple/\n[install]\ntrusted-host=mirrors.aliyun.com\n" > ~/.pip/pip.conf
+```
+
+### Douban
+
 ```bash
 mkdir -p ~/.pip
 echo "[config]\nindex-url = https://pypi.douban.com/simple" > ~/.pip/pip.conf

@@ -20,9 +20,9 @@
 
 ## Install
 
-`pip install ice-learn` **(TODO)**
+`pip install ice-learn` **(Recommended)**
 
-**Note:** Currently installing via pip is not available, developers can install ice using poetry environment as specified [here](https://github.com/tjyuyao/ice-learn/blob/main/docs/resources/dev_notes/00_setup_devenv.md).
+**Note:** For developers, in order to modify the code instantly, you need to install ice using poetry environment as specified [here](https://github.com/tjyuyao/ice-learn/blob/main/docs/resources/dev_notes/00_setup_devenv.md).
 
 ## Documentation
 

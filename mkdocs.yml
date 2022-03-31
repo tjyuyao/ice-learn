@@ -19,8 +19,8 @@ markdown_extensions:
     - pymdownx.highlight:
         anchor_linenums: true
         use_pygments: true
-        # linenums: true
-        # linenums_style: pymdownx-inline
+        linenums: true
+        linenums_style: pymdownx-inline
     - pymdownx.inlinehilite
     - pymdownx.snippets
     - pymdownx.superfences
