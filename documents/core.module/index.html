@@ -584,6 +584,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#global-variables" class="md-nav__link">
+    Global Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#class-modulenode" class="md-nav__link">
     class ModuleNode
   </a>
@@ -1101,6 +1108,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.utils/" class="md-nav__link">
+        Llutil.utils
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1217,6 +1238,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resources/dev_notes/04_versions/" class="md-nav__link">
+        Release Versions
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1255,6 +1290,13 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#global-variables" class="md-nav__link">
+    Global Variables
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#class-modulenode" class="md-nav__link">
@@ -1465,15 +1507,19 @@
 
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h1 id="module-coremodule"><kbd>module</kbd> <code>core.module</code></h1>
+<h2 id="global-variables"><strong>Global Variables</strong></h2>
+<ul>
+<li><strong>TYPE_CHECKING</strong></li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L31"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L18"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-modulenode"><kbd>class</kbd> <code>ModuleNode</code></h2>
 <p>a node that extends <code>torch.nn.Module</code></p>
 <p><code>ModuleNode</code> manages neural network modules (<code>torch.nn.Module</code>) and the optimizers responsible to train them. For each <code>ModuleNode</code>, multiple optimizers can be specified, each of which can be responsible for different group of parameters by filtering parameters names.</p>
 <p>Multiple <code>ModelNode</code> with different training configuration under differnt tags can share a same <code>torch.nn.Module</code>.</p>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L66"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init__"><kbd>method</kbd> <code>__init__</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
 <h4 id="property-board"><kbd>property</kbd> board</h4>
@@ -1512,39 +1558,39 @@
 <h4 id="property-training"><kbd>property</kbd> training</h4>
 <p>whether current task is training.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-epoch_end"><kbd>method</kbd> <code>epoch_end</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">epoch_end</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">epoch_end</span><span class="p">()</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L162"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-epoch_start"><kbd>method</kbd> <code>epoch_start</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">epoch_start</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><a href="#__codelineno-2-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">epoch_start</span><span class="p">()</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L170"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-forward_impl"><kbd>method</kbd> <code>forward_impl</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">forward_impl</span><span class="p">(</span><span class="n">cache</span><span class="p">:</span> <span class="s1">&#39;GraphOutputCache&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><a href="#__codelineno-3-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">forward_impl</span><span class="p">(</span><span class="n">cache</span><span class="p">:</span> <span class="s2">&quot;&#39;GraphOutputCache&#39;&quot;</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L198"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L201"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-load_state_dict"><kbd>method</kbd> <code>load_state_dict</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">load_state_dict</span><span class="p">(</span><span class="n">_state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><a href="#__codelineno-4-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">load_state_dict</span><span class="p">(</span><span class="n">_state_dict</span><span class="p">:</span> <span class="s1">&#39;Dict&#39;</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L148"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L151"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-prepare"><kbd>method</kbd> <code>prepare</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">prepare</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><a href="#__codelineno-5-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">prepare</span><span class="p">()</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L188"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L191"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-state_dict"><kbd>method</kbd> <code>state_dict</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">state_dict</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><a href="#__codelineno-6-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">state_dict</span><span class="p">()</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L176"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/module.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-update"><kbd>method</kbd> <code>update</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">update</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><a href="#__codelineno-7-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">update</span><span class="p">()</span>
 </code></pre></div>
 
               

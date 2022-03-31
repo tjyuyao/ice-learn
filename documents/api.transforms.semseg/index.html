@@ -935,6 +935,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.utils/" class="md-nav__link">
+        Llutil.utils
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1051,6 +1065,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resources/dev_notes/04_versions/" class="md-nav__link">
+        Release Versions
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1134,48 +1162,48 @@
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/api/transforms/semseg.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h1 id="module-apitransformssemseg"><kbd>module</kbd> <code>api.transforms.semseg</code></h1>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L13"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L12"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-loadannotation"><kbd>function</kbd> <code>LoadAnnotation</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">LoadAnnotation</span><span class="p">(</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">seg_path</span><span class="p">,</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">label_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">reduce_zero_label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">imdecode_backend</span><span class="o">=</span><span class="s1">&#39;pillow&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">file_client</span><span class="p">:</span> <span class="n">FileClient</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">ice</span><span class="o">.</span><span class="n">llutil</span><span class="o">.</span><span class="n">file_client</span><span class="o">.</span><span class="n">FileClient</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fa8a00b3ee0</span><span class="o">&gt;</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">LoadAnnotation</span><span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><a href="#__codelineno-0-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">seg_path</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><a href="#__codelineno-0-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><a href="#__codelineno-0-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">label_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><a href="#__codelineno-0-5"><span class="linenos" data-linenos="5 "></span></a>    <span class="n">reduce_zero_label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><a href="#__codelineno-0-6"><span class="linenos" data-linenos="6 "></span></a>    <span class="n">imdecode_backend</span><span class="o">=</span><span class="s1">&#39;pillow&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><a href="#__codelineno-0-7"><span class="linenos" data-linenos="7 "></span></a>    <span class="n">file_client</span><span class="p">:</span> <span class="n">FileClient</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">ice</span><span class="o">.</span><span class="n">llutil</span><span class="o">.</span><span class="n">file_client</span><span class="o">.</span><span class="n">FileClient</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fe7b5817280</span><span class="o">&gt;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><a href="#__codelineno-0-8"><span class="linenos" data-linenos="8 "></span></a><span class="p">)</span>
 </code></pre></div>
 <p>Load annotations for semantic segmentation.</p>
 <p><strong>Args</strong>:</p>
-<div class="highlight"><pre><span></span><code>- reduce_zero_label (bool): Whether reduce all label value by 1.
+<div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="1 "></span>- reduce_zero_label (bool): Whether reduce all label value by 1.
 </code></pre></div>
 <p>Usually used for datasets where 0 is background label.
  Default: False.</p>
-<div class="highlight"><pre><span></span><code>- imdecode_backend (str): Backend for `mmcv.imdecode`. Default: &#39;pillow&#39;
-
-- file_client : See [mmcv.fileio.FileClient](https://mmcv.readthedocs.io/en/latest/api.html#mmcv.fileio.FileClient) for details.
+<div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="1 "></span>- imdecode_backend (str): Backend for `mmcv.imdecode`. Default: &#39;pillow&#39;
+<span class="linenos" data-linenos="2 "></span>
+<span class="linenos" data-linenos="3 "></span>- file_client : See [mmcv.fileio.FileClient](https://mmcv.readthedocs.io/en/latest/api.html#mmcv.fileio.FileClient) for details.
 </code></pre></div>
 <p><strong>References</strong>:</p>
-<div class="highlight"><pre><span></span><code>- [mmseg.datasets.pipelines.LoadAnnotations](https://mmsegmentation.readthedocs.io/en/latest/api.html#mmseg.datasets.pipelines.LoadAnnotations)
+<div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="1 "></span>- [mmseg.datasets.pipelines.LoadAnnotations](https://mmsegmentation.readthedocs.io/en/latest/api.html#mmseg.datasets.pipelines.LoadAnnotations)
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L59"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L58"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-randomcrop"><kbd>function</kbd> <code>RandomCrop</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">RandomCrop</span><span class="p">(</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">img</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">seg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">dst_h</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">dst_w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">cat_max_ratio</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">ignore_index</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">rng</span><span class="o">=</span><span class="n">Generator</span><span class="p">(</span><span class="n">PCG64</span><span class="p">)</span> <span class="n">at</span> <span class="mh">0x7FA88C0C6900</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">RandomCrop</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><a href="#__codelineno-1-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">img</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><a href="#__codelineno-1-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">seg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><a href="#__codelineno-1-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">dst_h</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><a href="#__codelineno-1-5"><span class="linenos" data-linenos="5 "></span></a>    <span class="n">dst_w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><a href="#__codelineno-1-6"><span class="linenos" data-linenos="6 "></span></a>    <span class="n">cat_max_ratio</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><a href="#__codelineno-1-7"><span class="linenos" data-linenos="7 "></span></a>    <span class="n">ignore_index</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a><a href="#__codelineno-1-8"><span class="linenos" data-linenos="8 "></span></a>    <span class="n">rng</span><span class="o">=</span><span class="n">Generator</span><span class="p">(</span><span class="n">PCG64</span><span class="p">)</span> <span class="n">at</span> <span class="mh">0x7FE7B58063C0</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a><a href="#__codelineno-1-9"><span class="linenos" data-linenos="9 "></span></a><span class="p">)</span>
 </code></pre></div>
 <p>Crop a pair of images and segmentation labels such that the class is relatively balanced for training.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L87"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/dictprocess.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-labeltotensor"><kbd>function</kbd> <code>LabelToTensor</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">LabelToTensor</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><a href="#__codelineno-2-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">LabelToTensor</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">)</span>
 </code></pre></div>
 <p>Convert to tensor (as int64).</p>
 <p><strong>Args:</strong></p>

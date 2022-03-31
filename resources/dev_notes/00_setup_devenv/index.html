@@ -878,6 +878,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documents/llutil.utils/" class="md-nav__link">
+        Llutil.utils
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -986,6 +1000,26 @@
     Pypi Mirror for China (Optional)
   </a>
   
+    <nav class="md-nav" aria-label="Pypi Mirror for China (Optional)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aliyun" class="md-nav__link">
+    Aliyun
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#douban" class="md-nav__link">
+    Douban
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1053,6 +1087,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_versions/" class="md-nav__link">
+        Release Versions
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1097,6 +1145,26 @@
     Pypi Mirror for China (Optional)
   </a>
   
+    <nav class="md-nav" aria-label="Pypi Mirror for China (Optional)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aliyun" class="md-nav__link">
+    Aliyun
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#douban" class="md-nav__link">
+    Douban
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1135,8 +1203,13 @@
 <p>We use <code>poetry</code> as the virtualenv as well as project manager (e.g. dependencies, packaging, publishing, etc.).</p>
 <p>Please read about poetry (see REFERNCES section at the end of this page) and the <code>pyproject.toml</code> file before you run following commands to setup your local develop environment. Having another pip installed release version of ice will not cause a problem since poetry isolates the environment.</p>
 <h2 id="pypi-mirror-for-china-optional">Pypi Mirror for China (Optional)</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdir -p ~/.pip
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">echo</span> <span class="s2">&quot;[config]\nindex-url = https://pypi.douban.com/simple&quot;</span> &gt; ~/.pip/pip.conf
+<h3 id="aliyun">Aliyun</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a>mkdir -p ~/.pip
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><a href="#__codelineno-0-2"><span class="linenos" data-linenos="2 "></span></a><span class="nb">echo</span> <span class="s2">&quot;[global]\nindex-url = https://mirrors.aliyun.com/pypi/simple/\n[install]\ntrusted-host=mirrors.aliyun.com\n&quot;</span> &gt; ~/.pip/pip.conf
+</code></pre></div>
+<h3 id="douban">Douban</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="1 "></span></a>mkdir -p ~/.pip
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><a href="#__codelineno-1-2"><span class="linenos" data-linenos="2 "></span></a><span class="nb">echo</span> <span class="s2">&quot;[config]\nindex-url = https://pypi.douban.com/simple&quot;</span> &gt; ~/.pip/pip.conf
 </code></pre></div>
 <h2 id="steps">Steps</h2>
 <ol>
@@ -1169,7 +1242,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../../../documents/llutil.test/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Llutil.test" rel="prev">
+        <a href="../../../documents/llutil.utils/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Llutil.utils" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1178,7 +1251,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Llutil.test
+              Llutil.utils
             </div>
           </div>
         </a>

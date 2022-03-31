@@ -1039,6 +1039,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llutil.utils/" class="md-nav__link">
+        Llutil.utils
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1149,6 +1163,20 @@
     <li class="md-nav__item">
       <a href="../../resources/dev_notes/03_architechture_design/" class="md-nav__link">
         The Folder Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resources/dev_notes/04_versions/" class="md-nav__link">
+        Release Versions
       </a>
     </li>
   
@@ -1350,40 +1378,40 @@ argument parser is accessable via <code>ice.args</code>.</p>
 <li><strong>REQUIRED</strong></li>
 </ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L18"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L17"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-isa"><kbd>function</kbd> <code>isa</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">isa</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">isa</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span>
 </code></pre></div>
 <p>an alias for python built-in <code>isinstance</code>.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L23"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L22"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-parse_scalar"><kbd>function</kbd> <code>parse_scalar</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">parse_scalar</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">parse_scalar</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 </code></pre></div>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L29"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-as_list"><kbd>function</kbd> <code>as_list</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">as_list</span><span class="p">(</span><span class="n">maybe_element</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><a href="#__codelineno-2-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">as_list</span><span class="p">(</span><span class="n">maybe_element</span><span class="p">)</span>
 </code></pre></div>
 <p>helps to regularize input into list of element.</p>
 <p>No matter what is input, will output a list for your iteration.</p>
 <p><strong>Basic Examples:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">([</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">((</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">([[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]])</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><a href="#__codelineno-3-1"><span class="linenos" data-linenos="1 "></span></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><a href="#__codelineno-3-2"><span class="linenos" data-linenos="2 "></span></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">([</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><a href="#__codelineno-3-3"><span class="linenos" data-linenos="3 "></span></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">((</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><a href="#__codelineno-3-4"><span class="linenos" data-linenos="4 "></span></a><span class="k">assert</span> <span class="n">as_list</span><span class="p">([[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]])</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p><strong>An Application Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">return</span> <span class="n">as_list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">assert</span> <span class="n">func</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">assert</span> <span class="n">func</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><a href="#__codelineno-4-1"><span class="linenos" data-linenos="1 "></span></a><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><a href="#__codelineno-4-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="k">return</span> <span class="n">as_list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><a href="#__codelineno-4-3"><span class="linenos" data-linenos="3 "></span></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><a href="#__codelineno-4-4"><span class="linenos" data-linenos="4 "></span></a><span class="k">assert</span> <span class="n">func</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><a href="#__codelineno-4-5"><span class="linenos" data-linenos="5 "></span></a><span class="k">assert</span> <span class="n">func</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L67"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-as_dict"><kbd>function</kbd> <code>as_dict</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">as_dict</span><span class="p">(</span><span class="n">maybe_element</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><a href="#__codelineno-5-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">as_dict</span><span class="p">(</span><span class="n">maybe_element</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 </code></pre></div>
 <p>helps to regularize input into a dict.</p>
 <p>if <code>maybe_element</code> is not a dict, will return a dict with single
@@ -1402,13 +1430,13 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 <li><b><code>dict</code></b>:  ensures to be a dict.</li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">assert</span> <span class="n">as_dict</span><span class="p">({</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="s2">&quot;v&quot;</span><span class="p">},</span> <span class="s2">&quot;k&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="s2">&quot;v&quot;</span><span class="p">}</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">assert</span> <span class="n">as_dict</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="s2">&quot;v&quot;</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><a href="#__codelineno-6-1"><span class="linenos" data-linenos="1 "></span></a><span class="k">assert</span> <span class="n">as_dict</span><span class="p">({</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="s2">&quot;v&quot;</span><span class="p">},</span> <span class="s2">&quot;k&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="s2">&quot;v&quot;</span><span class="p">}</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a><a href="#__codelineno-6-2"><span class="linenos" data-linenos="2 "></span></a><span class="k">assert</span> <span class="n">as_dict</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="s2">&quot;v&quot;</span><span class="p">}</span>
 </code></pre></div>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L92"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-is_seq_of"><kbd>function</kbd> <code>is_seq_of</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">is_seq_of</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">,</span> <span class="n">seq_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><a href="#__codelineno-7-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">is_seq_of</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">,</span> <span class="n">seq_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Check whether it is a sequence of some type.</p>
 <p><strong>Args:</strong></p>
@@ -1430,21 +1458,21 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L116"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-is_list_of"><kbd>function</kbd> <code>is_list_of</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">is_list_of</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><a href="#__codelineno-8-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">is_list_of</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">)</span>
 </code></pre></div>
 <p>Check whether it is a list of some type.</p>
 <p>A partial method of :func:<code>is_seq_of</code>.</p>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L124"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-is_tuple_of"><kbd>function</kbd> <code>is_tuple_of</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">is_tuple_of</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><a href="#__codelineno-9-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">is_tuple_of</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">)</span>
 </code></pre></div>
 <p>Check whether it is a tuple of some type.</p>
 <p>A partial method of :func:<code>is_seq_of</code>.</p>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L140"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-get_hostname"><kbd>function</kbd> <code>get_hostname</code></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_hostname</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><a href="#__codelineno-10-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">get_hostname</span><span class="p">()</span>
 </code></pre></div>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L143"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
@@ -1471,28 +1499,28 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 </li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span> <span class="nn">ice</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># same as `python &lt;script&gt;.py 2 k1=4` in shell.</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">parse_args</span><span class="p">([</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;k1=4&quot;</span><span class="p">])</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># setdefault() generally is optional.</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;k1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="k">assert</span> <span class="mi">2</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># default type is str.</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="k">assert</span> <span class="mi">4</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;k1&quot;</span><span class="p">]</span>  <span class="c1"># as setdefault specified a type, here a conversion is not needed.</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="k">assert</span> <span class="mi">4</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k1</span>  <span class="c1"># attribute also works.</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="k">assert</span> <span class="mi">8</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k2</span>  <span class="c1"># use default value.</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;k1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k3</span> <span class="o">=</span> <span class="mi">1</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">k2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="k">assert</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="k">assert</span>  <span class="mi">1</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;k3&quot;</span><span class="p">]</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="k">assert</span>  <span class="mi">0</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k2</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><a href="#__codelineno-11-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="kn">import</span> <span class="nn">ice</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><a href="#__codelineno-11-2"><span class="linenos" data-linenos=" 2 "></span></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a><a href="#__codelineno-11-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="c1"># same as `python &lt;script&gt;.py 2 k1=4` in shell.</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><a href="#__codelineno-11-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">parse_args</span><span class="p">([</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;k1=4&quot;</span><span class="p">])</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5"></a><a href="#__codelineno-11-5"><span class="linenos" data-linenos=" 5 "></span></a>
+<a id="__codelineno-11-6" name="__codelineno-11-6"></a><a href="#__codelineno-11-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="c1"># setdefault() generally is optional.</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7"></a><a href="#__codelineno-11-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;k1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8"></a><a href="#__codelineno-11-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9"></a><a href="#__codelineno-11-9"><span class="linenos" data-linenos=" 9 "></span></a>
+<a id="__codelineno-11-10" name="__codelineno-11-10"></a><a href="#__codelineno-11-10"><span class="linenos" data-linenos="10 "></span></a><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11"></a><a href="#__codelineno-11-11"><span class="linenos" data-linenos="11 "></span></a><span class="k">assert</span> <span class="mi">2</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># default type is str.</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12"></a><a href="#__codelineno-11-12"><span class="linenos" data-linenos="12 "></span></a><span class="k">assert</span> <span class="mi">4</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;k1&quot;</span><span class="p">]</span>  <span class="c1"># as setdefault specified a type, here a conversion is not needed.</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13"></a><a href="#__codelineno-11-13"><span class="linenos" data-linenos="13 "></span></a><span class="k">assert</span> <span class="mi">4</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k1</span>  <span class="c1"># attribute also works.</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14"></a><a href="#__codelineno-11-14"><span class="linenos" data-linenos="14 "></span></a><span class="k">assert</span> <span class="mi">8</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k2</span>  <span class="c1"># use default value.</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15"></a><a href="#__codelineno-11-15"><span class="linenos" data-linenos="15 "></span></a>
+<a id="__codelineno-11-16" name="__codelineno-11-16"></a><a href="#__codelineno-11-16"><span class="linenos" data-linenos="16 "></span></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;k1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17"></a><a href="#__codelineno-11-17"><span class="linenos" data-linenos="17 "></span></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k3</span> <span class="o">=</span> <span class="mi">1</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18"></a><a href="#__codelineno-11-18"><span class="linenos" data-linenos="18 "></span></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">k2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19"></a><a href="#__codelineno-11-19"><span class="linenos" data-linenos="19 "></span></a><span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20"></a><a href="#__codelineno-11-20"><span class="linenos" data-linenos="20 "></span></a><span class="k">assert</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21"></a><a href="#__codelineno-11-21"><span class="linenos" data-linenos="21 "></span></a><span class="k">assert</span>  <span class="mi">1</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;k3&quot;</span><span class="p">]</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22"></a><a href="#__codelineno-11-22"><span class="linenos" data-linenos="22 "></span></a><span class="k">assert</span>  <span class="mi">0</span> <span class="o">==</span> <span class="n">ice</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">k2</span>
 </code></pre></div>
 <p><strong>Note:</strong></p>
 <blockquote>
@@ -1500,17 +1528,17 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 </blockquote>
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L189"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init__"><kbd>method</kbd> <code>__init__</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="fm">__init__</span><span class="p">()</span> <span class="err">→</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><a href="#__codelineno-12-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">()</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L269"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-hparam_dict"><kbd>method</kbd> <code>hparam_dict</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">hparam_dict</span><span class="p">()</span> <span class="err">→</span> <span class="n">Dict</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><a href="#__codelineno-13-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">hparam_dict</span><span class="p">()</span> <span class="err">→</span> <span class="n">Dict</span>
 </code></pre></div>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L192"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-parse_args"><kbd>method</kbd> <code>parse_args</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><a href="#__codelineno-14-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
 </code></pre></div>
 <p>Manually parse args.</p>
 <p><strong>Args:</strong></p>
@@ -1520,7 +1548,7 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L223"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-setdefault"><kbd>method</kbd> <code>setdefault</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">_type</span><span class="o">=&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">str</span><span class="s1">&#39;&gt;, hparam=False, help=&#39;&#39;)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><a href="#__codelineno-15-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">_type</span><span class="o">=&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">str</span><span class="s1">&#39;&gt;, hparam=False, help=&#39;&#39;)</span>
 </code></pre></div>
 <p>Set argument value under <code>key</code> as <code>value</code>, only if original entry does not exists.</p>
 <p><strong>Args:</strong></p>
@@ -1537,7 +1565,7 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L263"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-update"><kbd>method</kbd> <code>update</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">update</span><span class="p">(</span><span class="n">_FlexibleArgParser__dict</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><a href="#__codelineno-16-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">update</span><span class="p">(</span><span class="n">_FlexibleArgParser__dict</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
 </code></pre></div>
 <p>simillar to dict.update().</p>
 

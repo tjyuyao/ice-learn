@@ -935,6 +935,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="llutil.utils/" class="md-nav__link">
+        Llutil.utils
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1045,6 +1059,20 @@
     <li class="md-nav__item">
       <a href="../resources/dev_notes/03_architechture_design/" class="md-nav__link">
         The Folder Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resources/dev_notes/04_versions/" class="md-nav__link">
+        Release Versions
       </a>
     </li>
   
@@ -1173,6 +1201,7 @@
 <li><a href="llutil.pycuda/#module-llutilpycuda"><code>llutil.pycuda</code></a>: Integrates PyCUDA to PyTorch and ice.</li>
 <li><a href="llutil.shadow_tb/#module-llutilshadow_tb"><code>llutil.shadow_tb</code></a></li>
 <li><a href="llutil.test/#module-llutiltest"><code>llutil.test</code></a>: helps developers of ice to test.</li>
+<li><a href="llutil.utils/#module-llutilutils"><code>llutil.utils</code></a></li>
 </ul>
 <h2 id="classes">Classes</h2>
 <ul>
@@ -1185,7 +1214,7 @@
 <li><a href="core.graph/#class-stopalltasks"><code>graph.StopAllTasks</code></a>: An Exception raised to exit current running.</li>
 <li><a href="core.graph/#class-stoptask"><code>graph.StopTask</code></a>: An Exception raised to exit current task.</li>
 <li><a href="core.hypergraph/#class-counter"><code>hypergraph.Counter</code></a></li>
-<li><a href="core.hypergraph/#class-globalcounters"><code>hypergraph.GlobalCounters</code></a>: GlobalCounters(steps: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b32e0>, epochs: core.hypergraph.Counter = <core.hypergraph.Counter object at 0x7fa8819b3c40>)</li>
+<li><a href="core.hypergraph/#class-globalcounters"><code>hypergraph.GlobalCounters</code></a>: GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246610>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246a00>)</li>
 <li><a href="core.hypergraph/#class-hypergraph"><code>hypergraph.HyperGraph</code></a>: HyperGraph is the container for all nodes.</li>
 <li><a href="core.hypergraph/#class-repeat"><code>hypergraph.Repeat</code></a></li>
 <li><a href="core.hypergraph/#class-resumetaskfailed"><code>hypergraph.ResumeTaskFailed</code></a>: raised when task structure does not match during resuming.</li>
@@ -1230,8 +1259,12 @@
 </ul>
 <h2 id="functions">Functions</h2>
 <ul>
+<li><a href="api/#function-datasetnode"><code>api.DatasetNode</code></a></li>
+<li><a href="api.hypergraph/#function-loadcheckpointtask"><code>hypergraph.LoadCheckpointTask</code></a></li>
+<li><a href="api.hypergraph/#function-savecheckpointtask"><code>hypergraph.SaveCheckpointTask</code></a></li>
 <li><a href="api.hypergraph/#function-add"><code>hypergraph.add</code></a></li>
 <li><a href="api.hypergraph/#function-backup_source_files"><code>hypergraph.backup_source_files</code></a></li>
+<li><a href="api.hypergraph/#function-get_default_graph"><code>hypergraph.get_default_graph</code></a></li>
 <li><a href="api.hypergraph/#function-init_autocast"><code>hypergraph.init_autocast</code></a></li>
 <li><a href="api.hypergraph/#function-init_grad_scaler"><code>hypergraph.init_grad_scaler</code></a></li>
 <li><a href="api.hypergraph/#function-print_forward_output"><code>hypergraph.print_forward_output</code></a></li>
@@ -1293,12 +1326,14 @@
 <li><a href="llutil.launcher.launch_agent/#function-launch_agent"><code>launch_agent.launch_agent</code></a></li>
 <li><a href="llutil.launcher.launcher/#function-get_current_launcher"><code>launcher.get_current_launcher</code></a></li>
 <li><a href="llutil.logger/#function-get_logger"><code>logger.get_logger</code></a>: set up a simple logger that writes into stderr. </li>
-<li><a href="llutil.multiprocessing/#function-auto_freeze_enabled"><code>multiprocessing.auto_freeze_enabled</code></a></li>
-<li><a href="llutil.multiprocessing/#function-enable_auto_freeze"><code>multiprocessing.enable_auto_freeze</code></a></li>
-<li><a href="llutil.multiprocessing/#function-in_main_process"><code>multiprocessing.in_main_process</code></a>: Whether current process is worker process or main process.</li>
 <li><a href="llutil.print/#function-format_size"><code>print.format_size</code></a>: Format a byte count as a human readable file size.</li>
+<li><a href="llutil.print/#function-set_printoptions"><code>print.set_printoptions</code></a></li>
 <li><a href="llutil.shadow_tb/#function-shadow"><code>shadow_tb.shadow</code></a></li>
 <li><a href="llutil.test/#function-requires_n_gpus"><code>test.requires_n_gpus</code></a></li>
+<li><a href="llutil.utils/#function-auto_freeze_enabled"><code>utils.auto_freeze_enabled</code></a></li>
+<li><a href="llutil.utils/#function-enable_auto_freeze"><code>utils.enable_auto_freeze</code></a></li>
+<li><a href="llutil.utils/#function-in_main_process"><code>utils.in_main_process</code></a>: Whether current process is worker process or main process.</li>
+<li><a href="llutil.utils/#function-init_torch_multiprocessing"><code>utils.init_torch_multiprocessing</code></a></li>
 </ul>
 
               
