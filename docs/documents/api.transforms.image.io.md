@@ -286,7 +286,7 @@ Load(
     flag='color',
     channel_order='bgr',
     backend='cv2',
-    file_client: FileClient = <ice.llutil.file_client.FileClient object at 0x7fe7b5817280>
+    file_client: FileClient = <ice.llutil.file_client.FileClient object at 0x7f0c6903b040>
 )
 ```
 

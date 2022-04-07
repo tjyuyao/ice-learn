@@ -334,7 +334,23 @@ __init__() → None
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L269"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L253"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>method</kbd> `get`
+
+```python
+get(key)
+```
+
+
+
+
+
+
+
+---
+
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L277"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `hparam_dict`
 
@@ -373,6 +389,22 @@ Manually parse args.
 
 ---
 
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L248"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>method</kbd> `set`
+
+```python
+set(key, value, hparam=False)
+```
+
+
+
+
+
+
+
+---
+
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L223"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `setdefault`
@@ -405,7 +437,7 @@ original or updated value.
 
 ---
 
-<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L263"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L271"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `update`
 

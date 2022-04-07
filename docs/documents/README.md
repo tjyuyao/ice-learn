@@ -56,7 +56,7 @@
 - [`graph.StopAllTasks`](./core.graph.md#class-stopalltasks): An Exception raised to exit current running.
 - [`graph.StopTask`](./core.graph.md#class-stoptask): An Exception raised to exit current task.
 - [`hypergraph.Counter`](./core.hypergraph.md#class-counter)
-- [`hypergraph.GlobalCounters`](./core.hypergraph.md#class-globalcounters): GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246610>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7fe7b5246a00>)
+- [`hypergraph.GlobalCounters`](./core.hypergraph.md#class-globalcounters): GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7f0c5d532730>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7f0c5d5323a0>)
 - [`hypergraph.HyperGraph`](./core.hypergraph.md#class-hypergraph): HyperGraph is the container for all nodes.
 - [`hypergraph.Repeat`](./core.hypergraph.md#class-repeat)
 - [`hypergraph.ResumeTaskFailed`](./core.hypergraph.md#class-resumetaskfailed): raised when task structure does not match during resuming.

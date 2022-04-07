@@ -1,8 +1,7 @@
 """contains ``Node`` and ``ExecutableGraph``."""
 from __future__ import annotations
-from queue import Queue
 
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Set, overload
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, overload
 
 
 from ice.llutil.config import Configurable
@@ -144,15 +143,12 @@ class Node(Configurable):
         
         name = self.name
         cache = self.egraph.cache
-        cache.acquire(name)
         if name in cache:
-            output = cache[name]
+            return cache[name]
         else:
             output = self.forward_impl(cache)
             cache[name] = output
-        cache.release(name)
-        return output
-        
+            return output
 
     def forward_impl(self, cache:"GraphOutputCache"): """forward pass of the node, inputs of current executable graph can be directly retrieved from `graph` argument."""
 
@@ -175,6 +171,22 @@ class Node(Configurable):
     def load_state_dict(self, _state_dict:Dict, strict:bool): """resumes node state from state_dict."""
     
     def move(self, data, device=None):
+        """Moves data to the CPU or the GPU.
+
+        If :attr:`device` is ``None`` and the node has a ``device`` attribute, then that is the device where the data
+        is moved. Otherwise, the data is moved according to the ``device.type``. If :attr:``data`` is a tuple or list,
+        the function is applied recursively to each of the elements.
+
+        Args:
+            data (torch.Tensor or torch.nn.Module or list or dict): the data to move.
+            device (str or torch.device): the string or instance of torch.device in which to move the data.
+
+        Returns:
+            torch.Tensor or torch.nn.Module: the data in the requested device.
+
+        Raises:
+            RuntimeError: data is not one of torch.Tensor, torch.nn.module, list or dict.
+        """
         import torch
         if device is None:
             device = get_current_launcher().assigned_device
@@ -199,7 +211,6 @@ class GraphOutputCache:
 
     def __getitem__(self, name):
         """Execute node with name ``name`` if not executed, return the last executed cache else."""
-        self.add_deps(name)
         if name not in self.data:
             self.data[name] = self.egraph[name].forward()
         return self.data[name]
@@ -213,36 +224,6 @@ class GraphOutputCache:
     def clear(self):
         """Clear the cache, next calls to ``__getitem__`` will recalculate."""
         self.data = {}
-        self.users = []
-        self.deps:Dict[str, Set] = {}
-    
-    def acquire(self, user):
-        self.users.append(user)
-        if user not in self.deps:
-            self.deps[user] = set()
-    
-    def release(self, user):
-        assert self.users.pop(-1) == user
-    
-    def add_deps(self, ancestor):
-        self.deps[self.users[-1]].add(ancestor)
-    
-    def find_ancestors(self, user:str, filter:Callable[[Node], bool] = None):
-        out = []
-        q = Queue()
-        q.put(user)
-        while not q.empty():
-            name = q.get()
-            assert name in self.deps
-            for ancestor in self.deps[name]:
-                q.put(ancestor)
-            node = self.egraph[name]
-            if node in out: continue
-            if filter is None or filter(node):
-                out.append(node)
-        return out
-            
-        
 
 
 class ExecutableGraph:
