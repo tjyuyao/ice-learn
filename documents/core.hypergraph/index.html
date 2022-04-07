@@ -685,6 +685,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#method-__getitem__" class="md-nav__link">
+    method __getitem__
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-__setitem__" class="md-nav__link">
+    method __setitem__
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -735,6 +749,13 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-__getitem___1" class="md-nav__link">
+    method __getitem__
+  </a>
   
 </li>
         
@@ -1569,6 +1590,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#method-__getitem__" class="md-nav__link">
+    method __getitem__
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-__setitem__" class="md-nav__link">
+    method __setitem__
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1619,6 +1654,13 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-__getitem___1" class="md-nav__link">
+    method __getitem__
+  </a>
   
 </li>
         
@@ -1781,23 +1823,74 @@
 <li><strong>global_shared_events</strong></li>
 </ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L250"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L301"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-loadcheckpointtask"><kbd>function</kbd> <code>LoadCheckpointTask</code></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">LoadCheckpointTask</span><span class="p">(</span><span class="n">resume_from</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
 </code></pre></div>
+<p>Load checkpoint from a file.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>resume_from</code></b> (str):  Path to the checkpoint file.</p>
+</li>
+<li>
+<p><b><code>strict</code></b> (bool):  If True, raise an exception if the checkpoint file does not exist.</p>
+</li>
+<li>
+<p><b><code>tags</code></b> (str):  Tags to load.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>Task</code></b>:  Task to load the checkpoint.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L255"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L316"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-savecheckpointtask"><kbd>function</kbd> <code>SaveCheckpointTask</code></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">SaveCheckpointTask</span><span class="p">(</span><span class="n">save_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
 </code></pre></div>
+<p>Save checkpoint to a file.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>save_to</code></b> (str):  Path to the checkpoint file.</p>
+</li>
+<li>
+<p><b><code>tags</code></b> (str):  Tags to save.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>Task</code></b>:  Task to save the checkpoint.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L36"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L35"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-resumetaskfailed"><kbd>class</kbd> <code>ResumeTaskFailed</code></h2>
 <p>raised when task structure does not match during resuming.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L52"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L65"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-task"><kbd>class</kbd> <code>Task</code></h2>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L60"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p>A task is a unit of computation.</p>
+<p>It can be a single node, or a graph. A task can be executed by a worker.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>node</code></b>:  a node or a graph.</p>
+</li>
+<li>
+<p><b><code>name</code></b>:  the name of the task.</p>
+</li>
+<li>
+<p><b><code>total_steps</code></b>:  the total number of steps to run.</p>
+</li>
+<li>
+<p><b><code>total_epochs</code></b>:  the total number of epochs to run.</p>
+</li>
+<li>
+<p><b><code>config</code></b>:  a dict of configs.</p>
+</li>
+</ul>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init__"><kbd>method</kbd> <code>__init__</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><a href="#__codelineno-2-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
@@ -1806,172 +1899,509 @@
 <hr />
 <h4 id="property-global_auto_steps"><kbd>property</kbd> global_auto_steps</h4>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L213"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-load_state_dict"><kbd>method</kbd> <code>load_state_dict</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><a href="#__codelineno-3-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">load_state_dict</span><span class="p">(</span><span class="n">_state_dict</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L203"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-state_dict"><kbd>method</kbd> <code>state_dict</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><a href="#__codelineno-4-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">state_dict</span><span class="p">()</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L207"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L247"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-repeat"><kbd>class</kbd> <code>Repeat</code></h2>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L212"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p>Repeat a task for a fixed number of times.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li>
+<p><b><code>task</code></b> (Task):  Task to repeat.</p>
+</li>
+<li>
+<p><b><code>repeat</code></b> (int):  Number of times to repeat the task.</p>
+</li>
+<li>
+<p><b><code>epoch_size</code></b> (int):  Number of steps per epoch.</p>
+</li>
+<li>
+<p><b><code>total_steps</code></b> (int):  Total number of steps.</p>
+</li>
+<li>
+<p><b><code>total_epochs</code></b> (int):  Total number of epochs.</p>
+</li>
+<li>
+<p><b><code>launcher</code></b> (Launcher):  Launcher object.</p>
+</li>
+<li>
+<p><b><code>hypergraph</code></b> (Hypergraph):  Hypergraph object.</p>
+</li>
+<li>
+<p><b><code>events</code></b> (Events):  Events object.</p>
+</li>
+</ul>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L263"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init___1"><kbd>method</kbd> <code>__init__</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><a href="#__codelineno-5-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L243"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L294"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-load_state_dict_1"><kbd>method</kbd> <code>load_state_dict</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><a href="#__codelineno-6-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">load_state_dict</span><span class="p">(</span><span class="n">_state_dict</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L239"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L290"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-state_dict_1"><kbd>method</kbd> <code>state_dict</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><a href="#__codelineno-7-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">state_dict</span><span class="p">()</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L260"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L330"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-counter"><kbd>class</kbd> <code>Counter</code></h2>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L262"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p>Counter object.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li>
+<p><b><code>epochs</code></b> (int):  Number of epochs.</p>
+</li>
+<li>
+<p><b><code>steps</code></b> (int):  Number of steps.</p>
+</li>
+</ul>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L337"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init___2"><kbd>method</kbd> <code>__init__</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><a href="#__codelineno-8-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">()</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
 <h4 id="property-total"><kbd>property</kbd> total</h4>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L286"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L341"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-__getitem__"><kbd>method</kbd> <code>__getitem__</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><a href="#__codelineno-9-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+<p>Get the value of the counter.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><b><code>key</code></b> (str):  Name of the counter.</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>int</code></b>:  Value of the counter.</li>
+</ul>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L357"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-__setitem__"><kbd>method</kbd> <code>__setitem__</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><a href="#__codelineno-10-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</code></pre></div>
+<p>Set the value of the counter.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>key</code></b> (str):  Name of the counter.</p>
+</li>
+<li>
+<p><b><code>value</code></b> (int):  Value of the counter.</p>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>KeyError</code></b>:  If the key is not valid.</li>
+</ul>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L378"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-globalcounters"><kbd>class</kbd> <code>GlobalCounters</code></h2>
-<p>GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7f95070425e0>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7f9507042070>)</p>
+<p>Global counters object.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li>
+<p><b><code>epochs</code></b> (int):  Number of epochs.</p>
+</li>
+<li>
+<p><b><code>steps</code></b> (int):  Number of steps.</p>
+</li>
+</ul>
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/\<string>"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="function-__init__"><kbd>function</kbd> <code>__init__</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><a href="#__codelineno-9-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2"></a><a href="#__codelineno-9-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">steps</span><span class="p">:</span> <span class="s1">&#39;Counter&#39;</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">core</span><span class="o">.</span><span class="n">hypergraph</span><span class="o">.</span><span class="n">Counter</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f95070425e0</span><span class="o">&gt;</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3"></a><a href="#__codelineno-9-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">epochs</span><span class="p">:</span> <span class="s1">&#39;Counter&#39;</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">core</span><span class="o">.</span><span class="n">hypergraph</span><span class="o">.</span><span class="n">Counter</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f9507042070</span><span class="o">&gt;</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4"></a><a href="#__codelineno-9-4"><span class="linenos" data-linenos="4 "></span></a><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><a href="#__codelineno-11-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><a href="#__codelineno-11-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">steps</span><span class="p">:</span> <span class="s1">&#39;Counter&#39;</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">core</span><span class="o">.</span><span class="n">hypergraph</span><span class="o">.</span><span class="n">Counter</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7ff1ec689c40</span><span class="o">&gt;</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a><a href="#__codelineno-11-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">epochs</span><span class="p">:</span> <span class="s1">&#39;Counter&#39;</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">core</span><span class="o">.</span><span class="n">hypergraph</span><span class="o">.</span><span class="n">Counter</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7ff1ec6891c0</span><span class="o">&gt;</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><a href="#__codelineno-11-4"><span class="linenos" data-linenos="4 "></span></a><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L302"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L412"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-hypergraph"><kbd>class</kbd> <code>HyperGraph</code></h2>
 <p>HyperGraph is the container for all nodes.</p>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L306"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li>
+<p><b><code>nodes</code></b> (dict):  Nodes.</p>
+</li>
+<li>
+<p><b><code>edges</code></b> (dict):  Edges.</p>
+</li>
+<li>
+<p><b><code>tasks</code></b> (dict):  Tasks.</p>
+</li>
+<li>
+<p><b><code>launchers</code></b> (dict):  Launchers.</p>
+</li>
+<li>
+<p><b><code>global_counters</code></b> (GlobalCounters):  Global counters.</p>
+</li>
+<li>
+<p><b><code>resume_from</code></b> (str):  Path to the checkpoint file.</p>
+</li>
+<li>
+<p><b><code>resume_tags</code></b> (str):  Tags to load.</p>
+</li>
+<li>
+<p><b><code>save_to</code></b> (str):  Path to the checkpoint file.</p>
+</li>
+<li>
+<p><b><code>save_tags</code></b> (str):  Tags to save.</p>
+</li>
+<li>
+<p><b><code>strict</code></b> (bool):  If True, raise an exception if the checkpoint file does not exist.</p>
+</li>
+<li>
+<p><b><code>dry_run</code></b> (bool):  If True, do not save the checkpoint.</p>
+</li>
+<li>
+<p><b><code>verbose</code></b> (bool):  If True, print the progress.</p>
+</li>
+<li>
+<p><b><code>logger</code></b> (Logger):  Logger.</p>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the tags are not valid.</li>
+</ul>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L434"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init___3"><kbd>method</kbd> <code>__init__</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><a href="#__codelineno-10-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2"></a><a href="#__codelineno-10-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">autocast_enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3"></a><a href="#__codelineno-10-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">autocast_dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4"></a><a href="#__codelineno-10-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">grad_scaler</span><span class="p">:</span> <span class="s1">&#39;Union[bool, GradScaler]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5"></a><a href="#__codelineno-10-5"><span class="linenos" data-linenos="5 "></span></a><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><a href="#__codelineno-12-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a><a href="#__codelineno-12-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">autocast_enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a><a href="#__codelineno-12-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">autocast_dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4"></a><a href="#__codelineno-12-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">grad_scaler</span><span class="p">:</span> <span class="s1">&#39;Union[bool, GradScaler]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5"></a><a href="#__codelineno-12-5"><span class="linenos" data-linenos="5 "></span></a><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
 <h4 id="property-launcher"><kbd>property</kbd> launcher</h4>
+<p>Get the launcher.</p>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>ElasticLauncher</code></b>:  Launcher.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the launcher is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L368"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L617"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-__getitem___1"><kbd>method</kbd> <code>__getitem__</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><a href="#__codelineno-13-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__getitem__</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span> <span class="err">→</span> <span class="n">Node</span>
+</code></pre></div>
+<p>Get a node by uid.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><b><code>uid</code></b> (str):  Uid.</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>Node</code></b>:  Node.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the uid is not valid.</li>
+</ul>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L555"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-add"><kbd>method</kbd> <code>add</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><a href="#__codelineno-11-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="s1">&#39;Node&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><a href="#__codelineno-14-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="s1">&#39;Node&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
 </code></pre></div>
+<p>Add a node.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>name</code></b> (str):  Name.</p>
+</li>
+<li>
+<p><b><code>node</code></b> (Node):  Node.</p>
+</li>
+<li>
+<p><b><code>tags</code></b> (str):  Tags.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>Node</code></b>:  Node.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the name is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L329"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L472"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-backup_source_files"><kbd>method</kbd> <code>backup_source_files</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><a href="#__codelineno-12-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">backup_source_files</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><a href="#__codelineno-15-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">backup_source_files</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span>
 </code></pre></div>
+<p>Backup source files.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><b><code>entrypoint</code></b> (str):  Entrypoint.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the entrypoint is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L635"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L936"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-exec_tasks"><kbd>method</kbd> <code>exec_tasks</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><a href="#__codelineno-13-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">exec_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">launcher</span><span class="p">:</span> <span class="s1">&#39;ElasticLauncher&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><a href="#__codelineno-16-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">exec_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">launcher</span><span class="p">:</span> <span class="s1">&#39;ElasticLauncher&#39;</span><span class="p">)</span>
 </code></pre></div>
+<p>Execute the tasks.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>tasks</code></b> (List[Task]):  Tasks to execute.</p>
+</li>
+<li>
+<p><b><code>launcher</code></b> (ElasticLauncher):  Launcher.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>List[Task]</code></b>:  Tasks executed.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the tasks are not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L319"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L447"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-init_autocast"><kbd>method</kbd> <code>init_autocast</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><a href="#__codelineno-14-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">init_autocast</span><span class="p">(</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2"></a><a href="#__codelineno-14-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">autocast_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3"></a><a href="#__codelineno-14-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">autocast_dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4"></a><a href="#__codelineno-14-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">grad_scaler</span><span class="p">:</span> <span class="s1">&#39;Union[bool, GradScaler]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5"></a><a href="#__codelineno-14-5"><span class="linenos" data-linenos="5 "></span></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1"></a><a href="#__codelineno-17-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">init_autocast</span><span class="p">(</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2"></a><a href="#__codelineno-17-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">autocast_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3"></a><a href="#__codelineno-17-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">autocast_dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4"></a><a href="#__codelineno-17-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">grad_scaler</span><span class="p">:</span> <span class="s1">&#39;Union[bool, GradScaler]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5"></a><a href="#__codelineno-17-5"><span class="linenos" data-linenos="5 "></span></a><span class="p">)</span>
 </code></pre></div>
+<p>Initialize autocast.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>autocast_enabled</code></b> (bool):  If True, enable autocast.</p>
+</li>
+<li>
+<p><b><code>autocast_dtype</code></b> (str):  Data type to cast the gradients to.</p>
+</li>
+<li>
+<p><b><code>grad_scaler</code></b> (GradScaler):  Gradient scaler.</p>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the autocast_dtype is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L343"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L494"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-init_grad_scaler"><kbd>method</kbd> <code>init_grad_scaler</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><a href="#__codelineno-15-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">init_grad_scaler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad_scaler</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">GradScaler</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">init_scale</span><span class="o">=</span><span class="mf">2.0</span> <span class="o">**</span> <span class="mi">16</span><span class="p">,</span> <span class="n">growth_factor</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">backoff_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">growth_interval</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1"></a><a href="#__codelineno-18-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">init_grad_scaler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad_scaler</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">GradScaler</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">init_scale</span><span class="o">=</span><span class="mf">2.0</span> <span class="o">**</span> <span class="mi">16</span><span class="p">,</span> <span class="n">growth_factor</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">backoff_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">growth_interval</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p>Ellipsis</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L326"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L464"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-is_autocast_enabled"><kbd>method</kbd> <code>is_autocast_enabled</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><a href="#__codelineno-16-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">is_autocast_enabled</span><span class="p">()</span> <span class="err">→</span> <span class="nb">bool</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1"></a><a href="#__codelineno-19-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">is_autocast_enabled</span><span class="p">()</span> <span class="err">→</span> <span class="nb">bool</span>
 </code></pre></div>
+<p>Check if autocast is enabled.</p>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>bool</code></b>:  If True, autocast is enabled.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L358"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L521"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-is_grad_scaler_enabled"><kbd>method</kbd> <code>is_grad_scaler_enabled</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1"></a><a href="#__codelineno-17-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">is_grad_scaler_enabled</span><span class="p">()</span> <span class="err">→</span> <span class="nb">bool</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1"></a><a href="#__codelineno-20-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">is_grad_scaler_enabled</span><span class="p">()</span> <span class="err">→</span> <span class="nb">bool</span>
 </code></pre></div>
+<p>Check if the gradient scaler is enabled.</p>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>bool</code></b>:  If True, the gradient scaler is enabled.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the grad_scaler is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L605"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L896"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-load_checkpoint"><kbd>method</kbd> <code>load_checkpoint</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1"></a><a href="#__codelineno-18-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">load_checkpoint</span><span class="p">(</span><span class="n">resume_from</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1"></a><a href="#__codelineno-21-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">load_checkpoint</span><span class="p">(</span><span class="n">resume_from</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
 </code></pre></div>
+<p>Load the checkpoint.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>resume_from</code></b> (str):  Path to the checkpoint.</p>
+</li>
+<li>
+<p><b><code>strict</code></b> (bool):  Whether to check the keys.</p>
+</li>
+<li>
+<p><b><code>tags</code></b> (str):  Tags to load.</p>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the resume_from is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L436"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L688"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-print_forward_output"><kbd>method</kbd> <code>print_forward_output</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1"></a><a href="#__codelineno-19-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">print_forward_output</span><span class="p">(</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2"></a><a href="#__codelineno-19-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="o">*</span><span class="n">nodenames</span><span class="p">,</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3"></a><a href="#__codelineno-19-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4"></a><a href="#__codelineno-19-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">total</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5"></a><a href="#__codelineno-19-5"><span class="linenos" data-linenos="5 "></span></a>    <span class="n">tags</span><span class="p">:</span> <span class="s1">&#39;List[str]&#39;</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
-<a id="__codelineno-19-6" name="__codelineno-19-6"></a><a href="#__codelineno-19-6"><span class="linenos" data-linenos="6 "></span></a>    <span class="n">train_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-19-7" name="__codelineno-19-7"></a><a href="#__codelineno-19-7"><span class="linenos" data-linenos="7 "></span></a>    <span class="n">localrank0_only</span><span class="o">=</span><span class="kc">True</span>
-<a id="__codelineno-19-8" name="__codelineno-19-8"></a><a href="#__codelineno-19-8"><span class="linenos" data-linenos="8 "></span></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1"></a><a href="#__codelineno-22-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">print_forward_output</span><span class="p">(</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2"></a><a href="#__codelineno-22-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="o">*</span><span class="n">nodenames</span><span class="p">,</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3"></a><a href="#__codelineno-22-3"><span class="linenos" data-linenos="3 "></span></a>    <span class="n">every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4"></a><a href="#__codelineno-22-4"><span class="linenos" data-linenos="4 "></span></a>    <span class="n">total</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5"></a><a href="#__codelineno-22-5"><span class="linenos" data-linenos="5 "></span></a>    <span class="n">tags</span><span class="p">:</span> <span class="s1">&#39;List[str]&#39;</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6"></a><a href="#__codelineno-22-6"><span class="linenos" data-linenos="6 "></span></a>    <span class="n">train_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-22-7" name="__codelineno-22-7"></a><a href="#__codelineno-22-7"><span class="linenos" data-linenos="7 "></span></a>    <span class="n">localrank0_only</span><span class="o">=</span><span class="kc">True</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8"></a><a href="#__codelineno-22-8"><span class="linenos" data-linenos="8 "></span></a><span class="p">)</span>
 </code></pre></div>
+<p>Print forward output.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>nodenames</code></b> (str):  Node names.</p>
+</li>
+<li>
+<p><b><code>every</code></b> (int):  Print every.</p>
+</li>
+<li>
+<p><b><code>total</code></b> (int):  Total.</p>
+</li>
+<li>
+<p><b><code>tags</code></b> (List[str]):  Tags.</p>
+</li>
+<li>
+<p><b><code>train_only</code></b> (bool):  Train only.</p>
+</li>
+<li>
+<p><b><code>localrank0_only</code></b> (bool):  Local rank 0 only.</p>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the nodenames is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L379"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L579"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-remove"><kbd>method</kbd> <code>remove</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1"></a><a href="#__codelineno-20-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">remove</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1"></a><a href="#__codelineno-23-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">remove</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 </code></pre></div>
+<p>Remove a node.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><b><code>query</code></b> (str):  Query.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the query is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L558"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L825"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-run"><kbd>method</kbd> <code>run</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1"></a><a href="#__codelineno-21-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1"></a><a href="#__codelineno-24-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 <p>Ellipsis</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L558"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L825"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-run_1"><kbd>method</kbd> <code>run</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1"></a><a href="#__codelineno-22-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">launcher</span><span class="p">:</span> <span class="n">ElasticLauncher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1"></a><a href="#__codelineno-25-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">launcher</span><span class="p">:</span> <span class="n">ElasticLauncher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 <p>Ellipsis</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L558"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L825"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-run_2"><kbd>method</kbd> <code>run</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1"></a><a href="#__codelineno-23-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">nnodes</span><span class="o">=</span><span class="s1">&#39;1:1&#39;</span><span class="p">,</span> <span class="n">dist_backend</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">monitor_interval</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">node_rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">master_addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">master_port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">redirects</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">max_restarts</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omp_num_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_method</span><span class="o">=</span><span class="s1">&#39;spawn&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1"></a><a href="#__codelineno-26-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">nnodes</span><span class="o">=</span><span class="s1">&#39;1:1&#39;</span><span class="p">,</span> <span class="n">dist_backend</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">monitor_interval</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">node_rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">master_addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">master_port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">redirects</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">max_restarts</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omp_num_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_method</span><span class="o">=</span><span class="s1">&#39;spawn&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>Ellipsis</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L558"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L825"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-run_3"><kbd>method</kbd> <code>run</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1"></a><a href="#__codelineno-24-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">nnodes</span><span class="o">=</span><span class="s1">&#39;1:1&#39;</span><span class="p">,</span> <span class="n">dist_backend</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">monitor_interval</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">rdzv_endpoint</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">rdzv_backend</span><span class="o">=</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">rdzv_configs</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">standalone</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">redirects</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">max_restarts</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omp_num_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_method</span><span class="o">=</span><span class="s1">&#39;spawn&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1"></a><a href="#__codelineno-27-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">nnodes</span><span class="o">=</span><span class="s1">&#39;1:1&#39;</span><span class="p">,</span> <span class="n">dist_backend</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">monitor_interval</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">rdzv_endpoint</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">rdzv_backend</span><span class="o">=</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">rdzv_configs</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">standalone</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">redirects</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resume_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">max_restarts</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omp_num_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_method</span><span class="o">=</span><span class="s1">&#39;spawn&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>Ellipsis</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L581"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L862"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-save_checkpoint"><kbd>method</kbd> <code>save_checkpoint</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1"></a><a href="#__codelineno-25-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">save_checkpoint</span><span class="p">(</span><span class="n">save_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1"></a><a href="#__codelineno-28-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">save_checkpoint</span><span class="p">(</span><span class="n">save_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
 </code></pre></div>
+<p>Save the checkpoint.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>save_to</code></b> (str):  Path to save the checkpoint.</p>
+</li>
+<li>
+<p><b><code>tags</code></b> (str):  Tags to save.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>str</code></b>:  Path to the checkpoint.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the save_to is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L382"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L590"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-select_egraph"><kbd>method</kbd> <code>select_egraph</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1"></a><a href="#__codelineno-26-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">select_egraph</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="err">→</span> <span class="n">ExecutableGraph</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1"></a><a href="#__codelineno-29-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">select_egraph</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="err">→</span> <span class="n">ExecutableGraph</span>
 </code></pre></div>
+<p>Select an executable graph.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><b><code>query</code></b> (str):  Query.</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>ExecutableGraph</code></b>:  Executable graph.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the query is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L410"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L640"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-select_nodes"><kbd>method</kbd> <code>select_nodes</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1"></a><a href="#__codelineno-27-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">select_nodes</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1"></a><a href="#__codelineno-30-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">select_nodes</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
 </code></pre></div>
+<p>Select nodes.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><b><code>query</code></b> (str):  Query.</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>list</code></b>:  Nodes.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the query is not valid.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L361"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L532"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-set_gradient_accumulate"><kbd>method</kbd> <code>set_gradient_accumulate</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1"></a><a href="#__codelineno-28-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">set_gradient_accumulate</span><span class="p">(</span><span class="n">every</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1"></a><a href="#__codelineno-31-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">set_gradient_accumulate</span><span class="p">(</span><span class="n">every</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
+<p>Set the gradient accumulate steps.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><b><code>every</code></b> (int):  Gradient accumulate steps.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>ValueError</code></b>:  If the every is not valid.</li>
+</ul>
 
               
             </article>
