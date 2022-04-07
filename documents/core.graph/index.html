@@ -1868,90 +1868,102 @@
 </code></pre></div>
 <hr />
 <h4 id="property-board"><kbd>property</kbd> board</h4>
+<p>the board writer of current task.</p>
 <hr />
 <h4 id="property-device"><kbd>property</kbd> device</h4>
 <p>the assigned device by current launcher.</p>
 <hr />
 <h4 id="property-epoch_size"><kbd>property</kbd> epoch_size</h4>
+<p>the size of current epoch.</p>
 <hr />
 <h4 id="property-epoch_steps"><kbd>property</kbd> epoch_steps</h4>
+<p>the steps of current epoch.</p>
 <hr />
 <h4 id="property-global_auto_steps"><kbd>property</kbd> global_auto_steps</h4>
+<p>the global steps of current task.</p>
 <hr />
 <h4 id="property-global_train_epochs"><kbd>property</kbd> global_train_epochs</h4>
+<p>the global train epochs of current task.</p>
 <hr />
 <h4 id="property-global_train_steps"><kbd>property</kbd> global_train_steps</h4>
+<p>the global train steps of current task.</p>
 <hr />
 <h4 id="property-grad_acc_steps"><kbd>property</kbd> grad_acc_steps</h4>
+<p>the grad accumulator steps of current task.</p>
 <hr />
 <h4 id="property-grad_scaler"><kbd>property</kbd> grad_scaler</h4>
+<p>the grad scaler of current task.</p>
 <hr />
 <h4 id="property-launcher"><kbd>property</kbd> launcher</h4>
+<p>the current launcher.</p>
 <hr />
 <h4 id="property-name"><kbd>property</kbd> name</h4>
 <p>the node name in the current activated <a href="./#class-executablegraph"><code>ExecutableGraph</code></a>.</p>
 <hr />
 <h4 id="property-out_dir"><kbd>property</kbd> out_dir</h4>
+<p>the output directory of current task.</p>
 <hr />
 <h4 id="property-run_id"><kbd>property</kbd> run_id</h4>
+<p>the run id of current task.</p>
 <hr />
 <h4 id="property-step_mode"><kbd>property</kbd> step_mode</h4>
 <p>whether current task is running by step (True) or by epoch (False).</p>
 <hr />
 <h4 id="property-task"><kbd>property</kbd> task</h4>
+<p>the current task.</p>
 <hr />
 <h4 id="property-training"><kbd>property</kbd> training</h4>
 <p>whether current task is training.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L155"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L167"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-backward"><kbd>method</kbd> <code>backward</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">backward</span><span class="p">()</span>
 </code></pre></div>
 <p>calculates gradients.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L177"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-clean_up"><kbd>method</kbd> <code>clean_up</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><a href="#__codelineno-2-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">clean_up</span><span class="p">()</span>
 </code></pre></div>
 <p>an event hook for clean up all resources at switching executable graphs.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L167"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-dry_run"><kbd>method</kbd> <code>dry_run</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><a href="#__codelineno-3-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">dry_run</span><span class="p">()</span>
 </code></pre></div>
 <p>only update states about progress.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L161"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-epoch_end"><kbd>method</kbd> <code>epoch_end</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><a href="#__codelineno-4-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">epoch_end</span><span class="p">()</span>
 </code></pre></div>
 <p>an event hook for epoch end. (only for epoch mode)</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L159"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L171"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-epoch_start"><kbd>method</kbd> <code>epoch_start</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><a href="#__codelineno-5-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">epoch_start</span><span class="p">()</span>
 </code></pre></div>
 <p>an event hook for epoch start. (only for epoch mode)</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L141"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L153"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-forward"><kbd>method</kbd> <code>forward</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><a href="#__codelineno-6-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">forward</span><span class="p">()</span>
 </code></pre></div>
 <p>retrieves forward output in cache or calculates it using <code>forward_impl</code> and save the output to the cache. Subclasses should not override this method.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L153"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-forward_impl"><kbd>method</kbd> <code>forward_impl</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><a href="#__codelineno-7-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">forward_impl</span><span class="p">(</span><span class="n">cache</span><span class="p">:</span> <span class="s2">&quot;&#39;GraphOutputCache&#39;&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>forward pass of the node, inputs of current executable graph can be directly retrieved from <code>graph</code> argument.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L171"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L183"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-load_state_dict"><kbd>method</kbd> <code>load_state_dict</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><a href="#__codelineno-8-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">load_state_dict</span><span class="p">(</span><span class="n">_state_dict</span><span class="p">:</span> <span class="s1">&#39;Dict&#39;</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>resumes node state from state_dict.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L173"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L185"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-move"><kbd>method</kbd> <code>move</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><a href="#__codelineno-9-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">move</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -1977,58 +1989,118 @@ the function is applied recursively to each of the elements.</p>
 <li><b><code>RuntimeError</code></b>:  data is not one of torch.Tensor, torch.nn.module, list or dict.</li>
 </ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L175"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-prepare"><kbd>method</kbd> <code>prepare</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><a href="#__codelineno-10-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">prepare</span><span class="p">()</span>
 </code></pre></div>
 <p>an event hook for prepare all resources at switching executable graphs.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L181"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-state_dict"><kbd>method</kbd> <code>state_dict</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><a href="#__codelineno-11-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">state_dict</span><span class="p">()</span> <span class="err">→</span> <span class="n">Dict</span>
 </code></pre></div>
 <p>returns serialization of current node.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L157"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-update"><kbd>method</kbd> <code>update</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><a href="#__codelineno-12-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">update</span><span class="p">()</span>
 </code></pre></div>
 <p>update parameters or buffers, e.g. using SGD based optimizer to update parameters. </p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L206"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L218"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-graphoutputcache"><kbd>class</kbd> <code>GraphOutputCache</code></h2>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L208"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p>a cache for storing and searching forward outputs of nodes.</p>
+<p>This class is used to store and search forward outputs of nodes.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li>
+<p><b><code>cache</code></b> (dict):  a dict for storing forward outputs.</p>
+</li>
+<li>
+<p><b><code>egraph</code></b> (ExecutableGraph):  the executable graph.</p>
+</li>
+<li>
+<p><b><code>data</code></b> (Dict[str, torch.Tensor]):  the cache.</p>
+</li>
+</ul>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L228"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init___1"><kbd>method</kbd> <code>__init__</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><a href="#__codelineno-13-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span><span class="n">egraph</span><span class="p">:</span> <span class="s2">&quot;&#39;ExecutableGraph&#39;&quot;</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L212"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L232"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__getitem__"><kbd>method</kbd> <code>__getitem__</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><a href="#__codelineno-14-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__getitem__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <p>Execute node with name <code>name</code> if not executed, return the last executed cache else.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L224"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L244"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-clear"><kbd>method</kbd> <code>clear</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><a href="#__codelineno-15-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">clear</span><span class="p">()</span>
 </code></pre></div>
 <p>Clear the cache, next calls to <code>__getitem__</code> will recalculate.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L229"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L249"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-executablegraph"><kbd>class</kbd> <code>ExecutableGraph</code></h2>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L231"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p>an executable graph.</p>
+<p>This class is used to execute nodes in a graph.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li>
+<p><b><code>hypergraph</code></b> (HyperGraph):  the hypergraph.</p>
+</li>
+<li>
+<p><b><code>nodes</code></b> (Dict[str, Node]):  a dict for storing nodes.</p>
+</li>
+<li>
+<p><b><code>nodes_tags</code></b> (Dict[str, str]):  a dict for storing tags of nodes.</p>
+</li>
+<li>
+<p><b><code>nodes_names</code></b> (Dict[str, str]):  a dict for storing names of nodes.</p>
+</li>
+<li>
+<p><b><code>cache</code></b> (GraphOutputCache):  a cache for storing and searching forward outputs of nodes.</p>
+</li>
+<li>
+<p><b><code>task</code></b>:  the task of the graph.</p>
+</li>
+<li>
+<p><b><code>losses</code></b>:  the losses of the graph.</p>
+</li>
+<li>
+<p><b><code>total_loss</code></b>:  the total loss of the graph.</p>
+</li>
+</ul>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L265"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init___2"><kbd>method</kbd> <code>__init__</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><a href="#__codelineno-16-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span><span class="n">hypergraph</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
 <h4 id="property-grad_scaler_1"><kbd>property</kbd> grad_scaler</h4>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L241"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L275"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-add_node"><kbd>method</kbd> <code>add_node</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1"></a><a href="#__codelineno-17-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">add_node</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
 </code></pre></div>
+<p>add a node to the graph.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>node_name</code></b> (str):  the name of the node.</p>
+</li>
+<li>
+<p><b><code>node</code></b> (Node):  the node.</p>
+</li>
+<li>
+<p><b><code>tags</code></b> (List[str]):  the tags of the node.</p>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>RuntimeError</code></b>:  the node is not a node of the hypergraph.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L258"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L302"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-apply"><kbd>method</kbd> <code>apply</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1"></a><a href="#__codelineno-18-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">apply</span><span class="p">(</span>
 <a id="__codelineno-18-2" name="__codelineno-18-2"></a><a href="#__codelineno-18-2"><span class="linenos" data-linenos="2 "></span></a>    <span class="n">method</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
@@ -2037,26 +2109,55 @@ the function is applied recursively to each of the elements.</p>
 <a id="__codelineno-18-5" name="__codelineno-18-5"></a><a href="#__codelineno-18-5"><span class="linenos" data-linenos="5 "></span></a>    <span class="o">**</span><span class="n">kwds</span>
 <a id="__codelineno-18-6" name="__codelineno-18-6"></a><a href="#__codelineno-18-6"><span class="linenos" data-linenos="6 "></span></a><span class="p">)</span>
 </code></pre></div>
+<p>apply <code>method</code> to all nodes in the graph.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>
+<p><b><code>method</code></b> (str):  the method name.</p>
+</li>
+<li>
+<p><b><code>*args</code></b>:  the arguments of the method.</p>
+</li>
+<li>
+<p><b><code>filter</code></b> (Callable[[Node], bool]):  the filter function.</p>
+</li>
+<li>
+<p><b><code>**kwds</code></b>:  the keyword arguments of the method.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><b><code>List[Any]</code></b>:  the return values of the method.</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul>
+<li><b><code>RuntimeError</code></b>:  the method is not found.</li>
+</ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L273"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L335"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-clean_up_nodes"><kbd>method</kbd> <code>clean_up_nodes</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1"></a><a href="#__codelineno-19-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">clean_up_nodes</span><span class="p">()</span>
 </code></pre></div>
+<p>clean up all nodes in the graph.</p>
+<p>This method is called after the graph is executed.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L255"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L299"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-items"><kbd>method</kbd> <code>items</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1"></a><a href="#__codelineno-20-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">items</span><span class="p">()</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L280"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L346"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-iterate"><kbd>method</kbd> <code>iterate</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1"></a><a href="#__codelineno-21-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">iterate</span><span class="p">()</span>
 </code></pre></div>
+<p>iterate all nodes in the graph.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L267"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/graph.py#L325"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-prepare_nodes"><kbd>method</kbd> <code>prepare_nodes</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1"></a><a href="#__codelineno-22-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">prepare_nodes</span><span class="p">()</span>
 </code></pre></div>
+<p>prepare all nodes in the graph.</p>
+<p>This method is called before the graph is executed.</p>
 
               
             </article>
