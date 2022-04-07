@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import torch
 import logging
 import os
 import random
@@ -37,20 +36,44 @@ class ResumeTaskFailed(Exception):
     """raised when task structure does not match during resuming."""
 
 class _Task(Configurable):
+    """A task is a unit of computation.
 
+    It can be a single node, or a graph. A task can be executed by a worker.
+    """
     def __freeze__(self, *, steps: int = 0, epochs: int = 0):
+        """Freeze the task.
+
+        Args:
+            steps: number of steps to run.
+            epochs: number of epochs to run.
+
+        Returns:
+            A frozen task.
+        """
         self.total_steps = steps
         self.total_epochs = epochs
 
     def state_dict(self):
+        """Return the state of the task."""
         raise NotImplementedError()
 
     def load_state_dict(self, _state_dict, strict):
+        """Load the state of the task."""
         raise NotImplementedError()
 
 
 class Task(_Task):
+    """A task is a unit of computation.
 
+    It can be a single node, or a graph. A task can be executed by a worker.
+
+    Args:
+        node: a node or a graph.
+        name: the name of the task.
+        total_steps: the total number of steps to run.
+        total_epochs: the total number of epochs to run.
+        config: a dict of configs.
+    """
     @overload
     def __init__(self, *, train: bool, steps: int, tags="*"): ...
 
@@ -61,6 +84,17 @@ class Task(_Task):
         super().__init__(*args, **kwds)
 
     def __freeze__(self, *, train: bool, tags="*", **kwds):
+        """Freeze the task.
+
+        Args:
+            train: whether the task is for training.
+            tags: a list of tags.
+            steps: number of steps to run.
+            epochs: number of epochs to run.
+
+        Returns:
+            self.
+        """
         super().__freeze__(**kwds)
         assert self.total_epochs == 0 or self.total_steps == 0
         self.training = train
@@ -73,6 +107,12 @@ class Task(_Task):
         return self
 
     def __call__(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
+        """Execute the task.
+
+        Args:
+            hypergraph: the hypergraph.
+            launcher: the launcher.
+        """
         if self.finished: return  # for resuming progress
         from torch.autograd.grad_mode import set_grad_enabled
         with set_grad_enabled(self.training):
@@ -205,7 +245,18 @@ class Task(_Task):
         return value
 
 class Repeat(_Task):
+    """Repeat a task for a fixed number of times.
 
+    Attributes:
+        task (Task): Task to repeat.
+        repeat (int): Number of times to repeat the task.
+        epoch_size (int): Number of steps per epoch.
+        total_steps (int): Total number of steps.
+        total_epochs (int): Total number of epochs.
+        launcher (Launcher): Launcher object.
+        hypergraph (Hypergraph): Hypergraph object.
+        events (Events): Events object.
+    """
     @overload
     def __init__(self, tasks:List[_Task], times:int) -> None: ...
 
@@ -248,22 +299,54 @@ class Repeat(_Task):
             t.load_state_dict(s, dry_run=dry_run)
 
 def LoadCheckpointTask(resume_from, strict=False, tags="*"):
+    """Load checkpoint from a file.
+
+    Args:
+        resume_from (str): Path to the checkpoint file.
+        strict (bool): If True, raise an exception if the checkpoint file does not exist.
+        tags (str): Tags to load.
+
+    Returns:
+        Task: Task to load the checkpoint.
+    """
     def func(g: HyperGraph):
         g.load_checkpoint(resume_from, strict=strict, tags=tags)
     return func
 
 def SaveCheckpointTask(save_to=None, tags="*"):
+    """Save checkpoint to a file.
+
+    Args:
+        save_to (str): Path to the checkpoint file.
+        tags (str): Tags to save.
+
+    Returns:
+        Task: Task to save the checkpoint.
+    """
     def func(g: HyperGraph):
         g.save_checkpoint(save_to=save_to, tags=tags)
     return func
 
 class Counter:
+    """Counter object.
 
+    Attributes:
+        epochs (int): Number of epochs.
+        steps (int): Number of steps.
+    """
     def __init__(self) -> None:
         self.train = 0
         self.eval = 0
 
     def __getitem__(self, key):
+        """Get the value of the counter.
+
+        Args:
+            key (str): Name of the counter.
+
+        Returns:
+            int: Value of the counter.
+        """
         if key == "train":
             return self.train
         elif key == "eval":
@@ -272,6 +355,15 @@ class Counter:
             raise KeyError(key)
 
     def __setitem__(self, key, value):
+        """Set the value of the counter.
+
+        Args:
+            key (str): Name of the counter.
+            value (int): Value of the counter.
+
+        Raises:
+            KeyError: If the key is not valid.
+        """
         if key == "train":
             self.train = value
         elif key == "eval":
@@ -285,10 +377,28 @@ class Counter:
 
 @dataclass
 class GlobalCounters:
+    """Global counters object.
+
+    Attributes:
+        epochs (int): Number of epochs.
+        steps (int): Number of steps.
+    """
     steps:Counter = Counter()
     epochs:Counter = Counter()
 
 def _tags_to_uid(tags, name):
+    """Convert tags to a unique id.
+
+    Args:
+        tags (str): Tags.
+        name (str): Name of the task.
+
+    Returns:
+        str: Unique id.
+
+    Raises:
+        ValueError: If the tags are not valid.
+    """
     tags = as_list(tags)
     if len(tags) == 1 and tags[0][0] == "#":
         return f"{tags[0]}/{name}"
@@ -301,6 +411,24 @@ def _tags_to_uid(tags, name):
 
 class HyperGraph:
     """HyperGraph is the container for all nodes.
+
+    Attributes:
+        nodes (dict): Nodes.
+        edges (dict): Edges.
+        tasks (dict): Tasks.
+        launchers (dict): Launchers.
+        global_counters (GlobalCounters): Global counters.
+        resume_from (str): Path to the checkpoint file.
+        resume_tags (str): Tags to load.
+        save_to (str): Path to the checkpoint file.
+        save_tags (str): Tags to save.
+        strict (bool): If True, raise an exception if the checkpoint file does not exist.
+        dry_run (bool): If True, do not save the checkpoint.
+        verbose (bool): If True, print the progress.
+        logger (Logger): Logger.
+
+    Raises:
+        ValueError: If the tags are not valid.
     """
 
     def __init__(self, autocast_enabled=False, autocast_dtype=None, grad_scaler:Union[bool, GradScaler] = None) -> None:
@@ -317,6 +445,16 @@ class HyperGraph:
         self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
 
     def init_autocast(self, autocast_enabled=True, autocast_dtype=None, grad_scaler:Union[bool, GradScaler] = None):
+        """Initialize autocast.
+
+        Args:
+            autocast_enabled (bool): If True, enable autocast.
+            autocast_dtype (str): Data type to cast the gradients to.
+            grad_scaler (GradScaler): Gradient scaler.
+
+        Raises:
+            ValueError: If the autocast_dtype is not valid.
+        """
         if autocast_dtype is None:
             import torch
             autocast_dtype = torch.float16
@@ -324,9 +462,22 @@ class HyperGraph:
         self.init_grad_scaler(grad_scaler if grad_scaler is not None else autocast_enabled)
     
     def is_autocast_enabled(self) -> bool:
+        """Check if autocast is enabled.
+
+        Returns:
+            bool: If True, autocast is enabled.
+        """
         return self.autocast_kwds["enabled"]
     
     def backup_source_files(self, entrypoint:str):
+        """Backup source files.
+
+        Args:
+            entrypoint (str): Entrypoint.
+
+        Raises:
+            ValueError: If the entrypoint is not valid.
+        """
         self.entrypoint = entrypoint
 
     @overload
@@ -341,6 +492,18 @@ class HyperGraph:
         ...
         
     def init_grad_scaler(self, grad_scaler:Union[bool, GradScaler] = True, **kwds):
+        """Initialize the gradient scaler.
+
+        Args:
+            grad_scaler (Union[bool, GradScaler]): Gradient scaler.
+            **kwds: Keyword arguments.
+
+        Returns:
+            GradScaler: Gradient scaler.
+
+        Raises:
+            ValueError: If the grad_scaler is not valid.
+        """
         from torch.cuda.amp.grad_scaler import GradScaler
         if isa(grad_scaler, bool):
             if grad_scaler:
@@ -356,16 +519,53 @@ class HyperGraph:
             self._grad_scaler = GradScaler(enabled=False)
 
     def is_grad_scaler_enabled(self) -> bool:
+        """Check if the gradient scaler is enabled.
+
+        Returns:
+            bool: If True, the gradient scaler is enabled.
+
+        Raises:
+            ValueError: If the grad_scaler is not valid.
+        """
         return self._grad_scaler.is_enabled()
 
     def set_gradient_accumulate(self, every=1):
+        """Set the gradient accumulate steps.
+
+        Args:
+            every (int): Gradient accumulate steps.
+
+        Raises:
+            ValueError: If the every is not valid.
+        """
         self.grad_acc_steps = every
 
     @property
     def launcher(self) -> ElasticLauncher:
+        """Get the launcher.
+
+        Returns:
+            ElasticLauncher: Launcher.
+
+        Raises:
+            ValueError: If the launcher is not valid.
+        """
         return self.run_info.launcher
 
     def add(self, name, node:Node, tags="*"):
+        """Add a node.
+
+        Args:
+            name (str): Name.
+            node (Node): Node.
+            tags (str): Tags.
+
+        Returns:
+            Node: Node.
+
+        Raises:
+            ValueError: If the name is not valid.
+        """
         assert isa(node, Node), f"{node.__class__.__name__} is not a Node"
         tags = as_list(tags)
         assert is_list_of(tags, str)
@@ -377,9 +577,28 @@ class HyperGraph:
             self._num_workers = max(self._num_workers, node["num_workers"])
 
     def remove(self, query):
+        """Remove a node.
+
+        Args:
+            query (str): Query.
+
+        Raises:
+            ValueError: If the query is not valid.
+        """
         raise NotImplementedError()
 
     def select_egraph(self, query) -> ExecutableGraph:
+        """Select an executable graph.
+
+        Args:
+            query (str): Query.
+
+        Returns:
+            ExecutableGraph: Executable graph.
+
+        Raises:
+            ValueError: If the query is not valid.
+        """
         query = as_list(query)
         keys = self._select_keys(query)
         shortcut_query = hash(tuple(query))
@@ -396,6 +615,17 @@ class HyperGraph:
         return egraph
 
     def __getitem__(self, uid) -> Node:
+        """Get a node by uid.
+
+        Args:
+            uid (str): Uid.
+
+        Returns:
+            Node: Node.
+
+        Raises:
+            ValueError: If the uid is not valid.
+        """
         try:
             tagstr, name = uid.split("/")
             tags = tagstr.split(",")
@@ -408,11 +638,33 @@ class HyperGraph:
         return nodes[0]
 
     def select_nodes(self, *query):
+        """Select nodes.
+
+        Args:
+            query (str): Query.
+
+        Returns:
+            list: Nodes.
+
+        Raises:
+            ValueError: If the query is not valid.
+        """
         keys = self._select_keys(query)
         out = { key:self.nodes[key][1] for key in keys }
         return out
 
     def _select_keys(self, *query) -> List[str]:
+        """Select keys.
+
+        Args:
+            query (str): Query.
+
+        Returns:
+            list: Keys.
+
+        Raises:
+            ValueError: If the query is not valid.
+        """
         query = as_list(query)
         if "*" in query: return list(self.nodes.keys())
         out = []
@@ -434,7 +686,19 @@ class HyperGraph:
         return out
 
     def print_forward_output(self, *nodenames, every=1, total=None, tags:List[str] = "*", train_only=True, localrank0_only=True):
+        """Print forward output.
 
+        Args:
+            nodenames (str): Node names.
+            every (int): Print every.
+            total (int): Total.
+            tags (List[str]): Tags.
+            train_only (bool): Train only.
+            localrank0_only (bool): Local rank 0 only.
+
+        Raises:
+            ValueError: If the nodenames is not valid.
+        """
         def probe_fn(n:Node, x:GraphOutputCache):
             if train_only and not n.training: return
             if localrank0_only and n.launcher.local_rank != 0: return
@@ -457,7 +721,7 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         node_rank=0, master_addr="127.0.0.1", master_port=None,
-        redirects="2", tee="3", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 
@@ -465,11 +729,22 @@ class HyperGraph:
     def run(
         self, tasks, devices="auto", run_id="none", nnodes="1:1", dist_backend="auto", monitor_interval=5,
         rdzv_endpoint="", rdzv_backend="static", rdzv_configs="", standalone=False,
-        redirects="2", tee="3", out_dir=None, resume_from=None, seed=0,
+        redirects="2", tee="1", out_dir=None, resume_from=None, seed=0,
         role="default", max_restarts=0, omp_num_threads=1, start_method="spawn",
     ):        ...
 
     def _set_initial_rng_state(self, seed):
+        """Set initial rng state.
+
+        Args:
+            seed (int): Seed.
+
+        Returns:
+            int: Seed.
+
+        Raises:
+            ValueError: If the seed is not valid.
+        """
         import torch
         torch.manual_seed(seed)
         random.seed(seed)
@@ -521,14 +796,6 @@ class HyperGraph:
             os.makedirs(base_out_dir, exist_ok=True)
             today = datetime.today()
             run_id_dir = tempfile.mkdtemp(prefix=f"{run_id}_{today.month:02d}{today.day:02d}{today.hour:02d}{today.minute:02d}_", dir=base_out_dir)
-            
-            # # make symlink to current run_id_dir
-            # run_id_dir_link = os.path.join(base_out_dir, run_id)
-            # if os.path.islink(run_id_dir_link):
-            #     os.remove(run_id_dir_link)
-            # if not os.path.exists(run_id_dir_link):
-            #     os.symlink(os.path.basename(run_id_dir), run_id_dir_link, target_is_directory=True)
-            
             ckpt_dir = os.path.join(run_id_dir, "ckpts")
             os.makedirs(ckpt_dir, exist_ok=True)
             log_dir = os.path.join(run_id_dir, "logs")
@@ -556,7 +823,21 @@ class HyperGraph:
         
 
     def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
+        """Run the tasks.
 
+        Args:
+            tasks (list): Tasks to run.
+            launcher (ElasticLauncher): Launcher.
+            run_id (str): Run id.
+            out_dir (str): Output directory.
+            resume_from (str): Resume from checkpoint.
+            seed (int): Seed.
+            start_method (str): Start method.
+            kwds: Keyword arguments.
+
+        Raises:
+            ValueError: If the seed is not valid.
+        """
         self._set_initial_rng_state(seed)
         self._prepare_out_dir(run_id=run_id, out_dir=out_dir)
 
@@ -579,7 +860,18 @@ class HyperGraph:
             launcher(self._run_impl, as_list(tasks), launcher, resume_from)
 
     def save_checkpoint(self, save_to=None, tags="*"):
+        """Save the checkpoint.
 
+        Args:
+            save_to (str): Path to save the checkpoint.
+            tags (str): Tags to save.
+
+        Returns:
+            str: Path to the checkpoint.
+
+        Raises:
+            ValueError: If the save_to is not valid.
+        """
         if save_to is None:
             fname = f"E{self.global_counters.epochs.train}S{self.global_counters.steps.train}.pth"
             save_to = os.path.join(self.run_info.ckpt_dir, fname)
@@ -599,13 +891,22 @@ class HyperGraph:
 
         if self.launcher.rank == 0:
             tqdm.write(f"Saving checkpoint to \"{save_to}\".")
-            import torch
             torch.save(_checkpoint, save_to)
 
     def load_checkpoint(self, resume_from, strict=False, tags="*"):
+        """Load the checkpoint.
+
+        Args:
+            resume_from (str): Path to the checkpoint.
+            strict (bool): Whether to check the keys.
+            tags (str): Tags to load.
+
+        Raises:
+            ValueError: If the resume_from is not valid.
+        """
+
         self.run_info.resume_from = resume_from
         if resume_from is None: return
-        import torch
         _checkpoint = torch.load(resume_from, map_location=self.launcher.assigned_device)
 
         try: # resuming task progress
@@ -633,7 +934,18 @@ class HyperGraph:
         self.global_counters = _checkpoint["counters"]
 
     def exec_tasks(self, tasks, launcher:ElasticLauncher):
+        """Execute the tasks.
 
+        Args:
+            tasks (List[Task]): Tasks to execute.
+            launcher (ElasticLauncher): Launcher.
+
+        Returns:
+            List[Task]: Tasks executed.
+
+        Raises:
+            ValueError: If the tasks are not valid.
+        """
         for task in as_list(tasks):
             if is_configurable(task):
                 task.freeze()

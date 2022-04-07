@@ -55,12 +55,12 @@
 - [`graph.Node`](./core.graph.md#class-node): This class defines the executable node.
 - [`graph.StopAllTasks`](./core.graph.md#class-stopalltasks): An Exception raised to exit current running.
 - [`graph.StopTask`](./core.graph.md#class-stoptask): An Exception raised to exit current task.
-- [`hypergraph.Counter`](./core.hypergraph.md#class-counter)
-- [`hypergraph.GlobalCounters`](./core.hypergraph.md#class-globalcounters): GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7f95070425e0>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7f9507042070>)
+- [`hypergraph.Counter`](./core.hypergraph.md#class-counter): Counter object.
+- [`hypergraph.GlobalCounters`](./core.hypergraph.md#class-globalcounters): Global counters object.
 - [`hypergraph.HyperGraph`](./core.hypergraph.md#class-hypergraph): HyperGraph is the container for all nodes.
-- [`hypergraph.Repeat`](./core.hypergraph.md#class-repeat)
+- [`hypergraph.Repeat`](./core.hypergraph.md#class-repeat): Repeat a task for a fixed number of times.
 - [`hypergraph.ResumeTaskFailed`](./core.hypergraph.md#class-resumetaskfailed): raised when task structure does not match during resuming.
-- [`hypergraph.Task`](./core.hypergraph.md#class-task)
+- [`hypergraph.Task`](./core.hypergraph.md#class-task): A task is a unit of computation.
 - [`loss.LossMode`](./core.loss.md#class-lossmode): An enumeration.
 - [`loss.LossNode`](./core.loss.md#class-lossnode)
 - [`metric.AverageMeter`](./core.metric.md#class-averagemeter)
@@ -138,8 +138,8 @@
 - [`utils.parse_devices`](./api.utils.md#function-parse_devices)
 - [`dataset.failsafe_collate`](./core.dataset.md#function-failsafe_collate): Puts each data field into a tensor with outer dimension batch size
 - [`hypergraph.GlobalCounters.__init__`](./core.hypergraph.md#function-__init__)
-- [`hypergraph.LoadCheckpointTask`](./core.hypergraph.md#function-loadcheckpointtask)
-- [`hypergraph.SaveCheckpointTask`](./core.hypergraph.md#function-savecheckpointtask)
+- [`hypergraph.LoadCheckpointTask`](./core.hypergraph.md#function-loadcheckpointtask): Load checkpoint from a file.
+- [`hypergraph.SaveCheckpointTask`](./core.hypergraph.md#function-savecheckpointtask): Save checkpoint to a file.
 - [`argparser.as_dict`](./llutil.argparser.md#function-as_dict): helps to regularize input into a dict.
 - [`argparser.as_list`](./llutil.argparser.md#function-as_list): helps to regularize input into list of element.
 - [`argparser.get_hostname`](./llutil.argparser.md#function-get_hostname)
