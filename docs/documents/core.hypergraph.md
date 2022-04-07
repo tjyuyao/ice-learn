@@ -248,7 +248,7 @@ __init__() → None
 <a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/hypergraph.py#L286"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `GlobalCounters`
-GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7f0c5d532730>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7f0c5d5323a0>)
+GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7f95070425e0>, epochs: 'Counter' = <core.hypergraph.Counter object at 0x7f9507042070>)
 
 
 
@@ -259,8 +259,8 @@ GlobalCounters(steps: 'Counter' = <core.hypergraph.Counter object at 0x7f0c5d532
 
 ```python
 __init__(
-    steps: 'Counter' = <core.hypergraph.Counter object at 0x7f0c5d532730>,
-    epochs: 'Counter' = <core.hypergraph.Counter object at 0x7f0c5d5323a0>
+    steps: 'Counter' = <core.hypergraph.Counter object at 0x7f95070425e0>,
+    epochs: 'Counter' = <core.hypergraph.Counter object at 0x7f9507042070>
 ) → None
 ```
 

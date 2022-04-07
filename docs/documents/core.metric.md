@@ -215,8 +215,7 @@ __init__(*args, **kwds)
 
 #### <kbd>property</kbd> board
 
-
-
+the board writer of current task.
 
 
 
@@ -234,8 +233,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> epoch_size
 
-
-
+the size of current epoch.
 
 
 
@@ -244,8 +242,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> epoch_steps
 
-
-
+the steps of current epoch.
 
 
 
@@ -254,8 +251,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> global_auto_steps
 
-
-
+the global steps of current task.
 
 
 
@@ -264,8 +260,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> global_train_epochs
 
-
-
+the global train epochs of current task.
 
 
 
@@ -274,8 +269,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> global_train_steps
 
-
-
+the global train steps of current task.
 
 
 
@@ -284,8 +278,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> grad_acc_steps
 
-
-
+the grad accumulator steps of current task.
 
 
 
@@ -294,8 +287,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> grad_scaler
 
-
-
+the grad scaler of current task.
 
 
 
@@ -304,8 +296,7 @@ the assigned device by current launcher.
 
 #### <kbd>property</kbd> launcher
 
-
-
+the current launcher.
 
 
 
@@ -323,8 +314,7 @@ the node name in the current activated [`ExecutableGraph`](./core.graph.md#class
 
 #### <kbd>property</kbd> out_dir
 
-
-
+the output directory of current task.
 
 
 
@@ -333,8 +323,7 @@ the node name in the current activated [`ExecutableGraph`](./core.graph.md#class
 
 #### <kbd>property</kbd> run_id
 
-
-
+the run id of current task.
 
 
 
@@ -352,8 +341,7 @@ whether current task is running by step (True) or by epoch (False).
 
 #### <kbd>property</kbd> task
 
-
-
+the current task.
 
 
 

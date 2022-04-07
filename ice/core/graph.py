@@ -92,50 +92,62 @@ class Node(Configurable):
 
     @property
     def task(self):
+        """the current task."""
         return self.egraph.task
     
     @property
     def launcher(self):
+        """the current launcher."""
         return get_current_launcher()
     
     @property
     def global_auto_steps(self) -> int:
+        """the global steps of current task."""
         return self.egraph.task.global_auto_steps
     
     @property
     def global_train_steps(self) -> int:
+        """the global train steps of current task."""
         return self.egraph.hypergraph.global_counters.steps.train
 
     @property
     def global_train_epochs(self) -> int:
+        """the global train epochs of current task."""
         return self.egraph.hypergraph.global_counters.epochs.train
 
     @property
     def epoch_steps(self) -> int:
+        """the steps of current epoch."""
         return self.egraph.task.epoch_steps
 
     @property
     def epoch_size(self) -> int:
+        """the size of current epoch."""
         return self.egraph.task.epoch_size
     
     @property
     def out_dir(self) -> str:
+        """the output directory of current task."""
         return self.egraph.hypergraph.run_info.out_dir
     
     @property
     def run_id(self) -> str:
+        """the run id of current task."""
         return self.egraph.hypergraph.run_info.full_run_id
 
     @property
     def grad_scaler(self) -> GradScaler:
+        """the grad scaler of current task."""
         return self.egraph.grad_scaler
     
     @property
     def grad_acc_steps(self) -> int:
+        """the grad accumulator steps of current task."""
         return self.egraph.hypergraph.grad_acc_steps
 
     @property
     def board(self) -> BoardWriter:
+        """the board writer of current task."""
         return self.egraph.hypergraph.board
 
     def forward(self):
@@ -204,7 +216,15 @@ class Node(Configurable):
 
 
 class GraphOutputCache:
+    """a cache for storing and searching forward outputs of nodes.
 
+    This class is used to store and search forward outputs of nodes.
+
+    Attributes:
+        cache (dict): a dict for storing forward outputs.
+        egraph (ExecutableGraph): the executable graph.
+        data (Dict[str, torch.Tensor]): the cache.
+    """
     def __init__(self, egraph:"ExecutableGraph") -> None:
         self.egraph = egraph
         self.clear()
@@ -227,6 +247,20 @@ class GraphOutputCache:
 
 
 class ExecutableGraph:
+    """an executable graph.
+
+    This class is used to execute nodes in a graph.
+
+    Attributes:
+        hypergraph (HyperGraph): the hypergraph.
+        nodes (Dict[str, Node]): a dict for storing nodes.
+        nodes_tags (Dict[str, str]): a dict for storing tags of nodes.
+        nodes_names (Dict[str, str]): a dict for storing names of nodes.
+        cache (GraphOutputCache): a cache for storing and searching forward outputs of nodes.
+        task: the task of the graph.
+        losses: the losses of the graph.
+        total_loss: the total loss of the graph.
+    """
 
     def __init__(self, hypergraph) -> None:
         self.hypergraph: HyperGraph = hypergraph
@@ -239,6 +273,16 @@ class ExecutableGraph:
         self.total_loss = 0
 
     def add_node(self, node_name, node, tags):
+        """add a node to the graph.
+
+        Args:
+            node_name (str): the name of the node.
+            node (Node): the node.
+            tags (List[str]): the tags of the node.
+
+        Raises:
+            RuntimeError: the node is not a node of the hypergraph.
+        """
         if node_name in self.nodes.keys() and node is not self.nodes[node_name]:
             if self.node_tags[self.nodes[node_name]] != ["*"]:
                 assert node is self.nodes[node_name], f"Different node can not share node_name `{node_name}` in one task."
@@ -260,17 +304,39 @@ class ExecutableGraph:
               *args,
               filter: Callable[[Node], bool] = lambda _: True,
               **kwds):
+        """apply ``method`` to all nodes in the graph.
+
+        Args:
+            method (str): the method name.
+            *args: the arguments of the method.
+            filter (Callable[[Node], bool]): the filter function.
+            **kwds: the keyword arguments of the method.
+
+        Returns:
+            List[Any]: the return values of the method.
+
+        Raises:
+            RuntimeError: the method is not found.
+        """
         for v in self.nodes.values():
             if filter(v):
                 getattr(v, method)(*args, **kwds)
 
     def prepare_nodes(self):
+        """prepare all nodes in the graph.
+
+        This method is called before the graph is executed.
+        """
         for node in self.nodes.values():
             node.egraph = self
             node.freeze()
         self.apply("prepare")
         
     def clean_up_nodes(self):
+        """clean up all nodes in the graph.
+
+        This method is called after the graph is executed.
+        """
         self.apply("clean_up")
     
     @property
@@ -278,6 +344,7 @@ class ExecutableGraph:
         return self.hypergraph._grad_scaler
 
     def iterate(self):
+        """iterate all nodes in the graph."""
         self.cache.clear()
         self.task.global_auto_steps += 1
         if self.task.training:
