@@ -186,7 +186,7 @@ class Node(Configurable):
         """Moves data to the CPU or the GPU.
 
         If :attr:`device` is ``None`` and the node has a ``device`` attribute, then that is the device where the data
-        is moved. Otherwise, the data is moved according to the ``device.type``. If :attr:``data`` is a tuple or list,
+        is moved. Otherwise, the data is moved according to the ``device.type``. If :attr:``data`` is a dict or list,
         the function is applied recursively to each of the elements.
 
         Args:
