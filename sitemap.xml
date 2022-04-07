@@ -2,257 +2,257 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/get_started/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.hypergraph/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.scripts.wait_process/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.scripts.waitfinish/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image.io/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image.photometric/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.image.spatial/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.random/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.transforms.semseg/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/api.utils/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/core.dataset/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/core.graph/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/core.hypergraph/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/core.loss/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/core.metric/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/core.module/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/core.optim/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.argparser/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.board/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.collections/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.config/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.debug/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.dictprocess/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.file_client/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.ignore_me/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.elastic_multiprocessing/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.events/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.launch_agent/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.launcher/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher.local_elastic_agent/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.launcher/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.logger/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.logging/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.multiprocessing/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.print/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.pycuda/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.shadow_tb/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.test/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/documents/llutil.utils/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/00_setup_devenv/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/01_contribution_guide/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/02_docs_and_tests/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/03_architechture_design/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/resources/dev_notes/04_versions/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tjyuyao.github.io/ice-learn/user_guide/01_debug_tips/</loc>
-         <lastmod>2022-03-31</lastmod>
+         <lastmod>2022-04-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

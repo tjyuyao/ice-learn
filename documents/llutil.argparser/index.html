@@ -704,6 +704,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#method-get" class="md-nav__link">
+    method get
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#method-hparam_dict" class="md-nav__link">
     method hparam_dict
   </a>
@@ -713,6 +720,13 @@
           <li class="md-nav__item">
   <a href="#method-parse_args" class="md-nav__link">
     method parse_args
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-set" class="md-nav__link">
+    method set
   </a>
   
 </li>
@@ -1315,6 +1329,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#method-get" class="md-nav__link">
+    method get
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#method-hparam_dict" class="md-nav__link">
     method hparam_dict
   </a>
@@ -1324,6 +1345,13 @@
           <li class="md-nav__item">
   <a href="#method-parse_args" class="md-nav__link">
     method parse_args
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-set" class="md-nav__link">
+    method set
   </a>
   
 </li>
@@ -1531,14 +1559,19 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><a href="#__codelineno-12-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">()</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L269"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L253"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-get"><kbd>method</kbd> <code>get</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><a href="#__codelineno-13-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L277"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-hparam_dict"><kbd>method</kbd> <code>hparam_dict</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><a href="#__codelineno-13-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">hparam_dict</span><span class="p">()</span> <span class="err">→</span> <span class="n">Dict</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><a href="#__codelineno-14-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">hparam_dict</span><span class="p">()</span> <span class="err">→</span> <span class="n">Dict</span>
 </code></pre></div>
 <hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L192"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-parse_args"><kbd>method</kbd> <code>parse_args</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><a href="#__codelineno-14-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><a href="#__codelineno-15-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
 </code></pre></div>
 <p>Manually parse args.</p>
 <p><strong>Args:</strong></p>
@@ -1546,9 +1579,14 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 <li><b><code>argv</code></b> (List[str]):  simillar to <code>sys.argv[1:]</code>.</li>
 </ul>
 <hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L248"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-set"><kbd>method</kbd> <code>set</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><a href="#__codelineno-16-1"><span class="linenos" data-linenos="1 "></span></a><span class="nb">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">hparam</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<hr />
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L223"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-setdefault"><kbd>method</kbd> <code>setdefault</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><a href="#__codelineno-15-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">_type</span><span class="o">=&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">str</span><span class="s1">&#39;&gt;, hparam=False, help=&#39;&#39;)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1"></a><a href="#__codelineno-17-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">_type</span><span class="o">=&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">str</span><span class="s1">&#39;&gt;, hparam=False, help=&#39;&#39;)</span>
 </code></pre></div>
 <p>Set argument value under <code>key</code> as <code>value</code>, only if original entry does not exists.</p>
 <p><strong>Args:</strong></p>
@@ -1563,9 +1601,9 @@ key as <code>{key:maybe_element}</code>, else will return <code>maybe_element</c
 <p><strong>Returns:</strong></p>
 <p>original or updated value.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L263"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/llutil/argparser.py#L271"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-update"><kbd>method</kbd> <code>update</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><a href="#__codelineno-16-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">update</span><span class="p">(</span><span class="n">_FlexibleArgParser__dict</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1"></a><a href="#__codelineno-18-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">update</span><span class="p">(</span><span class="n">_FlexibleArgParser__dict</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
 </code></pre></div>
 <p>simillar to dict.update().</p>
 

@@ -715,6 +715,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#method-prepare" class="md-nav__link">
+    method prepare
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#method-state_dict" class="md-nav__link">
     method state_dict
   </a>
@@ -1512,6 +1519,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#method-prepare" class="md-nav__link">
+    method prepare
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#method-state_dict" class="md-nav__link">
     method state_dict
   </a>
@@ -1550,7 +1564,7 @@
 <li><strong>string_classes</strong></li>
 </ul>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L28"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L27"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="function-failsafe_collate"><kbd>function</kbd> <code>failsafe_collate</code></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">failsafe_collate</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
 </code></pre></div>
@@ -1581,7 +1595,7 @@
 <p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L147"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h2 id="class-datasetnode"><kbd>class</kbd> <code>DatasetNode</code></h2>
 <p>Automating DataLoader and DataSampler creation and maintainance.</p>
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L167"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-__init___1"><kbd>method</kbd> <code>__init__</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><a href="#__codelineno-3-1"><span class="linenos" data-linenos="1 "></span></a><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="err">→</span> <span class="kc">None</span>
 </code></pre></div>
@@ -1622,19 +1636,24 @@
 <h4 id="property-training"><kbd>property</kbd> training</h4>
 <p>whether current task is training.</p>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L208"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L226"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-forward_impl"><kbd>method</kbd> <code>forward_impl</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><a href="#__codelineno-4-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">forward_impl</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L238"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L256"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-load_state_dict"><kbd>method</kbd> <code>load_state_dict</code></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><a href="#__codelineno-5-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">load_state_dict</span><span class="p">(</span><span class="n">_state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L231"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L222"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
+<h3 id="method-prepare"><kbd>method</kbd> <code>prepare</code></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><a href="#__codelineno-6-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">prepare</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<p><a href="https://github.com/tjyuyao/ice-learn/blob/main/ice/core/dataset.py#L249"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a></p>
 <h3 id="method-state_dict"><kbd>method</kbd> <code>state_dict</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><a href="#__codelineno-6-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">state_dict</span><span class="p">()</span> <span class="err">→</span> <span class="n">Dict</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><a href="#__codelineno-7-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">state_dict</span><span class="p">()</span> <span class="err">→</span> <span class="n">Dict</span>
 </code></pre></div>
 
               
