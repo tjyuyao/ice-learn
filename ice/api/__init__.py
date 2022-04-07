@@ -38,6 +38,7 @@ def DatasetNode(
     num_workers: int = 0,
     pin_memory: bool = False,
     drop_last: bool = False,
+    batch_size_in_total: bool = False,
     num_iters_per_epoch: int = None,
     prefetch_factor: int = 2,
     worker_init_fn: Optional[Callable] = None,
@@ -59,5 +60,6 @@ from ice.core.metric import (AverageMeter, DictMetric, Meter, MetricNode,
 from ice.core.module import ModuleNode
 from ice.core.optim import Optimizer
 
+from .utils import *
 from ice.llutil.utils import *
 from .hypergraph import *
