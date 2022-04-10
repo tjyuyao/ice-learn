@@ -1,6 +1,5 @@
-#export
-
 import math
+from ice.llutil.launcher.launcher import get_current_launcher
 import numpy as np
 import torch
 import re
@@ -45,6 +44,7 @@ def failsafe_collate(batch):
                 [ 7,  8,  9],
                 [10, 11, 12]])
     """
+
     elem = batch[0]
     elem_type = type(elem)
     if isinstance(elem, torch.Tensor):
@@ -66,7 +66,8 @@ def failsafe_collate(batch):
             if _NP_STR_OBJ_ARRAY_PATTERN.search(elem.dtype.str) is not None:
                 raise TypeError(_FAILSAFE_COLLATE_ERR_MSG_FORMAT.format(elem.dtype))
 
-            return failsafe_collate([torch.as_tensor(np.ascontiguousarray(b)) for b in batch])
+            return batch
+            # return failsafe_collate([torch.as_tensor(np.ascontiguousarray(b)) for b in batch])
         elif elem.shape == ():  # scalars
             return torch.as_tensor(batch)
     elif isinstance(elem, float):
@@ -94,26 +95,26 @@ def failsafe_collate(batch):
 class ResumableDistributedSampler(DistributedSampler):
     """DistributedSampler that can be resumed from a checkpoint.
 
-    This is a subclass of torch.utils.data.DistributedSampler that can be resumed from a checkpoint.
+        This is a subclass of torch.utils.data.DistributedSampler that can be resumed from a checkpoint.
 
-    Args:
-        dataset: The dataset from which to sample.
-        num_replicas: The number of processes participating in the distributed training.
-        rank: The rank of the current process within num_replicas.
-        shuffle: If True, the sampler will shuffle the global id list. Otherwise it will be deterministic.
-        seed: A seed for the random number generator.
+        Args:
+            dataset: The dataset from which to sample.
+            num_replicas: The number of processes participating in the distributed training.
+            rank: The rank of the current process within num_replicas.
+            shuffle: If True, the sampler will shuffle the global id list. Otherwise it will be deterministic.
+            seed: A seed for the random number generator.
 
-    Attributes:
-        num_samples: The number of samples to draw in each epoch.
+        Attributes:
+            num_samples: The number of samples to draw in each epoch.
 
 
-    Example:
-        >>> dataset = torch.utils.data.TensorDataset(torch.randn(100, 3), torch.randn(100, 5))
-        >>> sampler = torch.utils.data.DistributedSampler(dataset, num_replicas=2, rank=0)
-        >>> for batch in sampler:
-        >>>     print(batch)
-        >>>     break
-        tensor([[ 0.4388, -0.4388,  0.4388, -0.4388,  0.4388],
+        Example:
+            >>> dataset = torch.utils.data.TensorDataset(torch.randn(100, 3), torch.randn(100, 5))
+            >>> sampler = torch.utils.data.DistributedSampler(dataset, num_replicas=2, rank=0)
+            >>> for batch in sampler:
+            >>>     print(batch)
+            >>>     break
+            tensor([[ 0.4388, -0.4388,  0.4388, -0.4388,  0.4388],
 
     """
     def __init__(self, dataset: Dataset, num_replicas: Optional[int] = None, rank: Optional[int] = None, shuffle: bool = True, seed: int = 0, drop_last: bool = False, num_iters:int=None) -> None:
@@ -195,6 +196,7 @@ class DatasetNode(Node):
                  num_workers: int = 0,
                  pin_memory: bool = False,
                  drop_last: bool = False,
+                 batch_size_in_total: bool = False,
                  num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
                  worker_init_fn: Optional[Callable] = None,
@@ -214,6 +216,7 @@ class DatasetNode(Node):
                  num_workers: int = 0,
                  pin_memory: bool = False,
                  drop_last: bool = False,
+                 batch_size_in_total: bool = False,
                  num_iters_per_epoch: int = None,
                  prefetch_factor: int = 2,
                  worker_init_fn: Optional[Callable] = None,
@@ -226,11 +229,21 @@ class DatasetNode(Node):
         freeze(dataset)
         pipeline = Compose(as_list(pipeline)) if isinstance(pipeline, list) else pipeline
         dataset = _DatasetProxy(self, dataset, pipeline)
+        launcher = get_current_launcher()
+        
+        if batch_size_in_total:
+            batch_size_in_total = batch_size
+            batch_size_on_this_device = batch_size // launcher.world_size + (1 if launcher.rank <  batch_size % launcher.world_size else 0)
+        else:
+            batch_size_in_total = batch_size * launcher.world_size
+            batch_size_on_this_device = batch_size
+            
+        # print(launcher.rank, batch_size_in_total, batch_size_on_this_device)
 
         self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch, seed=torch.random.initial_seed())
         self.loader = DataLoader(
                 dataset,
-                batch_size=batch_size,
+                batch_size=batch_size_on_this_device,
                 sampler=self.sampler,
                 num_workers=num_workers,
                 pin_memory=pin_memory,
@@ -243,8 +256,14 @@ class DatasetNode(Node):
         self.internal_steps = 0
         self.iterator = None
         
-        self.actual_num_iters_per_epoch = math.ceil(len(self.sampler) / batch_size)
+        self.actual_num_iters_per_epoch = math.ceil(len(self.sampler) / batch_size_on_this_device)
+        self.batch_size_in_total = batch_size_in_total
+        self.batch_size_on_this_device = batch_size_on_this_device
     
+    def prepare(self):
+        if self.iterator is None:
+            self.iterator = iter(self.loader)
+
     def forward_impl(self, _):
         
         if self.iterator is None:
