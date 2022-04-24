@@ -23,7 +23,7 @@ from ice.llutil.ignore_me import IgnoreMe
 from ice.llutil.launcher import ElasticLauncher, Events, global_shared_events
 from ice.llutil.launcher.launcher import get_current_launcher
 from ice.llutil.logger import get_logger
-from ice.llutil.utils import in_main_process, init_torch_multiprocessing
+from ice.llutil.utils import enable_auto_freeze, in_main_process, init_torch_multiprocessing
 from ice.llutil.print import _print, set_printoptions
 
 from tqdm import tqdm
@@ -606,7 +606,7 @@ class HyperGraph:
         if shortcut_query not in self._shortcuts:
             for key in keys:
                 name, node, tags = self.nodes[key]
-                egraph.add_node(name, node, tags)
+                egraph.add_node(name, node.auto_freeze(), tags)
             self._shortcuts[shortcut_query] = egraph
             if self.launcher.local_rank == 0:
                 get_logger().info(f"selected nodes: {keys}")
@@ -761,7 +761,7 @@ class HyperGraph:
         
         # setup tensorboard
         from ice.llutil.board import BoardWriter
-        if get_current_launcher().rank == 0:
+        if not in_main_process() and get_current_launcher().rank == 0:
             self.board:BoardWriter = BoardWriter(self.run_info.out_dir)
         else:
             self.board:BoardWriter = IgnoreMe()
@@ -819,8 +819,6 @@ class HyperGraph:
         root_logger = logging.getLogger()
         root_logger.setLevel(logging.INFO)
         root_logger.addHandler(handler)
-
-        
 
     def run(self, tasks, *, launcher:ElasticLauncher=None, run_id:str="none", out_dir:str=None, resume_from:str=None, seed=0, start_method="spawn", **kwds):
         """Run the tasks.
@@ -965,3 +963,18 @@ class HyperGraph:
                     task(*args)
             else:
                 get_logger().warning(f"A custom task `{task}` is not callable, skipping.")
+    
+    @overload
+    def __call__(self, *, train=True, steps=1, tags=["*"]) -> GraphOutputCache: ...
+    
+    @overload
+    def __call__(self, tasks) -> GraphOutputCache: ...
+
+    def __call__(self, tasks=None, train=True, steps=1, tags=["*"]) -> GraphOutputCache:
+        assert in_main_process(), "Eager Mode execution is only available in main process"
+        enable_auto_freeze(True)
+        if tasks is None:
+            tasks = [Task(train=train, steps=steps, tags=tags)]
+        self._run_impl(tasks, get_current_launcher(), None)
+        enable_auto_freeze(False)
+        return tasks[:-1].egraph.cache

@@ -1,5 +1,6 @@
 """contains ``Node`` and ``ExecutableGraph``."""
 from __future__ import annotations
+from collections import UserDict
 from queue import Queue
 
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Set, overload
@@ -164,7 +165,10 @@ class Node(Configurable):
             cache[name] = output
         cache.release(name)
         return output
-        
+
+    @property
+    def forward_output(self):
+        return self.forward()
 
     def forward_impl(self, cache:"GraphOutputCache"): """forward pass of the node, inputs of current executable graph can be directly retrieved from `graph` argument."""
 
@@ -219,7 +223,7 @@ class Node(Configurable):
             return data
 
 
-class GraphOutputCache:
+class GraphOutputCache(UserDict):
     """a cache for storing and searching forward outputs of nodes.
 
     This class is used to store and search forward outputs of nodes.
@@ -245,6 +249,15 @@ class GraphOutputCache:
     
     def __setitem__(self, name, value):
         self.data[name] = value
+    
+    def keys(self):
+        return self.data.keys()
+    
+    def values(self):
+        return self.data.values()
+
+    def items(self):
+        return self.data.items()
 
     def clear(self):
         """Clear the cache, next calls to ``__getitem__`` will recalculate."""
@@ -277,9 +290,7 @@ class GraphOutputCache:
             if filter is None or filter(node):
                 out.append(node)
         return out
-            
-        
-
+    
 
 class ExecutableGraph:
     """an executable graph.

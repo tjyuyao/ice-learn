@@ -12,6 +12,7 @@ from types import FrameType
 from typing import TYPE_CHECKING, List, overload
 
 from ice.llutil.config import Configurable
+from ice.llutil.ignore_me import IgnoreMe
 from ice.llutil.logger import get_logger
 
 from .events import Events
@@ -89,7 +90,24 @@ def _parse_devices_and_backend(devices: str = "auto", dist_backend: str = "auto"
 
 def _ignore_sigint(signum: int, frame: FrameType) -> None: ...
 
-_current_launcher = None
+
+class EagerLauncher:
+
+    def __init__(self) -> None:
+        self.world_size = 1
+        self.rank = 0
+        self.local_rank = 0
+        self.events = IgnoreMe()
+
+        import torch
+        
+        if torch.cuda.is_available():
+            self.assigned_device = torch.device("cuda", 0)
+        else:
+            self.assigned_device = torch.device("cpu", 0)
+
+
+_current_launcher = EagerLauncher()
 
 def get_current_launcher() -> "ElasticLauncher":
     global _current_launcher

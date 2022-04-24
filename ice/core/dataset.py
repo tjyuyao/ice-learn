@@ -1,4 +1,5 @@
 import math
+import warnings
 from ice.llutil.launcher.launcher import get_current_launcher
 import numpy as np
 import torch
@@ -9,11 +10,13 @@ from typing import Iterator, List, Callable, Optional, Dict, Union, overload
 
 from torch.utils.data import DataLoader, Dataset
 from torch.utils.data import DistributedSampler  # TODO: WeightedRandomSampler
+from torch.utils.data import SequentialSampler, RandomSampler
 
 from ice.llutil.config import freeze
 from ice.llutil.argparser import as_dict, as_list
 from ice.core.graph import Node
 from ice.llutil.dictprocess import Compose, DictProcessor
+from ice.llutil.utils import in_main_process
 
 
 _NP_STR_OBJ_ARRAY_PATTERN = re.compile(r'[SaUO]')
@@ -56,7 +59,9 @@ def failsafe_collate(batch):
             storage = elem.storage()._new_shared(numel)
             out = elem.new(storage)
         try:
-            return torch.stack(batch, 0, out=out)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                return torch.stack(batch, 0, out=out)
         except RuntimeError:
             return batch
     elif elem_type.__module__ == 'numpy' and elem_type.__name__ != 'str_' \
@@ -240,7 +245,10 @@ class DatasetNode(Node):
             
         # print(launcher.rank, batch_size_in_total, batch_size_on_this_device)
 
-        self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch, seed=torch.random.initial_seed())
+        if in_main_process():
+            self.sampler = RandomSampler(dataset) if shuffle else SequentialSampler(dataset)
+        else:
+            self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch, seed=torch.random.initial_seed())
         self.loader = DataLoader(
                 dataset,
                 batch_size=batch_size_on_this_device,

@@ -1,3 +1,4 @@
+import abc
 import sys
 import types
 from argparse import Namespace
@@ -6,6 +7,7 @@ import numpy as np
 from ice.llutil.collections import ConfigDict
 from tqdm import tqdm
 from varname import argname
+from collections.abc import Mapping
 
 
 default_printoptions_set = False
@@ -127,7 +129,7 @@ def _print(
         for k, v in data.items():
             _print(v, prefix=prefix, uri=f"{uri}.{k}")
         return
-    elif isinstance(data, dict):
+    elif isinstance(data, Mapping):
         for k, v in data.items():
             if (
                 k in ["In"]
