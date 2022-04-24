@@ -890,6 +890,7 @@ class HyperGraph:
         }
 
         if self.launcher.rank == 0:
+            import torch
             tqdm.write(f"Saving checkpoint to \"{save_to}\".")
             torch.save(_checkpoint, save_to)
 
@@ -904,7 +905,7 @@ class HyperGraph:
         Raises:
             ValueError: If the resume_from is not valid.
         """
-
+        import torch
         self.run_info.resume_from = resume_from
         if resume_from is None: return
         _checkpoint = torch.load(resume_from, map_location=self.launcher.assigned_device)
