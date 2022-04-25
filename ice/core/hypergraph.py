@@ -977,4 +977,4 @@ class HyperGraph:
             tasks = [Task(train=train, steps=steps, tags=tags)]
         self._run_impl(tasks, get_current_launcher(), None)
         enable_auto_freeze(False)
-        return tasks[:-1].egraph.cache
+        return tasks[-1].egraph.cache

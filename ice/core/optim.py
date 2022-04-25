@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, List, Type, Dict, overload
 
 from ice.llutil.config import Configurable
 from ice.llutil.dictprocess import DictProcessor
+from ice.llutil.launcher.launcher import get_current_launcher
 
 if TYPE_CHECKING:
     from torch import optim
@@ -38,14 +39,17 @@ class Optimizer(Configurable):
 
     def __freeze__(
         self,
-        optimizer: optim.Optimizer,
+        optimizer: Type[optim.Optimizer],
         updators: List[DictProcessor] = [],
         *,
         params
     ):
-        from torch.distributed.optim.zero_redundancy_optimizer import ZeroRedundancyOptimizer
-        self.optimizer = ZeroRedundancyOptimizer(
-            params, optimizer_class=optimizer)
+        if get_current_launcher().eager_mode:
+            self.optimizer = optimizer(params)
+        else:
+            from torch.distributed.optim.zero_redundancy_optimizer import ZeroRedundancyOptimizer
+            self.optimizer = ZeroRedundancyOptimizer(
+                params, optimizer_class=optimizer)
         for group in self.optimizer.param_groups:
             group.setdefault('initial_lr', group['lr'])
         self.updators = as_list(updators)

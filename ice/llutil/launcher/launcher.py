@@ -106,6 +106,8 @@ class EagerLauncher:
         else:
             self.assigned_device = torch.device("cpu", 0)
 
+        self.eager_mode = True
+
 
 _current_launcher = EagerLauncher()
 
@@ -337,6 +339,7 @@ class ElasticLauncher(Configurable):
         )
         
         self.events = events
+        self.eager_mode = False
 
     def __call__(self, entrypoint, *args):
         from torch.distributed.elastic.multiprocessing.errors import (

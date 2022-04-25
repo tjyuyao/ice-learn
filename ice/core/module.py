@@ -9,6 +9,7 @@ from ice.core.graph import GraphOutputCache, Node
 from ice.core.optim import Optimizer
 from ice.llutil.argparser import as_dict, as_list
 from ice.llutil.collections import Counter
+from ice.llutil.launcher.launcher import get_current_launcher
 from ice.llutil.logger import get_logger
 
 if TYPE_CHECKING:
@@ -75,7 +76,12 @@ class ModuleNode(Node):
         has_nan:List[str] = [k for k, w in module.named_parameters() if torch.isnan(w.data).any().item()]
         if has_nan: get_logger().warn(f"initialized weight might has nan: {has_nan}")
         
-        self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
+        launcher = get_current_launcher()
+
+        if launcher.eager_mode:
+            self.module = module
+        else:
+            self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
         self.move(self.module)
 
         optim_cfgs = as_dict(optimizers, ".*") if optimizers is not None else {}
@@ -133,7 +139,7 @@ class ModuleNode(Node):
                 with autocast(self.node.launcher.assigned_device.type, **self.node.egraph.hypergraph.autocast_kwds):
                     return self.forward_override(self.node, cache)
 
-        if self.optimizable:
+        if self.optimizable and not launcher.eager_mode:
             from torch.nn.parallel import DistributedDataParallel
             self._ddp_module = DistributedDataParallel(
                 _ModuleProxy(self, self.module, forward),

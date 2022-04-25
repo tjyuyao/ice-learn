@@ -239,7 +239,8 @@ class GraphOutputCache(UserDict):
 
     def __getitem__(self, name):
         """Execute node with name ``name`` if not executed, return the last executed cache else."""
-        self.add_deps(name)
+        if len(self.users):
+            self.add_deps(name)
         if name not in self.data:
             self.data[name] = self.egraph[name].forward()
         return self.data[name]

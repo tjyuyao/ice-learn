@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Union, overload
 
 from ice.core.graph import GraphOutputCache, Node
 from ice.llutil.argparser import as_dict, as_list, isa, parse_scalar
+from ice.llutil.launcher.launcher import get_current_launcher
 from ice.llutil.logger import get_logger
+from ice.llutil.utils import in_main_process
 
 if TYPE_CHECKING:
     import torch
@@ -28,6 +30,10 @@ class Meter:
         if not hasattr(self, "warn_flag"):
             self.warn_flag = True
             get_logger().warning(f"{self.__class__} not implementing `sync` method for multi-gpu synchronization.")
+    
+    def _sync_api(self):
+        if get_current_launcher().eager_mode: return
+        self.sync()
 
 
 class DictMetric(Meter):  # metric is a container of meters but is also a meter itself
@@ -79,12 +85,12 @@ class DictMetric(Meter):  # metric is a container of meters but is also a meter 
                 self.meters[k].reset()
             self.meters[k].update(item, *shared_args, **shared_kwds)
             
-    def sync(self):
+    def _sync_api(self):
         for meter in self.meters.values():
-            meter.sync()        
+            meter._sync_api()        
 
     def evaluate(self, *args, **kwds):
-        self.sync()
+        self._sync_api()
         if "__only_meter__" in self.meters:
             return self.meters['__only_meter__'].evaluate(*args, **kwds)
         else:
@@ -234,3 +240,6 @@ class MovingAverageMeter(Meter):
 
     def evaluate(self):
         return sum(self.values) / len(self.values)
+
+    def sync(self):
+        pass  # effectively do nothing
