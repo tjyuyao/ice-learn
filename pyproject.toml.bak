@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "ice-learn"
+version = "0.4.0"
+description = "A high-level Deep Learning framework that extends PyTorch and PyCUDA."
+authors = ["Yuyao Huang <yycv.simon@protonmail.com>"]
+license = "MIT"
+packages = [
+    { include = "ice", from="." },
+]
+readme = 'README.md'
+keywords = ['PyTorch', 'PyCUDA', "Deep Learning framework", "Multi-Task Learning", "multiprocessing"]
+repository = 'https://github.com/tjyuyao/ice-learn'
+
+[tool.poetry.dependencies]
+python = "^3.8"
+multiprocess = "^0.70.12"
+PySocks = "^1.7.1"
+pycuda = {version = "^2021.1", optional = true}
+varname = "^0.8.1"
+opencv-python = "^4.5.5"
+tqdm = "^4.62.3"
+tensorboard = "^2.8.0"
+setuptools = "59.5.0"
+gputil = "^1.4.0"
+
+[tool.poetry.extras]
+pycuda = ["pycuda"]
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+xdoctest = "^0.15.10"
+Pygments = "^2.11.2"
+yapf = "^0.32.0"
+poethepoet = "^0.12.2"
+mkdocs = "^1.2.3"
+mkdocs-awesome-pages-plugin = "^2.6.1"
+mkdocs-material = "^8.1.8"
+python-markdown-math = "^0.8"
+
+[tool.poetry.scripts]
+wait_process = 'ice.api.scripts.wait_process:_cli'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true
