@@ -208,6 +208,7 @@ class DatasetNode(Node):
                  persistent_workers: bool = False,
                  collate_fn: Optional[Callable] = failsafe_collate,
                  pipeline: Union[DictProcessor, List[DictProcessor]] = None,
+                 **resources,
                  ) -> None:
         ...
     
@@ -228,9 +229,10 @@ class DatasetNode(Node):
                  persistent_workers: bool = False,
                  collate_fn: Optional[Callable] = failsafe_collate,
                  pipeline: Union[DictProcessor, List[DictProcessor]] = None,
+                 **resources,
                  ) -> None:
         
-        super().__freeze__()
+        super().__freeze__(forward=None, **resources)
         freeze(dataset)
         pipeline = Compose(as_list(pipeline)) if isinstance(pipeline, list) else pipeline
         dataset = _DatasetProxy(self, dataset, pipeline)
@@ -247,6 +249,7 @@ class DatasetNode(Node):
 
         if in_main_process():
             self.sampler = RandomSampler(dataset) if shuffle else SequentialSampler(dataset)
+            num_workers = 0
         else:
             self.sampler = ResumableDistributedSampler(dataset, shuffle=shuffle, drop_last=drop_last, num_iters=num_iters_per_epoch, seed=torch.random.initial_seed())
         self.loader = DataLoader(

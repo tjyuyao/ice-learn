@@ -1,13 +1,13 @@
 """contains ``Node`` and ``ExecutableGraph``."""
 from __future__ import annotations
 from collections import UserDict
-from queue import Queue
 
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Set, overload
 
 
 from ice.llutil.config import Configurable
 from ice.llutil.launcher.launcher import get_current_launcher
+from ice.llutil.logger import get_logger
 
 if TYPE_CHECKING:
     import torch
@@ -60,12 +60,16 @@ class Node(Configurable):
             forward (Callable[[self, x:``GraphOutputCache``], Any], optional): if specified, will override the original forward method.
             **resources: resources will be updated into the attributes of Node.
         """
+        import torch
+
         if forward is not None:
             self.forward_impl = lambda x: forward(self, x)  # override original implementation
                     
         for k, v in resources.items():
             if hasattr(self, k) and not k in self.EVENTS:
                 assert False, f"{k} is preserved for other usage and can not be used as a resource name."
+            if isinstance(v, (torch.Tensor, torch.nn.Module)):
+                v = self.move(v)
             if callable(v): setattr(self, k, lambda *a, **k: v(self, *a, **k))
             else: setattr(self, k, v)
             
@@ -151,19 +155,22 @@ class Node(Configurable):
     def board(self) -> BoardWriter:
         """the board writer of current task."""
         return self.egraph.hypergraph.board
+    
+    @property
+    def all_nodes(self) -> Dict[str, Node]:
+        return self.egraph.nodes
 
     def forward(self):
         """retrieves forward output in cache or calculates it using `forward_impl` and save the output to the cache. Subclasses should not override this method."""
-        
         name = self.name
         cache = self.egraph.cache
-        cache.acquire(name)
         if name in cache:
             output = cache[name]
         else:
+            cache.acquire(name)
             output = self.forward_impl(cache)
+            cache.release(name)
             cache[name] = output
-        cache.release(name)
         return output
 
     @property
@@ -279,17 +286,22 @@ class GraphOutputCache(UserDict):
     
     def find_ancestors(self, user:str, filter:Callable[[Node], bool] = None):
         out = []
-        q = Queue()
-        q.put(user)
-        while not q.empty():
-            name = q.get()
+        q = []
+        q.append(user)
+        iter_count = 0
+        while len(q) > 0:
+            name = q.pop(0)
             assert name in self.deps
             for ancestor in self.deps[name]:
-                q.put(ancestor)
+                q.append(ancestor)
             node = self.egraph[name]
             if node in out: continue
             if filter is None or filter(node):
                 out.append(node)
+            
+            iter_count += 1
+            if iter_count == 1000:
+                get_logger().warn(f"Possible dependency loop: {self.deps}")
         return out
     
 
@@ -367,7 +379,12 @@ class ExecutableGraph:
         """
         for v in self.nodes.values():
             if filter(v):
-                getattr(v, method)(*args, **kwds)
+                try:
+                    getattr(v, method)(*args, **kwds)
+                except Exception as e:
+                    if not isinstance(e, (StopIteration)):
+                        get_logger().error(f">>>>> ERROR: Node '{v.name}' raised '{type(e).__name__}' during '{method}' stage. <<<<<<")
+                    raise
 
     def prepare_nodes(self):
         """prepare all nodes in the graph.

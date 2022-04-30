@@ -19,6 +19,7 @@ class LossNode(Node):
         forward: Callable[["Node", "GraphOutputCache"], Any],
         weight: float = None,
         loss_mode: LossMode = LossMode.MANUAL,
+        **resources,
     ):
         ...
 
@@ -30,8 +31,9 @@ class LossNode(Node):
         forward: Callable[["Node", "GraphOutputCache"], Any],
         weight: float = None,
         loss_mode: LossMode = LossMode.MANUAL,
+        **resources,
     ):
-        super().__freeze__()
+        super().__freeze__(forward=None, **resources)
         self.loss_fn = forward
         self.loss_mode = loss_mode
         self.ddp_var_batch_reduce_weight = None

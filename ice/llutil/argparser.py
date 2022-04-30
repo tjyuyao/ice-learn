@@ -12,8 +12,6 @@ from typing import Dict
 
 import numpy as np
 
-_type = type
-
 def isa(obj, types):
     """an alias for python built-in ``isinstance``."""
     if types is callable: return callable(obj)
@@ -128,6 +126,16 @@ def is_tuple_of(seq, expected_type):
     """
     return is_seq_of(seq, expected_type, seq_type=tuple)
 
+def parse_bool(x) -> bool:
+    if isinstance(x, str) and x[0].lower() in ["y", "t"]:
+        return True
+    if isinstance(x, str) and x[0].lower() in ["n", "f"]:
+        return False
+    try:
+        return bool(int(x))
+    except:
+        return bool(x)
+
 def _format_arg(arg):
     farg = str(arg)
     farg = farg.replace("'", '\'"\'"\'')
@@ -220,7 +228,7 @@ class FlexibleArgParser:
     def __setattr__(self, attr, item):
         return self.__setitem__(attr, item)
 
-    def setdefault(self, key, default, _type=str, hparam=False, help=""):
+    def setdefault(self, key, default, type=str, hparam=False, help=""):
         """Set argument value under `key` as `value`, only if original entry does not exists.
 
         Args:
@@ -231,11 +239,14 @@ class FlexibleArgParser:
             original or updated value.
         """
 
-        if _type is not None:
-            assert callable(_type), f"{repr(_type)} is not a valid type."
+        if type is not None:
+            assert callable(type), f"{repr(type)} is not a valid type."
+        
+        if type is bool:
+            type = parse_bool
 
         if key in self:
-            try: self[key] = _type(self[key])
+            try: self[key] = type(self[key])
             except Exception: raise ArgumentTypeError(key, default, help)
         elif default is REQUIRED:
             raise ArgumentTypeError(key, help)
