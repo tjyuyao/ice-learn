@@ -81,7 +81,7 @@ class ModuleNode(Node):
         
         launcher = get_current_launcher()
 
-        if launcher.eager_mode:
+        if launcher.eager_mode or launcher.assigned_device.type == "cpu":
             self.module = module
         else:
             self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
