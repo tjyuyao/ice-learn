@@ -442,23 +442,19 @@ class HyperGraph:
 
         self.entrypoint = None
         self.grad_acc_steps = 1
-        self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
+        self.init_autocast(autocast_enabled, grad_scaler)
 
-    def init_autocast(self, autocast_enabled=True, autocast_dtype=None, grad_scaler:Union[bool, GradScaler] = None):
+    def init_autocast(self, autocast_enabled=True, grad_scaler:Union[bool, GradScaler] = None):
         """Initialize autocast.
 
         Args:
             autocast_enabled (bool): If True, enable autocast.
-            autocast_dtype (str): Data type to cast the gradients to.
             grad_scaler (GradScaler): Gradient scaler.
 
         Raises:
             ValueError: If the autocast_dtype is not valid.
         """
-        if autocast_dtype is None:
-            import torch
-            autocast_dtype = torch.float16
-        self.autocast_kwds = dict(enabled=autocast_enabled, dtype=autocast_dtype)
+        self.autocast_kwds = dict(enabled=autocast_enabled, dtype=None)
         self.init_grad_scaler(grad_scaler if grad_scaler is not None else autocast_enabled)
     
     def is_autocast_enabled(self) -> bool:
