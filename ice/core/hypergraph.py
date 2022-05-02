@@ -75,7 +75,7 @@ class Task(_Task):
         config: a dict of configs.
     """
     @overload
-    def __init__(self, *, train: bool, steps: int, tags="*"): ...
+    def __init__(self, *, train: bool, steps: int, tags="*", simulate_epoch:bool=False): ...
 
     @overload
     def __init__(self, *, train: bool, epochs: int, tags="*"): ...
@@ -83,7 +83,7 @@ class Task(_Task):
     def __init__(self, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
 
-    def __freeze__(self, *, train: bool, tags="*", **kwds):
+    def __freeze__(self, *, train: bool, tags="*", simulate_epoch=False, **kwds):
         """Freeze the task.
 
         Args:
@@ -104,6 +104,7 @@ class Task(_Task):
         self.task_epochs = 0
         self.epoch_size = 0
         self.finished = False
+        self.simulate_epoch = simulate_epoch
         return self
 
     def __call__(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
@@ -172,11 +173,16 @@ class Task(_Task):
             if launcher.local_rank == 0:
                 # update progress bar total
                 launcher.events.progress_bar_total.value = self.total_steps
+            if self.simulate_epoch:
+                self.egraph.apply("epoch_start")
             for self.epoch_steps in range(self.epoch_steps, self.total_steps):
                 try:
                     for _ in range(hypergraph.grad_acc_steps):
                         self._iterate()
                 except StopTask: return
+            if self.simulate_epoch:
+                self.egraph.apply("epoch_end")
+                self.global_auto_epochs += 1
 
 
     def _iterate(self):
