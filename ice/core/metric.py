@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 from collections import deque, abc
-from copy import deepcopy
-from inspect import signature
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Union, overload
 
 from ice.core.graph import GraphOutputCache, Node
 from ice.llutil.argparser import as_dict, as_list, isa, parse_scalar
 from ice.llutil.launcher.launcher import get_current_launcher
 from ice.llutil.logger import get_logger
-from ice.llutil.utils import in_main_process
 
 if TYPE_CHECKING:
     import torch
@@ -42,48 +39,24 @@ class DictMetric(Meter):  # metric is a container of meters but is also a meter 
     def __init__(self, meters: Dict[str, Meter]): ...
 
     @overload
-    def __init__(self, meter_prototype: Meter): ...
+    def __init__(self, meter: Meter): ...
 
-    def __init__(self, meters = None, meter_prototype = None):
-        if isa(meters, Meter) and meter_prototype is None:
-            meter_prototype = meters
-            meters = {}
-        elif isa(meters, dict) and meter_prototype is None:
-            meter_prototype = None
-            meters = meters
-        elif meters is None and isa(meter_prototype, Meter):
-            meter_prototype = meter_prototype
-            meters = {}
-        else:
-            raise TypeError()
-        self.meters:Dict[Meter] = {}
-        self.meter_prototype = meter_prototype
-        self.update_argnames = list(signature(meter_prototype.update).parameters.keys())
-    
+    def __init__(self, meters):
+        self.meters:Dict[str, Meter] = as_dict(meters, "__only_meter__")
+
+    @property
+    def meter(self):
+        return self.meters["__only_meter__"]
+
     def __len__(self):
         return len(self.meters)
+    
+    def __getitem__(self, name):
+        return self.meters[name]
 
     def reset(self):
         for meter in self.meters.values():
             meter.reset()
-
-    def update(self, explicit={}, *shared_args, **kwds):
-        implicit = {}
-        shared_kwds = {}
-        for k, v in kwds.items():
-            if k in self.update_argnames:
-                shared_kwds[k] = v
-            else:
-                implicit[k] = v
-        if isa(explicit, abc.Mapping):
-            explicit.update(implicit)
-        else:
-            explicit = as_dict(explicit, "__only_meter__")
-        for k, item in explicit.items():
-            if k not in self.meters:
-                self.meters[k] = deepcopy(self.meter_prototype)
-                self.meters[k].reset()
-            self.meters[k].update(item, *shared_args, **shared_kwds)
             
     def _sync_api(self):
         for meter in self.meters.values():
@@ -105,9 +78,7 @@ class MetricNode(Node):
         metric: Union[DictMetric, Meter],
         forward: Callable[["MetricNode", "GraphOutputCache"], Any],
         epoch_end: Callable[["MetricNode"], Any] = None,
-        higher_better: bool = True,
-        trigger_saving_best_ckpt: bool = False,
-        trigger_saving_passing_score=None,
+        **resources,
     ):
         ...
 
@@ -119,48 +90,51 @@ class MetricNode(Node):
         metric: Union[DictMetric, Meter],
         forward: Callable[["MetricNode", "GraphOutputCache"], Any],
         epoch_end: Callable[["MetricNode"], Any] = None,
-        higher_better: bool = True,
-        trigger_saving_best_ckpt: bool = False,
-        trigger_saving_passing_score=None,
+        **resources,
     ):
-        super().__freeze__(forward)
-
         self.metric = metric if isa(metric, DictMetric) else DictMetric(metric)
         self.user_epoch_end_hook = epoch_end
-        self.higher_better=higher_better
-        self.trigger_saving_best_ckpt=trigger_saving_best_ckpt
-        self.best_record=trigger_saving_passing_score
+        self.best_record = None
+        super().__freeze__(forward, **resources)
 
         return self
 
-    def better(self, new_value) -> bool:
-        if not self.trigger_saving_best_ckpt: return False
-        if self.best_record is None: return True
-        if self.higher_better:
-            return new_value > self.best_record
+    def save_best_ckpt(self, new_value, higher_better, save_to=None, tags="*"):
+        import torch
+        if isinstance(new_value, torch.Tensor):
+            new_value = new_value.item()
+        if self.best_record is None:
+            new_best = True
+        elif higher_better:
+            new_best = new_value > self.best_record
         else:
-            return new_value < self.best_record
+            new_best = new_value < self.best_record
+        if new_best:
+            self.best_record = new_value
+            self.egraph.hypergraph.save_checkpoint(save_to=save_to, tags=tags)
 
     def epoch_start(self):
         self.metric.reset()
         
-    def update(self):
-        self.metric.update(*as_list(self.forward()))
-        
     def epoch_end(self):
         if not self.training:
-            self.tensorboard_log_metric(postfix="")
+            self.tensorboard_log_metric()
                
         if self.user_epoch_end_hook:
             self.user_epoch_end_hook(self)
     
-    def tensorboard_log_metric(self, postfix=""):
-        metric_value = self.metric.evaluate()
+    def tensorboard_log_metric(self, metric_value=None, namespace=None):
+        if namespace is None:
+            namespace = self.name
+
+        if metric_value is None:
+            metric_value = self.metric.evaluate()
+        
         if isinstance(metric_value, dict):
             for k, v in metric_value.items():
-                self.board.add_scalar(f"{self.name}/{k}{postfix}", parse_scalar(v), global_step=self.global_train_steps)
+                self.tensorboard_log_metric(metric_value=v, namespace=f"{namespace}/{k}")
         else:
-            self.board.add_scalar(f"{self.name}{postfix}", parse_scalar(metric_value), global_step=self.global_train_steps)
+            self.board.add_scalar(namespace, parse_scalar(metric_value), global_step=self.global_train_steps)
 
 
 class ValueMeter(Meter):

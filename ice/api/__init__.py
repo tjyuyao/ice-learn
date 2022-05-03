@@ -30,30 +30,7 @@ if TYPE_CHECKING:
     from torch.utils.data import Dataset
 
 
-@overload
-def DatasetNode(
-    dataset: Dataset,
-    shuffle: bool = False,
-    batch_size: int = 1,
-    num_workers: int = 0,
-    pin_memory: bool = False,
-    drop_last: bool = False,
-    batch_size_in_total: bool = False,
-    num_iters_per_epoch: int = None,
-    prefetch_factor: int = 2,
-    worker_init_fn: Optional[Callable] = None,
-    persistent_workers: bool = False,
-    collate_fn: Optional[Callable] = None,
-    pipeline: Union[DictProcessor, List[DictProcessor]] = None,
-):
-    ...
-
-def DatasetNode(*args, **kwds):
-    from ice.core import dataset
-    return dataset.DatasetNode(*args, **kwds)
-
-
-
+from ice.core.dataset import DatasetNode
 from ice.core.loss import LossNode
 from ice.core.metric import (AverageMeter, DictMetric, Meter, MetricNode,
                              MovingAverageMeter, SummationMeter, ValueMeter)

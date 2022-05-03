@@ -33,6 +33,7 @@ class ModuleNode(Node):
         weight_init_fn: Callable[[nn.Module], None] = None,
         static_graph=False,
         find_unused_parameters=False,
+        **resources,
     ):
         ...
 
@@ -48,6 +49,7 @@ class ModuleNode(Node):
         broadcast_buffers=True,
         bucket_cap_mb=25,
         gradient_as_bucket_view=False,
+        **resources,
     ):
         ...
 
@@ -64,10 +66,11 @@ class ModuleNode(Node):
                    broadcast_buffers=True,
                    bucket_cap_mb=25,
                    gradient_as_bucket_view=False,
+                   **resources,
                    ):
         import torch
         import torch.nn as nn
-        super().__freeze__()
+        super().__freeze__(forward=None, **resources)
         module = freeze(module)
         if weight_init_fn is not None:
             with torch.no_grad():
@@ -78,7 +81,7 @@ class ModuleNode(Node):
         
         launcher = get_current_launcher()
 
-        if launcher.eager_mode:
+        if launcher.eager_mode or launcher.assigned_device.type == "cpu":
             self.module = module
         else:
             self.module:nn.Module = torch.nn.SyncBatchNorm.convert_sync_batchnorm(module)
@@ -177,10 +180,7 @@ class ModuleNode(Node):
             self.optim_counter.epochs += 1
 
     def forward_impl(self, cache: "GraphOutputCache"):
-        if self.training:
-            return self._ddp_module(cache)
-        else:
-            return self._ddp_module.module(cache)
+        return self._ddp_module(cache)
 
     def update(self):
         if not self.training: return

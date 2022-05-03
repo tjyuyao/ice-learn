@@ -75,7 +75,7 @@ class Task(_Task):
         config: a dict of configs.
     """
     @overload
-    def __init__(self, *, train: bool, steps: int, tags="*"): ...
+    def __init__(self, *, train: bool, steps: int, tags="*", simulate_epoch:bool=False): ...
 
     @overload
     def __init__(self, *, train: bool, epochs: int, tags="*"): ...
@@ -83,7 +83,7 @@ class Task(_Task):
     def __init__(self, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
 
-    def __freeze__(self, *, train: bool, tags="*", **kwds):
+    def __freeze__(self, *, train: bool, tags="*", simulate_epoch=False, **kwds):
         """Freeze the task.
 
         Args:
@@ -104,6 +104,7 @@ class Task(_Task):
         self.task_epochs = 0
         self.epoch_size = 0
         self.finished = False
+        self.simulate_epoch = simulate_epoch
         return self
 
     def __call__(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
@@ -172,11 +173,16 @@ class Task(_Task):
             if launcher.local_rank == 0:
                 # update progress bar total
                 launcher.events.progress_bar_total.value = self.total_steps
+            if self.simulate_epoch:
+                self.egraph.apply("epoch_start")
             for self.epoch_steps in range(self.epoch_steps, self.total_steps):
                 try:
                     for _ in range(hypergraph.grad_acc_steps):
                         self._iterate()
                 except StopTask: return
+            if self.simulate_epoch:
+                self.egraph.apply("epoch_end")
+                self.global_auto_epochs += 1
 
 
     def _iterate(self):
@@ -442,23 +448,19 @@ class HyperGraph:
 
         self.entrypoint = None
         self.grad_acc_steps = 1
-        self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
+        self.init_autocast(autocast_enabled, grad_scaler)
 
-    def init_autocast(self, autocast_enabled=True, autocast_dtype=None, grad_scaler:Union[bool, GradScaler] = None):
+    def init_autocast(self, autocast_enabled=True, grad_scaler:Union[bool, GradScaler] = None):
         """Initialize autocast.
 
         Args:
             autocast_enabled (bool): If True, enable autocast.
-            autocast_dtype (str): Data type to cast the gradients to.
             grad_scaler (GradScaler): Gradient scaler.
 
         Raises:
             ValueError: If the autocast_dtype is not valid.
         """
-        if autocast_dtype is None:
-            import torch
-            autocast_dtype = torch.float16
-        self.autocast_kwds = dict(enabled=autocast_enabled, dtype=autocast_dtype)
+        self.autocast_kwds = dict(enabled=autocast_enabled, dtype=None)
         self.init_grad_scaler(grad_scaler if grad_scaler is not None else autocast_enabled)
     
     def is_autocast_enabled(self) -> bool:
