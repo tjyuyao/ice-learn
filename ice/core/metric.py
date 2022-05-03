@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 from collections import deque, abc
-from copy import deepcopy
-from inspect import signature
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Union, overload
 
 from ice.core.graph import GraphOutputCache, Node
 from ice.llutil.argparser import as_dict, as_list, isa, parse_scalar
 from ice.llutil.launcher.launcher import get_current_launcher
 from ice.llutil.logger import get_logger
-from ice.llutil.utils import in_main_process
 
 if TYPE_CHECKING:
     import torch
@@ -81,9 +78,6 @@ class MetricNode(Node):
         metric: Union[DictMetric, Meter],
         forward: Callable[["MetricNode", "GraphOutputCache"], Any],
         epoch_end: Callable[["MetricNode"], Any] = None,
-        higher_better: bool = True,
-        trigger_saving_best_ckpt: bool = False,
-        trigger_saving_passing_score=None,
         **resources,
     ):
         ...
@@ -96,28 +90,28 @@ class MetricNode(Node):
         metric: Union[DictMetric, Meter],
         forward: Callable[["MetricNode", "GraphOutputCache"], Any],
         epoch_end: Callable[["MetricNode"], Any] = None,
-        higher_better: bool = True,
-        trigger_saving_best_ckpt: bool = False,
-        trigger_saving_passing_score=None,
         **resources,
     ):
-        super().__freeze__(forward, **resources)
-
         self.metric = metric if isa(metric, DictMetric) else DictMetric(metric)
         self.user_epoch_end_hook = epoch_end
-        self.higher_better=higher_better
-        self.trigger_saving_best_ckpt=trigger_saving_best_ckpt
-        self.best_record=trigger_saving_passing_score
+        self.best_record = None
+        super().__freeze__(forward, **resources)
 
         return self
 
-    def better(self, new_value) -> bool:
-        if not self.trigger_saving_best_ckpt: return False
-        if self.best_record is None: return True
-        if self.higher_better:
-            return new_value > self.best_record
+    def save_best_ckpt(self, new_value, higher_better, save_to=None, tags="*"):
+        import torch
+        if isinstance(new_value, torch.Tensor):
+            new_value = new_value.item()
+        if self.best_record is None:
+            new_best = True
+        elif higher_better:
+            new_best = new_value > self.best_record
         else:
-            return new_value < self.best_record
+            new_best = new_value < self.best_record
+        if new_best:
+            self.best_record = new_value
+            self.egraph.hypergraph.save_checkpoint(save_to=save_to, tags=tags)
 
     def epoch_start(self):
         self.metric.reset()
