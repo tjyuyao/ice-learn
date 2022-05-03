@@ -274,6 +274,9 @@ class DatasetNode(Node):
     def prepare(self):
         if self.iterator is None:
             self.iterator = iter(self.loader)
+    
+    def epoch_end(self):
+        self.iterator = None
 
     def forward_impl(self, _):
         
@@ -287,7 +290,8 @@ class DatasetNode(Node):
             # update states and iterator
             self.internal_steps = 0
             self.internal_epoch += 1
-            self.sampler.set_epoch(epoch=self.internal_epoch)
+            if isinstance(self.sampler, DistributedSampler):
+                self.sampler.set_epoch(epoch=self.internal_epoch)
             self.iterator = None
             # continue working
             if self.step_mode:
