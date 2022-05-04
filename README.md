@@ -22,7 +22,7 @@
 
 `pip install ice-learn` **(Recommended)**
 
-**Note:** For developers, in order to modify the code instantly, you need to install ice using poetry environment as specified [here](https://github.com/tjyuyao/ice-learn/blob/main/docs/resources/dev_notes/00_setup_devenv.md).
+or `pip install .[dev]` after a git-clone for developers.
 
 ## Documentation
 
