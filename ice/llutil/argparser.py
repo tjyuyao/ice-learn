@@ -12,30 +12,38 @@ from typing import Dict
 
 import numpy as np
 
+
 def isa(obj, types):
     """an alias for python built-in ``isinstance``."""
-    if types is callable: return callable(obj)
+    if types is callable:
+        return callable(obj)
     return isinstance(obj, types)
+
 
 def parse_scalar(obj):
     import torch
-    if isinstance(obj, (int, float)): return obj
-    if isinstance(obj, torch.Tensor) and obj.numel() == 1: return obj.item()
-    if isinstance(obj, np.ndarray) and obj.size == 1: return obj.item()
+
+    if isinstance(obj, (int, float)):
+        return obj
+    if isinstance(obj, torch.Tensor) and obj.numel() == 1:
+        return obj.item()
+    if isinstance(obj, np.ndarray) and obj.size == 1:
+        return obj.item()
     raise TypeError(f"Expect `{obj}` to be a scalar.")
+
 
 def as_list(maybe_element):
     """helps to regularize input into list of element.
 
     No matter what is input, will output a list for your iteration.
-    
+
     **Basic Examples:**
 
     >>> assert as_list("string") == ["string"]
     >>> assert as_list(["string", "string"]) == ["string", "string"]
     >>> assert as_list(("string", "string")) == ["string", "string"]
     >>> assert as_list([["string", "string"]]) == ["string", "string"]
-    
+
     **An Application Example:**
 
     >>> def func(*args):
@@ -83,7 +91,7 @@ def as_dict(maybe_element, key):
     if isinstance(maybe_element, dict):
         mustbe_dict = maybe_element
     else:
-        mustbe_dict = {key:maybe_element}
+        mustbe_dict = {key: maybe_element}
     return mustbe_dict
 
 
@@ -126,6 +134,7 @@ def is_tuple_of(seq, expected_type):
     """
     return is_seq_of(seq, expected_type, seq_type=tuple)
 
+
 def parse_bool(x) -> bool:
     if isinstance(x, str) and x[0].lower() in ["y", "t"]:
         return True
@@ -136,27 +145,33 @@ def parse_bool(x) -> bool:
     except:
         return bool(x)
 
+
 def _format_arg(arg):
     farg = str(arg)
-    farg = farg.replace("'", '\'"\'"\'')
+    farg = farg.replace("'", "'\"'\"'")
     for ch in farg:
-        if ch in " \"()@&$*!?~{}|#`\\":
+        if ch in ' "()@&$*!?~{}|#`\\':
             farg = f"'{farg}'"
             break
     return farg
 
+
 def get_hostname():
     return socket.gethostname()
 
-class ArgumentMissingError(Exception): """Raised when a required argument is missing from command line."""
 
-class ArgumentTypeError(Exception): """Raised when converting an argument failed."""
+class ArgumentMissingError(Exception):
+    """Raised when a required argument is missing from command line."""
+
+
+class ArgumentTypeError(Exception):
+    """Raised when converting an argument failed."""
 
 
 class FlexibleArgParser:
 
     """A flexible and lightweight argument parser that saves loads of code.
-    
+
     This module works differently compared to python built-in ``argparse`` module.
     - It accepts two types of command line arguments, i.e. positional and keyword based (options).
     - The keyword based arguments (options) should be specified as ``key=value`` or ``key="value"``.
@@ -178,7 +193,7 @@ class FlexibleArgParser:
     >>> assert 4 == ice.args["k1"]  # as setdefault specified a type, here a conversion is not needed.
     >>> assert 4 == ice.args.k1  # attribute also works.
     >>> assert 8 == ice.args.k2  # use default value.
-    >>> 
+    >>>
     >>> ice.args["k1"] = 1
     >>> ice.args.k3 = 1
     >>> ice.args.update(k2=0)
@@ -196,7 +211,7 @@ class FlexibleArgParser:
 
     def __init__(self) -> None:
         self.parse_args(sys.argv[1:])
-    
+
     def parse_args(self, argv):
         """Manually parse args.
 
@@ -209,11 +224,11 @@ class FlexibleArgParser:
         for token in argv:
             idsp = token.find("=")
             if -1 != idsp:
-                self[token[:idsp]] = token[idsp+1:]
+                self[token[:idsp]] = token[idsp + 1 :]
             else:
                 self[iarg] = token
                 iarg += 1
-    
+
     def __setitem__(self, key, value):
         self._args[key] = value
 
@@ -241,18 +256,20 @@ class FlexibleArgParser:
 
         if type is not None:
             assert callable(type), f"{repr(type)} is not a valid type."
-        
+
         if type is bool:
             type = parse_bool
 
         if key in self:
-            try: self[key] = type(self[key])
-            except Exception: raise ArgumentTypeError(key, default, help)
+            try:
+                self[key] = type(self[key])
+            except Exception:
+                raise ArgumentTypeError(key, default, help)
         elif default is REQUIRED:
             raise ArgumentTypeError(key, help)
         else:
             self[key] = default
-        
+
         if hparam:
             self._hparams.add(key)
 
@@ -260,7 +277,7 @@ class FlexibleArgParser:
         self[key] = value
         if hparam:
             self._hparams.add(key)
-    
+
     def get(self, key):
         return self[key]
 
@@ -284,9 +301,28 @@ class FlexibleArgParser:
         __dict.update(kwds)
         for k, v in __dict.items():
             self[k] = v
-            
+
     def hparam_dict(self) -> Dict:
-        return {k:str(self._args[k]) for k in self._hparams}
+        return {k: str(self._args[k]) for k in self._hparams}
+
+    def sethostdefault(self, key, host_dict, type=str, hparam=False, help=""):
+
+        self.setdefault(key, default=None, type=type, hparam=hparam, help=help)
+
+        if self.get(key) is None:
+
+            # determine by hostname
+            try:
+                hostname = get_hostname()
+                self[key] = host_dict[hostname]
+                return
+            except KeyError:
+                pass
+
+            # undefined
+            raise ArgumentMissingError(
+                f"Argument '{key}' does not exist, and host '{hostname}' does not have a configured path."
+            )
 
 
 args = FlexibleArgParser()
