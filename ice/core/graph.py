@@ -4,10 +4,13 @@ from collections import UserDict
 
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Set, overload
 
-
+import os
+import numpy as np
+from datetime import datetime
 from ice.llutil.config import Configurable
 from ice.llutil.launcher.launcher import get_current_launcher
 from ice.llutil.logger import get_logger
+from ice.llutil.timer import IterTimer, IterTimers
 
 if TYPE_CHECKING:
     import torch
@@ -330,6 +333,9 @@ class ExecutableGraph:
         self.task: Task = None
         self.losses_counter = 0
         self.total_loss = 0
+        self.timers = IterTimers()
+        self.timer_enabled = False
+        self.timer_logname = datetime.now().strftime("timerlog-%a%d%m%Y-%H%M%S.csv")
 
     def add_node(self, node_name, node, tags):
         """add a node to the graph.
@@ -351,6 +357,16 @@ class ExecutableGraph:
         self.nodes[node_name] = node
         self.node_names[node] = node_name
         self.node_tags[node] = tags
+        for method in Node.EVENTS:
+            self.timers.add_timer((node_name, method), sync=False, enabled=False)
+    
+    def enable_timer(self, enabled: bool):
+        if self.timer_enabled == enabled: return
+        self.timer_enabled = enabled
+        if enabled:
+            self.timers.enable_all()
+        else:
+            self.timers.disable_all()
 
     def __getitem__(self, key):
         return self.nodes[key]
@@ -377,13 +393,14 @@ class ExecutableGraph:
         Raises:
             RuntimeError: the method is not found.
         """
-        for v in self.nodes.values():
-            if filter(v):
+        for node_name, node in self.nodes.items():
+            if filter(node):
                 try:
-                    getattr(v, method)(*args, **kwds)
+                    with self.timers[(node_name, method)]:
+                        getattr(node, method)(*args, **kwds)
                 except Exception as e:
                     if not isinstance(e, (StopIteration)):
-                        get_logger().error(f">>>>> ERROR: Node '{v.name}' raised '{type(e).__name__}' during '{method}' stage. <<<<<<")
+                        get_logger().error(f">>>>> ERROR: Node '{node.name}' raised '{type(e).__name__}' during '{method}' stage. <<<<<<")
                     raise
 
     def prepare_nodes(self):
@@ -420,3 +437,18 @@ class ExecutableGraph:
         else: # eval
             self.apply("forward")
             self.apply("update")
+    
+    def timer_log_to_file(self):
+        if self.timer_enabled:
+            out_file = os.path.join(
+                self.hypergraph.run_info.out_dir,
+                self.timer_logname
+            )
+            with open(out_file, "w") as f:
+                print("node_stage,mean,min,total", file=f)
+                timer:IterTimer
+                for (name, method), timer in self.timers.items():
+                    if len(timer.times) == 0: continue
+                    times = np.array(timer.times)
+                    line = f"{name}.{method},{np.nanmean(times)},{np.min(times)},{np.sum(times)}"
+                    print(line, file=f)

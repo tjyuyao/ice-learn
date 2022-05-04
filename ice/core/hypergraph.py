@@ -119,6 +119,7 @@ class Task(_Task):
         with set_grad_enabled(self.training):
             self.__call__impl(hypergraph, launcher)
         self.finished = True
+        self.egraph.timer_log_to_file()
 
     def __call__impl(self, hypergraph: "HyperGraph", launcher: ElasticLauncher):
         # maintain running progress.
@@ -128,6 +129,7 @@ class Task(_Task):
         self.launcher = launcher
         self.egraph: ExecutableGraph = hypergraph.select_egraph(self.tags)
         self.egraph.task = self
+        self.egraph.enable_timer("timer" in self.tags)
 
         if self.egraph is not hypergraph._last_executed_egraph:
             if hypergraph._last_executed_egraph is not None:
