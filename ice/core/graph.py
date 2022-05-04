@@ -171,7 +171,8 @@ class Node(Configurable):
             output = cache[name]
         else:
             cache.acquire(name)
-            output = self.forward_impl(cache)
+            with self.egraph.timers[(name, "forward")]:
+                output = self.forward_impl(cache)
             cache.release(name)
             cache[name] = output
         return output
@@ -396,8 +397,11 @@ class ExecutableGraph:
         for node_name, node in self.nodes.items():
             if filter(node):
                 try:
-                    with self.timers[(node_name, method)]:
-                        getattr(node, method)(*args, **kwds)
+                    if method == "forward":  # the timer can go wrong due to automatic recursion, time it inside forward.
+                        node.forward(*args, **kwds)
+                    else:
+                        with self.timers[(node_name, method)]:
+                            getattr(node, method)(*args, **kwds)
                 except Exception as e:
                     if not isinstance(e, (StopIteration)):
                         get_logger().error(f">>>>> ERROR: Node '{node.name}' raised '{type(e).__name__}' during '{method}' stage. <<<<<<")
