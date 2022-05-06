@@ -1,4 +1,5 @@
 import math
+import os, gzip, pickle
 import warnings
 from ice.llutil.launcher.launcher import get_current_launcher
 import numpy as np
@@ -173,21 +174,52 @@ class ResumableDistributedSampler(DistributedSampler):
 
 class _DatasetProxy(Dataset):
 
-    def __init__(self, node, dataset, pipeline) -> None:
+    def __init__(self, node, dataset, pipeline, cache_folder, cache_version, cache_compresslevel) -> None:
         super().__init__()
         self.node = node
         self._dataset = dataset
         self.pipeline = pipeline
+        self.cache_folder = cache_folder
+        self.cache_version = cache_version
+        self.cache_compresslevel = cache_compresslevel
+        if self.cache_folder is not None:
+            assert isinstance(self.cache_folder, str)
+            if not os.path.exists(self.cache_folder):
+                os.makedirs(self.cache_folder)
+
+    def read_example_cache(self, filepath):
+        if not os.path.exists(filepath):
+            return None
+        with gzip.open(filepath, mode="rb") as f:
+            example = pickle.load(f)
+        if example["version"] == self.cache_version:
+            return example["data"]
+        else:
+            return None
+
+    def write_example_cache(self, filepath, example):
+        example = dict(data=example, version=self.cache_version)
+        with gzip.open(filepath, mode="wb", compresslevel=self.cache_compresslevel) as f:
+            pickle.dump(example, f)
 
     def __len__(self):
         return len(self._dataset)
     
     def __getitem__(self, index):
-        sample = self._dataset.__getitem__(index)
+        # if enabled, read example and maintain cache
+        if self.cache_folder is None:
+            example = self._dataset.__getitem__(index)
+        else:
+            filepath = os.path.join(self.cache_folder, str(index))
+            example = self.read_example_cache(filepath)
+            if example is None:
+                example = self._dataset.__getitem__(index)
+                self.write_example_cache(filepath, example)
+        # apply pipeline(read post-processing)
         if self.pipeline is not None:
-            sample = as_dict(sample, "sample")
-            sample = self.pipeline(sample)
-        return sample
+            example = as_dict(example, "sample")
+            example = self.pipeline(example)
+        return example
 
 
 class DatasetNode(Node):
@@ -208,6 +240,9 @@ class DatasetNode(Node):
                  persistent_workers: bool = False,
                  collate_fn: Optional[Callable] = failsafe_collate,
                  pipeline: Union[DictProcessor, List[DictProcessor]] = None,
+                 cache_folder: str = None,
+                 cache_version: int = 0,
+                 cache_compresslevel: int = 1,
                  **resources,
                  ) -> None:
         ...
@@ -229,13 +264,16 @@ class DatasetNode(Node):
                  persistent_workers: bool = False,
                  collate_fn: Optional[Callable] = failsafe_collate,
                  pipeline: Union[DictProcessor, List[DictProcessor]] = None,
+                 cache_folder: str = None,
+                 cache_version: int = 0,
+                 cache_compresslevel: int = 1,
                  **resources,
                  ) -> None:
         
         super().__freeze__(forward=None, **resources)
         freeze(dataset)
         pipeline = Compose(as_list(pipeline)) if isinstance(pipeline, list) else pipeline
-        dataset = _DatasetProxy(self, dataset, pipeline)
+        dataset = _DatasetProxy(self, dataset, pipeline, cache_folder, cache_version, cache_compresslevel)
         launcher = get_current_launcher()
         
         if batch_size_in_total:
