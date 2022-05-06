@@ -32,7 +32,7 @@ class Timer:
         1.000
     """
 
-    def __init__(self, start=True, print_tmpl=None):
+    def __init__(self, print_tmpl=None, start=True):
         self._is_running = False
         self.print_tmpl = print_tmpl if print_tmpl else '{:.3f}'
         if start:
