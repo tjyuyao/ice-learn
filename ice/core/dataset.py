@@ -19,7 +19,6 @@ from ice.core.graph import Node
 from ice.llutil.dictprocess import Compose, DictProcessor
 from ice.llutil.utils import in_main_process
 
-
 _NP_STR_OBJ_ARRAY_PATTERN = re.compile(r'[SaUO]')
 
 
@@ -27,7 +26,7 @@ _FAILSAFE_COLLATE_ERR_MSG_FORMAT = (
     "default_collate: batch must contain tensors, numpy arrays, numbers, "
     "dicts or lists; found {}")
 
-
+stack_runtime_error_reported = False
 def failsafe_collate(batch):
     r"""Puts each data field into a tensor with outer dimension batch size
 
@@ -63,7 +62,11 @@ def failsafe_collate(batch):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 return torch.stack(batch, 0, out=out)
-        except RuntimeError:
+        except RuntimeError as e:
+            global stack_runtime_error_reported
+            if not stack_runtime_error_reported:
+                stack_runtime_error_reported = True
+                print(str(e) + ", will return batch as list.")
             return batch
     elif elem_type.__module__ == 'numpy' and elem_type.__name__ != 'str_' \
             and elem_type.__name__ != 'string_':
