@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from inspect import signature
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union, overload
+from ice.api.utils import caller_file
 
 import numpy as np
 from ice.core.graph import (ExecutableGraph, GraphOutputCache, InvalidURIError,
@@ -449,6 +450,7 @@ class HyperGraph:
         self._num_workers = 0
 
         self.entrypoint = None
+        self.extra_backup_paths = []
         self.grad_acc_steps = 1
         self.init_autocast(autocast_enabled, autocast_dtype, grad_scaler)
 
@@ -484,6 +486,10 @@ class HyperGraph:
             ValueError: If the entrypoint is not valid.
         """
         self.entrypoint = entrypoint
+    
+    def backup_extra_path(self, relpath:str):
+        abspath = os.path.join(os.path.dirname(caller_file()), relpath)
+        self.extra_backup_paths.append(abspath)
 
     @overload
     def init_grad_scaler(self,
@@ -816,7 +822,7 @@ class HyperGraph:
             if self.entrypoint is not None:
                 src_dir = os.path.join(run_id_dir, "src")
                 os.makedirs(src_dir, exist_ok=True)
-                _backup_source_files_to(self.entrypoint, src_dir)
+                _backup_source_files_to(self.entrypoint, self.extra_backup_paths, src_dir)
         
             self.run_info.run_id = run_id
             self.run_info.full_run_id = os.path.basename(run_id_dir)

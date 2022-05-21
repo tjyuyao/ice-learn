@@ -8,10 +8,13 @@ from ice.llutil.timer import Timer, IterTimer, IterTimers
 def parse_devices(devices:str):
     return _parse_devices_and_backend(devices)[0]
 
-# def caller_file():
-#     return os.path.abspath(inspect.stack()[1][1])
+def caller_file():
+    return os.path.abspath(inspect.stack()[1][1])
+
+from ice.llutil.backup_src import _extended_sys_path
 
 def extend_sys_path(relpath):
     dirname = os.path.dirname(os.path.abspath(inspect.stack()[1][1]))
     newpath = os.path.abspath(os.path.join(dirname, relpath))
     sys.path.insert(1, newpath)
+    _extended_sys_path.append(newpath)
