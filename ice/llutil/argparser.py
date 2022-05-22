@@ -136,9 +136,9 @@ def is_tuple_of(seq, expected_type):
 
 
 def parse_bool(x) -> bool:
-    if isinstance(x, str) and x[0].lower() in ["y", "t"]:
+    if isinstance(x, str) and x[0].lower() in ["y", "t", "e"]:# yes, true, enabled
         return True
-    if isinstance(x, str) and x[0].lower() in ["n", "f"]:
+    if isinstance(x, str) and x[0].lower() in ["n", "f", "d"]: # no, false, disabled
         return False
     try:
         return bool(int(x))
