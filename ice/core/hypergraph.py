@@ -1,4 +1,5 @@
 from __future__ import annotations
+import gzip
 
 import logging
 import os
@@ -910,6 +911,7 @@ class HyperGraph:
             import torch
             tqdm.write(f"Saving checkpoint to \"{save_to}\".")
             torch.save(_checkpoint, save_to)
+            return save_to
 
     def load_checkpoint(self, resume_from, strict=False, tags="*"):
         """Load the checkpoint.

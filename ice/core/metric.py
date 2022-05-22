@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import deque, abc
+import os
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Union, overload
 
 from ice.core.graph import GraphOutputCache, Node
@@ -94,24 +95,38 @@ class MetricNode(Node):
     ):
         self.metric = metric if isa(metric, DictMetric) else DictMetric(metric)
         self.user_epoch_end_hook = epoch_end
-        self.best_record = None
+        self.best_record = {}
+        self.saved_ckpts = {}
         super().__freeze__(forward, **resources)
 
         return self
 
-    def save_best_ckpt(self, new_value, higher_better, save_to=None, tags="*"):
+    def save_best_ckpt(self, new_value, higher_better, metric_name=None, max_keep=3, tags="*"):
         import torch
+        if metric_name is None: metric_name = self.name
+        if metric_name not in self.saved_ckpts:
+            self.saved_ckpts[metric_name] = []
+            self.best_record[metric_name] = None
         if isinstance(new_value, torch.Tensor):
             new_value = new_value.item()
-        if self.best_record is None:
+
+        if self.best_record[metric_name] is None:
             new_best = True
         elif higher_better:
-            new_best = new_value > self.best_record
+            new_best = new_value > self.best_record[metric_name]
         else:
-            new_best = new_value < self.best_record
+            new_best = new_value < self.best_record[metric_name]
+
         if new_best:
-            self.best_record = new_value
-            self.egraph.hypergraph.save_checkpoint(save_to=save_to, tags=tags)
+            self.best_record[metric_name] = new_value
+            hypergraph = self.egraph.hypergraph
+            fname = f"E{hypergraph.global_counters.epochs.train}S{hypergraph.global_counters.steps.train}_{metric_name}_{new_value}.pth"
+            save_to = os.path.join(hypergraph.run_info.ckpt_dir, fname)
+            save_to = hypergraph.save_checkpoint(save_to=save_to, tags=tags)
+            if save_to is not None:
+                self.saved_ckpts[metric_name].append(save_to)
+                if len(self.saved_ckpts[metric_name]) > max_keep:
+                    os.remove(self.saved_ckpts[metric_name].pop(0))
 
     def epoch_start(self):
         self.metric.reset()
